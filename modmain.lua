@@ -4,7 +4,8 @@ PrefabFiles = {
 
     "blythe_blaster",
     "blythe_beam_basic",
-    "blythe_beam_basic_tail",
+    "blythe_beam_teleport",
+    "blythe_beam_tail",
     "stariliad_fake_projectile",
     "stariliad_pistol_shoot_cloud",
     "blythe_beam_hit_fx",
@@ -59,6 +60,7 @@ local import_list = {
     "stategraphs_server",
     "stategraphs_client",
     "hud",
+    "scripts", -- not a good name
     "debug",
 }
 

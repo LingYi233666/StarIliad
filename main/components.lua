@@ -12,10 +12,9 @@ AddComponentPostInit("playercontroller", function(self)
         if isenabled
             and not ishudblocking
             and self:IsControlPressed(CONTROL_PRIMARY)
-            and self:IsAOETargeting()
-            and not self.inst:HasTag("attack") then
+            and self:IsAOETargeting() then
             local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            if item:HasTag("stariliad_chain_castaoe") then
+            if item and item:HasTag("stariliad_chain_castaoe") then
                 self:OnLeftClick(true)
             end
         end

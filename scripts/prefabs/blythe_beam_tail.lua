@@ -2,8 +2,9 @@ local ARROW_TEXTURE = resolvefilepath("fx/spark.tex")
 
 local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 
-local ARROW_COLOUR_ENVELOPE_NAME = "blythe_beam_basic_tail_colourenvelope"
-local ARROW_SCALE_ENVELOPE_NAME = "blythe_beam_basic_tail_scaleenvelope"
+local ARROW_YELLOW_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_yellow_colourenvelope"
+local ARROW_PURPLE_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_purple_colourenvelope"
+local ARROW_SCALE_ENVELOPE_NAME = "blythe_beam_tail_scaleenvelope"
 
 local assets =
 {
@@ -17,7 +18,7 @@ end
 
 local function InitEnvelope()
     EnvelopeManager:AddColourEnvelope(
-        ARROW_COLOUR_ENVELOPE_NAME,
+        ARROW_YELLOW_COLOUR_ENVELOPE_NAME,
         {
             { 0,    IntColour(255, 150, 2, 25) },
             { .075, IntColour(255, 193, 5, 200) },
@@ -25,6 +26,18 @@ local function InitEnvelope()
             { .6,   IntColour(255, 193, 50, 255) },
             { .9,   IntColour(255, 193, 161, 230) },
             { 1,    IntColour(255, 193, 175, 0) },
+        }
+    )
+
+    EnvelopeManager:AddColourEnvelope(
+        ARROW_PURPLE_COLOUR_ENVELOPE_NAME,
+        {
+            { 0,    IntColour(255, 2, 150, 25) },
+            { .075, IntColour(255, 5, 193, 200) },
+            { .3,   IntColour(255, 5, 193, 255) },
+            { .6,   IntColour(255, 50, 193, 255) },
+            { .9,   IntColour(255, 161, 193, 230) },
+            { 1,    IntColour(255, 175, 193, 0) },
         }
     )
 
@@ -59,8 +72,9 @@ local function emit_arrow_fn(effect, pos, vel)
         uv_offset, 0 -- uv offset
     )
 end
--- ThePlayer:SpawnChild("blythe_beam_basic_tail")
-local function fn()
+
+
+local function common_fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -86,9 +100,8 @@ local function fn()
     --SPARKLE
     effect:SetRenderResources(0, ARROW_TEXTURE, ADD_SHADER)
     effect:SetMaxNumParticles(0, 25)
-    effect:SetMaxLifetime(0, ARROW_MAX_LIFETIME)
-    effect:SetColourEnvelope(0, ARROW_COLOUR_ENVELOPE_NAME)
     effect:SetScaleEnvelope(0, ARROW_SCALE_ENVELOPE_NAME)
+    effect:SetMaxLifetime(0, ARROW_MAX_LIFETIME)
     effect:SetBlendMode(0, BLENDMODE.Additive)
     effect:SetUVFrameSize(0, 0.25, 1)
     effect:SetSortOrder(0, 0)
@@ -118,4 +131,23 @@ local function fn()
     return inst
 end
 
-return Prefab("blythe_beam_basic_tail", fn, assets)
+local function yellow_fn()
+    local inst = common_fn()
+
+    local effect = inst.VFXEffect
+    effect:SetColourEnvelope(0, ARROW_YELLOW_COLOUR_ENVELOPE_NAME)
+
+    return inst
+end
+
+local function purple_fn()
+    local inst = common_fn()
+
+    local effect = inst.VFXEffect
+    effect:SetColourEnvelope(0, ARROW_PURPLE_COLOUR_ENVELOPE_NAME)
+
+    return inst
+end
+
+return Prefab("blythe_beam_tail_yellow", yellow_fn, assets),
+    Prefab("blythe_beam_tail_purple", purple_fn, assets)

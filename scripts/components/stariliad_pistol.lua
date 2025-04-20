@@ -20,7 +20,6 @@ local StarIliadPistol = Class(function(self, inst)
     -- self.sub_projectile_data = nil
 
     self.projectile_prefab = "blythe_beam_basic"
-    self.projectile_data = nil
 
     self:SetProjectilePrefab(self.projectile_prefab)
 end, nil, {
@@ -59,12 +58,13 @@ function StarIliadPistol:SetProjectilePrefab(val)
     local data = StarIliadBasic.GetProjectileDefine(val)
     if data then
         self.projectile_prefab = val
-        self.projectile_data = data
     end
 end
 
 function StarIliadPistol:GetProjectileData()
-    return self.projectile_data
+    local data = StarIliadBasic.GetProjectileDefine(self.projectile_prefab)
+
+    return data
 end
 
 function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)

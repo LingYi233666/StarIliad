@@ -19,11 +19,10 @@ local StarIliadPistol = Class(function(self, inst)
 
     self._projectile_prefab = net_string(inst.GUID, "StarIliadPistol._projectile_prefab",
         "StarIliadPistol._projectile_prefab")
-    self._projectile_data = nil
 
-    inst:ListenForEvent("StarIliadPistol._projectile_prefab", function()
-        self._projectile_data = StarIliadBasic.GetProjectileDefine(self._projectile_prefab:value())
-    end)
+    -- inst:ListenForEvent("StarIliadPistol._projectile_prefab", function()
+    --     self._projectile_data = StarIliadBasic.GetProjectileDefine(self._projectile_prefab:value())
+    -- end)
 end)
 
 -- function StarIliadPistol:SetMainProjectilePrefab(val)
@@ -47,7 +46,8 @@ function StarIliadPistol:SetProjectilePrefab(val)
 end
 
 function StarIliadPistol:GetProjectileData()
-    return self._projectile_data
+    local data = StarIliadBasic.GetProjectileDefine(self._projectile_prefab:value())
+    return data
 end
 
 return StarIliadPistol

@@ -71,13 +71,25 @@ local function ProjectileOnUpdate(inst)
     local attacker = inst.components.complexprojectile.attacker
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    local ents = TheSim:FindEntities(x, y, z, 1, { "_combat", "_health" }, { "INLIMBO" })
+    -- local ents = TheSim:FindEntities(x, y, z, 1, { "_combat", "_health" }, { "INLIMBO" })
+    -- for k, v in pairs(ents) do
+    --     if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
+    --         inst.components.complexprojectile:Hit(v)
+    --         break
+    --     end
+    -- end
+
+    local ents = TheSim:FindEntities(x, y, z, 3, { "_combat", "_health" }, { "INLIMBO" })
     for k, v in pairs(ents) do
         if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
-            inst.components.complexprojectile:Hit(v)
-            break
+            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
+            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) then
+                inst.components.complexprojectile:Hit(v)
+                break
+            end
         end
     end
+
 
     return true
 end
