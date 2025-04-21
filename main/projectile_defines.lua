@@ -12,6 +12,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         prefab = "blythe_beam_teleport",
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot",
         fx = "stariliad_pistol_shoot_cloud",
+        aim_reticule = "blythe_aim_reticule_purple",
         attack_sg = "blythe_shoot_beam",
         castaoe_sg = "blythe_shoot_beam_castaoe",
         shoot_at_sg = "blythe_shoot_beam_shoot_at",

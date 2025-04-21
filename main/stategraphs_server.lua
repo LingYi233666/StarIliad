@@ -44,6 +44,25 @@ AddStategraphPostInit("wilson", function(sg)
     end
 end)
 
+local function SpawnAimReticule(inst, equip, buffaction)
+    if equip
+        and equip.components.stariliad_pistol
+        and buffaction
+        and buffaction.target
+        and buffaction.target:IsValid() then
+        local proj_data = equip.components.stariliad_pistol:GetProjectileData()
+        local aim_reticule = proj_data and proj_data.aim_reticule
+        if aim_reticule then
+            inst.sg.statemem.aim_reticule = buffaction.target:SpawnChild(aim_reticule)
+        end
+    end
+end
+
+local function KillAimReticule(inst)
+    if inst.sg.statemem.aim_reticule and inst.sg.statemem.aim_reticule:IsValid() then
+        inst.sg.statemem.aim_reticule:KillFX()
+    end
+end
 
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
     local state = State {
@@ -86,6 +105,8 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             end
 
             inst.sg.statemem.weapon = equip
+
+            -- SpawnAimReticule(inst, equip, buffaction)
         end,
 
         ontimeout = function(inst)
@@ -131,6 +152,8 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             if inst.sg:HasStateTag("abouttoattack") then
                 inst.components.combat:CancelAttack()
             end
+
+            KillAimReticule(inst)
         end,
     }
 
@@ -229,6 +252,8 @@ local function CreateShootAtState(name, enter_bonus, shoot_time, free_time, chai
             end
 
             inst.sg.statemem.weapon = equip
+
+            -- SpawnAimReticule(inst, equip, buffaction)
         end,
 
         ontimeout = function(inst)
@@ -267,7 +292,7 @@ local function CreateShootAtState(name, enter_bonus, shoot_time, free_time, chai
         },
 
         onexit = function(inst)
-
+            KillAimReticule(inst)
         end,
     }
 
