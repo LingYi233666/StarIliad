@@ -4,7 +4,7 @@ local assets = {
 
 local function DoRotating(inst)
     local angle = inst.Transform:GetRotation()
-    angle = angle + FRAMES * 90
+    angle = angle + FRAMES * inst.rotate_speed
 
     inst.Transform:SetRotation(angle)
 end
@@ -33,6 +33,8 @@ local function UpdatePing(inst, s0, s1, t0, duration, multcolour, addcolour)
 end
 
 local function KillFX(inst, duration, scaleup)
+    inst:DetachTarget()
+
     duration = duration or 0.3
     scaleup = scaleup or 1.05
 
@@ -40,6 +42,30 @@ local function KillFX(inst, duration, scaleup)
 
     inst:DoPeriodicTask(0, UpdatePing, nil, s1, s1 * scaleup, GetTime(), duration, {}, {})
     inst:DoTaskInTime(duration, inst.Remove)
+end
+
+local function AttachTarget(inst, target)
+    if target:HasTag("largecreature") then
+        inst.rotate_speed = 60
+        inst.AnimState:PlayAnimation("idle")
+    end
+
+    target:AddChild(inst)
+
+    local s1, s2, s3 = target.Transform:GetScale()
+    inst.Transform:SetScale(1 / s1, 1 / s2, 1 / s3)
+end
+
+
+local function DetachTarget(inst)
+    local parent = inst.entity:GetParent()
+    if parent then
+        local x, y, z = parent.Transform:GetWorldPosition()
+        parent:RemoveChild(inst)
+        inst.Transform:SetPosition(x, y, z)
+    end
+
+    inst.Transform:SetScale(1, 1, 1)
 end
 
 
@@ -59,7 +85,8 @@ local function MakeReticule(name, anim, scale, mult_colour)
         inst.AnimState:SetLayer(LAYER_WORLD_BACKGROUND)
         inst.AnimState:SetSortOrder(3)
 
-        inst.AnimState:SetScale(scale, scale)
+        inst.rotate_speed = 90
+        inst.AnimState:SetScale(scale, scale, scale)
 
         if mult_colour then
             inst.AnimState:SetMultColour(unpack(mult_colour))
@@ -75,6 +102,8 @@ local function MakeReticule(name, anim, scale, mult_colour)
 
         inst.persists = false
 
+        inst.AttachTarget = AttachTarget
+        inst.DetachTarget = DetachTarget
         inst.KillFX = KillFX
 
         inst:DoPeriodicTask(0, DoRotating)

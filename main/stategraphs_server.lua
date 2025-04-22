@@ -53,7 +53,8 @@ local function SpawnAimReticule(inst, equip, buffaction)
         local proj_data = equip.components.stariliad_pistol:GetProjectileData()
         local aim_reticule = proj_data and proj_data.aim_reticule
         if aim_reticule then
-            inst.sg.statemem.aim_reticule = buffaction.target:SpawnChild(aim_reticule)
+            inst.sg.statemem.aim_reticule = SpawnPrefab(aim_reticule)
+            inst.sg.statemem.aim_reticule:AttachTarget(buffaction.target)
         end
     end
 end
@@ -106,7 +107,7 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
 
             inst.sg.statemem.weapon = equip
 
-            -- SpawnAimReticule(inst, equip, buffaction)
+            SpawnAimReticule(inst, equip, buffaction)
         end,
 
         ontimeout = function(inst)
@@ -253,7 +254,7 @@ local function CreateShootAtState(name, enter_bonus, shoot_time, free_time, chai
 
             inst.sg.statemem.weapon = equip
 
-            -- SpawnAimReticule(inst, equip, buffaction)
+            SpawnAimReticule(inst, equip, buffaction)
         end,
 
         ontimeout = function(inst)

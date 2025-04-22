@@ -97,7 +97,7 @@ local function ProjectileOnUpdate(inst)
     for k, v in pairs(ents) do
         if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
             local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) then
+            if dist < 0.5 + v:GetPhysicsRadius(0) then
                 inst.components.complexprojectile:Hit(v)
                 break
             end

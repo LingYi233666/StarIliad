@@ -31,14 +31,35 @@ local function OnProjectileLaunch(inst, attacker, target_pos)
     end
 end
 
-local function ProjectileTeleportOnHit(inst, attacker, target)
+-- local function TeleportToCaster(caster, target)
+--     local p1 = caster:GetPosition()
+--     local p2 = target:GetPosition()
+--     local towards = (p2 - p1):GetNormalized()
+
+--     local dist = math.max(1.5, caster:GetPhysicsRadius(0) + target:GetPhysicsRadius(0))
+
+--     local pos = p1 + towards * dist
+--     target.Transform:SetPosition(pos:Get())
+-- end
+
+local function SpawnTeleportFX(target, pos)
+    pos = pos or target:GetPosition()
+
+    if target:HasTag("character") or target:HasTag("largecreature") then
+        SpawnAt("blythe_beam_teleport_pickup_large_front_fx", pos)
+        SpawnAt("blythe_beam_teleport_pickup_large_back_fx", pos)
+    else
+        SpawnAt("blythe_beam_teleport_pickup_fx", pos)
+    end
+end
+
+local function ProjectileOnHit(inst, attacker, target)
     RemoveAimReticule(inst)
 
     SpawnAt("blythe_beam_purple_hit_fx", inst)
 
-    if attacker and attacker:IsValid() and target then
-        if (target.components.inventoryitem or target.components.locomotor)
-            and not target:HasTag("largecreature") then
+    if attacker and attacker:IsValid() and target and target:IsValid() then
+        if (target.components.inventoryitem or target.components.locomotor) and not target:HasTag("largecreature") then
             local p1 = attacker:GetPosition()
             local p2 = target:GetPosition()
             local towards = (p2 - p1):GetNormalized()
@@ -48,21 +69,16 @@ local function ProjectileTeleportOnHit(inst, attacker, target)
             local pos = p1 + towards * dist
             target.Transform:SetPosition(pos:Get())
 
-            local s = (target:HasTag("character") or target:HasTag("largecreature")) and 1.5 or 1
 
-            SpawnAt("blythe_beam_teleport_pickup_fx", p2, { s, s, s })
+            SpawnTeleportFX(target, p2)
 
-            local spawn_after = true
-            if target.components.inventoryitem then
-                if attacker.components.inventory:GiveItem(target, nil, pos) then
-                    spawn_after = false
-                end
-            end
-
-            if spawn_after then
-                SpawnAt("blythe_beam_teleport_pickup_fx", pos, { s, s, s })
+            if target.components.inventoryitem and attacker.components.inventory:GiveItem(target, nil, pos) then
+                -- Give to attacker, no need to spawn fx
+            else
+                SpawnTeleportFX(target, pos)
             end
         elseif attacker.components.combat and attacker.components.combat:CanTarget(target) then
+            -- Can't teleport, just do attack
             attacker.components.combat:DoAttack(target, inst, inst, nil, nil, math.huge)
         end
     end
@@ -70,7 +86,12 @@ local function ProjectileTeleportOnHit(inst, attacker, target)
     inst:Remove()
 end
 
-local function CommonOnUpdate(inst)
+local function CanInteract(inst, v)
+    local dist = math.sqrt(inst:GetDistanceSqToInst(v))
+    return dist < 0.5 + v:GetPhysicsRadius(0)
+end
+
+local function ProjectileOnUpdate(inst)
     inst.max_range = inst.max_range or GetRandomMinMax(20, 25)
     inst.start_pos = inst.start_pos or inst:GetPosition()
 
@@ -99,51 +120,37 @@ local function CommonOnUpdate(inst)
     end
 
     inst.Physics:SetMotorVel(inst.components.complexprojectile.horizontalSpeed, 0, 0)
-end
 
-local function TeleportOnUpdate(inst)
-    local ret = CommonOnUpdate(inst)
-    if ret ~= nil then
-        return ret
-    end
+    -----------------------------------------------------------------------
 
     local attacker = inst.components.complexprojectile.attacker
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    local find_combat_ent = false
+    -- combat target will block on the path
     local combat_ents = TheSim:FindEntities(x, y, z, 3, { "_combat", "_health" }, { "INLIMBO" })
     for k, v in pairs(combat_ents) do
-        if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
-            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) then
-                inst.components.complexprojectile:Hit(v)
-                find_combat_ent = true
-                break
-            end
+        if CanInteract(inst, v) and attacker.components.combat and attacker.components.combat:CanTarget(v) then
+            inst.components.complexprojectile:Hit(v)
+            return true
         end
     end
 
-    if find_combat_ent then
-        return true
-    end
+    -----------------------------------------------------------------------
 
     local ents = TheSim:FindEntities(x, y, z, 3, nil,
         { "INLIMBO", "FX", "largecreature", "carnivalgame_part", "event_trigger", },
         { "_inventoryitem", "locomotor" })
 
     for k, v in pairs(ents) do
-        if v ~= attacker then
-            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) then
-                if inst.target ~= nil then
-                    if v == inst.target then
-                        inst.components.complexprojectile:Hit(v)
-                        break
-                    end
-                else
+        if v ~= attacker and CanInteract(inst, v) then
+            if inst.target ~= nil then
+                if v == inst.target then
                     inst.components.complexprojectile:Hit(v)
                     break
                 end
+            else
+                inst.components.complexprojectile:Hit(v)
+                break
             end
         end
     end
@@ -151,7 +158,8 @@ local function TeleportOnUpdate(inst)
     return true
 end
 
-local function common_fn()
+
+local function fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -181,22 +189,10 @@ local function common_fn()
     inst:AddComponent("complexprojectile")
     inst.components.complexprojectile:SetHorizontalSpeed(34)
     inst.components.complexprojectile:SetOnLaunch(OnProjectileLaunch)
+    inst.components.complexprojectile:SetOnHit(ProjectileOnHit)
+    inst.components.complexprojectile.onupdatefn = ProjectileOnUpdate
 
     inst:ListenForEvent("onremove", OnRemove)
-
-    return inst
-end
-
-
-local function teleport_fn()
-    local inst = common_fn()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.components.complexprojectile:SetOnHit(ProjectileTeleportOnHit)
-    inst.components.complexprojectile.onupdatefn = TeleportOnUpdate
 
     return inst
 end
@@ -227,12 +223,11 @@ local function arrow_fn()
 
     inst.persists = false
 
-
     return inst
 end
 
 
-local function pickup_fx_fn()
+local function pickup_fx_common_fn()
     local inst = CreateEntity()
 
     inst.entity:AddTransform()
@@ -249,7 +244,6 @@ local function pickup_fx_fn()
     inst.AnimState:SetAddColour(1, 0, 0.4, 1)
     -- inst.AnimState:SetMultColour(0.5, 0, 1, 1)
 
-
     inst:AddTag("FX")
 
     inst.entity:SetPristine()
@@ -264,10 +258,38 @@ local function pickup_fx_fn()
 
     inst:ListenForEvent("animover", inst.Remove)
 
+    return inst
+end
+
+local function pickup_fx_fn()
+    local inst = pickup_fx_common_fn()
 
     return inst
 end
 
-return Prefab("blythe_beam_teleport", teleport_fn, assets),
+local function pickup_fx_large_front_fn()
+    local inst = pickup_fx_common_fn()
+
+    local s = 1.5
+    inst.Transform:SetScale(s, s, s)
+    inst.AnimState:SetFinalOffset(2)
+    inst.AnimState:Hide("back")
+
+    return inst
+end
+
+local function pickup_fx_large_back_fn()
+    local inst = pickup_fx_common_fn()
+
+    local s = 1.5
+    inst.Transform:SetScale(s, s, s)
+    inst.AnimState:Hide("front")
+
+    return inst
+end
+
+return Prefab("blythe_beam_teleport", fn, assets),
     Prefab("blythe_beam_teleport_arrow", arrow_fn, assets),
-    Prefab("blythe_beam_teleport_pickup_fx", pickup_fx_fn, assets)
+    Prefab("blythe_beam_teleport_pickup_fx", pickup_fx_fn, assets),
+    Prefab("blythe_beam_teleport_pickup_large_front_fx", pickup_fx_large_front_fn, assets),
+    Prefab("blythe_beam_teleport_pickup_large_back_fx", pickup_fx_large_back_fn, assets)

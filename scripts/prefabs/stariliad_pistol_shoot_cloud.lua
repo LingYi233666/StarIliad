@@ -1,31 +1,49 @@
 local assets = {}
 
-local function fn()
-    local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+local function MakeCloud(name, mult_colour, add_colour, lightoverride)
+    local function fn()
+        local inst = CreateEntity()
 
-    inst.Transform:SetFourFaced()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("wilson")
-    inst.AnimState:SetBuild("player_pistol")
-    inst.AnimState:PlayAnimation("hand_shoot")
+        inst.Transform:SetFourFaced()
 
-    inst:AddTag("FX")
+        inst.AnimState:SetBank("wilson")
+        inst.AnimState:SetBuild("player_pistol")
+        inst.AnimState:PlayAnimation("hand_shoot")
 
-    inst.entity:SetPristine()
+        if mult_colour then
+            inst.AnimState:SetMultColour(unpack(mult_colour))
+        end
 
-    if not TheWorld.ismastersim then
+        if add_colour then
+            inst.AnimState:SetAddColour(unpack(add_colour))
+        end
+
+        if lightoverride then
+            inst.AnimState:SetLightOverride(lightoverride)
+        end
+
+        inst:AddTag("FX")
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.AnimState:SetTime(17 * FRAMES)
+
+        inst:ListenForEvent("animover", inst.Remove)
+
         return inst
     end
 
-    inst.AnimState:SetTime(17 * FRAMES)
-
-    inst:ListenForEvent("animover", inst.Remove)
-
-    return inst
+    return Prefab(name, fn, assets)
 end
 
-return Prefab("stariliad_pistol_shoot_cloud", fn, assets)
+return MakeCloud("stariliad_pistol_shoot_cloud"),
+    MakeCloud("stariliad_pistol_shoot_cloud_purple", nil, { 1, 0, 1, 1 }, 1)

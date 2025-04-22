@@ -50,7 +50,7 @@ local import_list = {
     "basic_utils",
     "math_utils",
     "weaponskill_utils",
-    "usurper_utils",
+    -- "usurper_utils",
     "spdamage",
     "rpc_defines",
     "skill_defines",
