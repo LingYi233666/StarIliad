@@ -14,6 +14,9 @@ PrefabFiles = {
 
     "stariliad_fake_reticule",
     "blythe_aim_reticule",
+    "blythe_beam_teleport_surrounding",
+
+    "blythe_speed_burst_particle",
 }
 
 Assets = {
@@ -22,6 +25,13 @@ Assets = {
 
     -- pistol shoot anim
     Asset("ANIM", "anim/player_pistol.zip"),
+
+    -- swap beam ui
+    Asset("IMAGE", "images/ui/stariliad_8star.tex"),
+    Asset("ATLAS", "images/ui/stariliad_8star.xml"),
+
+    -- swap beam ui shader
+    Asset("SHADER", "shaders/8star.ksh"),
 
     -- Debug inventoryimage
     Asset("IMAGE", "images/inventoryimages/stariliad_debug_inventoryimage.tex"),
@@ -50,7 +60,7 @@ local import_list = {
     "basic_utils",
     "math_utils",
     "weaponskill_utils",
-    -- "usurper_utils",
+    "usurper_utils",
     "spdamage",
     "rpc_defines",
     "skill_defines",

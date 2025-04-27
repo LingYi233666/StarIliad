@@ -26,6 +26,20 @@ function StarIliadMath.CustomSphereEmitter(radius_min, radius_max, theta_min, th
     return fn
 end
 
+function StarIliadMath.CreateCylinderEmitter(radius_min, radius_max, height_min, height_max)
+    local function fn()
+        local radius = GetRandomMinMax(radius_min, radius_max)
+        local angle = math.random() * TWOPI
+        local x = math.cos(angle) * radius
+        local y = GetRandomMinMax(height_min, height_max)
+        local z = math.sin(angle) * radius
+
+        return x, y, z
+    end
+
+    return fn
+end
+
 function StarIliadMath.GetVoxelCellIndex(point, voxel_size)
     local x = math.floor(point.x / voxel_size)
     local y = math.floor(point.y / voxel_size)

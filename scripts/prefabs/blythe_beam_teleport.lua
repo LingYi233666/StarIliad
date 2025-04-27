@@ -3,6 +3,15 @@ local assets =
     Asset("ANIM", "anim/lavaarena_blowdart_attacks.zip"),
 }
 
+local function CollisionCallback(inst, other)
+    if other and not other:HasTag("pond")
+        and not inst.already_hit
+        and inst.components.complexprojectile.attacker ~= nil
+        and other ~= inst.components.complexprojectile.attacker then
+        inst.components.complexprojectile:Hit(other)
+    end
+end
+
 local function RemoveAimReticule(inst)
     if inst.aim_reticule and inst.aim_reticule:IsValid() then
         local parent = inst.aim_reticule.entity:GetParent()
@@ -54,9 +63,16 @@ local function SpawnTeleportFX(target, pos)
 end
 
 local function ProjectileOnHit(inst, attacker, target)
+    inst.already_hit = true
+    if inst.tail and inst.tail:IsValid() then
+        inst.tail._stop_event:push()
+    end
+
     RemoveAimReticule(inst)
 
-    SpawnAt("blythe_beam_purple_hit_fx", inst)
+    -- SpawnAt("blythe_beam_purple_hit_fx", inst)
+    SpawnAt("blythe_beam_white_hit_fx", inst)
+
 
     if attacker and attacker:IsValid() and target and target:IsValid() then
         if (target.components.inventoryitem or target.components.locomotor) and not target:HasTag("largecreature") then
@@ -83,7 +99,10 @@ local function ProjectileOnHit(inst, attacker, target)
         end
     end
 
-    inst:Remove()
+    -- inst:Remove()
+
+    inst:Hide()
+    inst:DoTaskInTime(3 * FRAMES, inst.Remove)
 end
 
 local function CanInteract(inst, v)
@@ -108,7 +127,8 @@ local function ProjectileOnUpdate(inst)
     end
 
     if inst.entity:IsVisible() and not inst.tail then
-        inst.tail = inst:SpawnChild("blythe_beam_tail_purple")
+        -- inst.tail = inst:SpawnChild("blythe_beam_tail_purple")
+        inst.tail = inst:SpawnChild("blythe_beam_teleport_surrounding")
         inst.tail.entity:AddFollower()
         inst.tail.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
     end
@@ -166,7 +186,9 @@ local function fn()
     inst.entity:AddAnimState()
     inst.entity:AddNetwork()
 
-    MakeProjectilePhysics(inst, nil, 0.25)
+    -- MakeProjectilePhysics(inst, nil, 0.25)
+
+    StarIliadBasic.MakeCollidableProjectilePhysics(inst)
 
     inst.AnimState:SetBank("stariliad_height_controller")
     inst.AnimState:SetBuild("stariliad_height_controller")
@@ -180,6 +202,9 @@ local function fn()
         return inst
     end
 
+    inst.Physics:SetCollisionCallback(CollisionCallback)
+
+
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
 
@@ -187,7 +212,7 @@ local function fn()
     inst.components.stariliad_spdamage_force:SetBaseDamage(17)
 
     inst:AddComponent("complexprojectile")
-    inst.components.complexprojectile:SetHorizontalSpeed(34)
+    inst.components.complexprojectile:SetHorizontalSpeed(27)
     inst.components.complexprojectile:SetOnLaunch(OnProjectileLaunch)
     inst.components.complexprojectile:SetOnHit(ProjectileOnHit)
     inst.components.complexprojectile.onupdatefn = ProjectileOnUpdate
@@ -211,7 +236,9 @@ local function arrow_fn()
     inst.AnimState:SetLightOverride(1)
 
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-    inst.AnimState:SetAddColour(1, 0, 1, 0)
+    -- inst.AnimState:SetAddColour(1, 0, 1, 0)
+    inst.AnimState:SetAddColour(1, 1, 1, 0)
+
 
     inst:AddTag("FX")
 

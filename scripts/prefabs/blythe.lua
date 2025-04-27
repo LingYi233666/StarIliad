@@ -54,11 +54,22 @@ local function OnBecomeXParasite(inst, data)
 	inst.AnimState:SetSymbolMultColour("ghost_FX", r, g, b, a)
 end
 
+local function OnCollide(inst, other)
+	if inst.components.blythe_skill_speed_burst
+		and inst.components.blythe_skill_speed_burst:IsEnabled()
+		and inst.components.blythe_skill_speed_burst:IsInSpeedBurst()
+		and inst.components.blythe_skill_speed_burst:CanCollide(other) then
+		inst.components.blythe_skill_speed_burst:OnPhysicsCollision(other)
+	end
+end
+
 --这个函数将在服务器和客户端都会执行
 --一般用于添加小地图标签等动画文件或者需要主客机都执行的组件（少数）
 local common_postinit = function(inst)
 	-- Minimap icon
 	inst.MiniMapEntity:SetIcon("blythe.tex")
+
+	inst:AddTag("blythe")
 end
 
 -- 这里的的函数只在主机执行  一般组件之类的都写在这里
@@ -66,7 +77,13 @@ local master_postinit = function(inst)
 	-- 人物音效
 	inst.soundsname = "wendy"
 
+	inst.Physics:SetCollisionCallback(OnCollide)
+
+
 	inst:AddComponent("stariliad_spdamage_force")
+
+	inst:AddComponent("blythe_skill_speed_burst")
+	inst.components.blythe_skill_speed_burst:Enable(true)
 
 	--最喜欢的食物
 	-- inst.components.foodaffinity:AddPrefabAffinity("baconeggs", TUNING.AFFINITY_15_CALORIES_HUGE)

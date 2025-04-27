@@ -25,4 +25,13 @@ function StarIliadDebug.PrintStackTrace()
     print("--- End Stack Trace ---")
 end
 
+-- print(StarIliadDebug.GetTargetScreenPos(ThePlayer))
+-- print(StarIliadDebug.GetTargetScreenPos(c_findnext("dummytarget")))
+function StarIliadDebug.GetTargetScreenPos(target)
+    local x, y, z = target.Transform:GetWorldPosition()
+    local x2, y2 = TheSim:GetScreenPos(x, y, z)
+
+    return x2, y2
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

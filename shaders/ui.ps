@@ -1,0 +1,35 @@
+#if defined( GL_ES )
+precision mediump float;
+#endif
+
+uniform sampler2D SAMPLER[1];
+varying vec2 PS_TEXCOORD;
+varying vec4 PS_COLOUR;
+
+uniform vec4 IMAGE_PARAMS;
+uniform vec4 IMAGE_PARAMS2;
+
+float draw_star(vec4 params) {
+	float x = params.x;
+	float y = params.y;
+	float x_size = params.z;
+	float y_size = params.w;
+
+	vec2 left_bottom = vec2(x - x_size/2.0, y - y_size/2.0);
+	// map PS_TEXCOORD.xy to local coord in rect
+	vec2 uv = (PS_TEXCOORD.xy - left_bottom) / vec2(x_size, y_size);
+	uv.x = clamp(uv.x, 0.0, 1.0);
+	uv.y = clamp(uv.y, 0.0, 1.0);
+	return texture2D(SAMPLER[0], uv).a;
+}
+
+void main()
+{
+    float star1 = draw_star(IMAGE_PARAMS);
+    float star2 = draw_star(IMAGE_PARAMS2);
+    float alpha = max(0.0, 1.0 - star1 - star2);
+    vec4 colour = vec4(vec3(1.0), alpha);
+	colour.rgba *= PS_COLOUR.rgba;
+      
+	gl_FragColor = colour;
+}

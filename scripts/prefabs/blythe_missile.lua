@@ -150,7 +150,9 @@ local function arrow_fn()
 
     inst.AnimState:SetBank("blythe_missile")
     inst.AnimState:SetBuild("blythe_missile")
-    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:PlayAnimation("idle2")
+
+    -- inst.Transform:SetScale(1, 0.8, 1)
 
     inst.AnimState:SetLightOverride(1)
 
