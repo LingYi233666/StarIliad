@@ -20,10 +20,6 @@ local function CreateYellowAnim()
     inst.AnimState:PlayAnimation("blast")
     inst.AnimState:SetLightOverride(1)
 
-
-
-    -- inst.AnimState:SetFinalOffset(data.final_offset)
-
     return inst
 end
 
@@ -44,144 +40,99 @@ local function CreateBlueAnim()
     inst.AnimState:PlayAnimation("blast")
     inst.AnimState:SetLightOverride(1)
 
+    return inst
+end
 
-    -- inst.AnimState:SetFinalOffset(data.final_offset)
+local function yellow_anim_fn()
+    local inst = CreateYellowAnim()
+    inst.AnimState:SetScale(0.5, 0.5, 0.5)
 
     return inst
 end
 
-local function yellow_fn()
-    local inst = CreateEntity()
+local function purple_anim_fn()
+    local inst = CreateBlueAnim()
+    -- inst.AnimState:SetScale(0.7, 0.7, 0.7)
+    inst.AnimState:SetScale(0.5, 0.5, 0.5)
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
+    inst.AnimState:SetAddColour(1, 0, 1, 1)
 
-    inst.AnimState:SetBank("stariliad_height_controller")
-    inst.AnimState:SetBuild("stariliad_height_controller")
-    inst.AnimState:PlayAnimation("no_face")
+    return inst
+end
 
-    inst:AddTag("FX")
+local function green_anim_fn()
+    local inst = CreateBlueAnim()
+    -- inst.AnimState:SetScale(0.7, 0.7, 0.7)
+    inst.AnimState:SetScale(0.5, 0.5, 0.5)
 
-    if not TheNet:IsDedicated() then
-        inst._anim = CreateYellowAnim()
-        inst._anim.AnimState:SetScale(0.5, 0.5, 0.5)
-        inst:AddChild(inst._anim)
+    inst.AnimState:SetMultColour(1, 1, 0.1, 1)
+    inst.AnimState:SetAddColour(0, 1, 0, 1)
 
-        inst._anim.entity:AddFollower()
-        inst._anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-    end
+    return inst
+end
 
-    inst.entity:SetPristine()
+local function white_anim_fn()
+    local inst = CreateBlueAnim()
+    inst.AnimState:SetScale(0.7, 0.7, 0.7)
+    inst.AnimState:SetAddColour(1, 1, 1, 1)
 
-    if not TheWorld.ismastersim then
+    return inst
+end
+
+local function MakeHitFX(name, anim_fn, particle_prefab, particle_prefab2)
+    local function fn()
+        local inst = CreateEntity()
+
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddSoundEmitter()
+        inst.entity:AddNetwork()
+
+        inst.AnimState:SetBank("stariliad_height_controller")
+        inst.AnimState:SetBuild("stariliad_height_controller")
+        inst.AnimState:PlayAnimation("no_face")
+
+        inst:AddTag("FX")
+
+        if not TheNet:IsDedicated() then
+            inst._anim = anim_fn()
+            inst:AddChild(inst._anim)
+
+            inst._anim.entity:AddFollower()
+            inst._anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        end
+
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/beam_hit")
+
+        if particle_prefab then
+            inst.particle = inst:SpawnChild(particle_prefab)
+            inst.particle.entity:AddFollower()
+            inst.particle.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        end
+
+        if particle_prefab2 then
+            inst.particle2 = inst:SpawnChild(particle_prefab2)
+            inst.particle2.entity:AddFollower()
+            inst.particle2.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        end
+
+        inst:DoTaskInTime(2, inst.Remove)
+
         return inst
     end
 
-    inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/beam_hit")
-
-    inst.particle = inst:SpawnChild("blythe_beam_hit_particle")
-    inst.particle.entity:AddFollower()
-    inst.particle.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-
-    inst:DoTaskInTime(2, inst.Remove)
-
-    return inst
+    return Prefab(name, fn, assets)
 end
 
-
-local function purple_fn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
-
-    inst.AnimState:SetBank("stariliad_height_controller")
-    inst.AnimState:SetBuild("stariliad_height_controller")
-    inst.AnimState:PlayAnimation("no_face")
-
-    inst:AddTag("FX")
-
-    if not TheNet:IsDedicated() then
-        inst._anim = CreateBlueAnim()
-        inst._anim.AnimState:SetScale(0.7, 0.7, 0.7)
-        inst._anim.AnimState:SetAddColour(1, 0, 1, 1)
-        -- inst._anim.AnimState:SetMultColour(0.5, 0, 0.5, 1)
-
-
-        inst:AddChild(inst._anim)
-
-        inst._anim.entity:AddFollower()
-        inst._anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-    end
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/beam_hit")
-
-    inst.particle = inst:SpawnChild("blythe_beam_hit_particle_purple")
-    inst.particle.entity:AddFollower()
-    inst.particle.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-
-    inst:DoTaskInTime(2, inst.Remove)
-
-    return inst
-end
-
-
-
-local function white_fn()
-    local inst = CreateEntity()
-
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddSoundEmitter()
-    inst.entity:AddNetwork()
-
-    inst.AnimState:SetBank("stariliad_height_controller")
-    inst.AnimState:SetBuild("stariliad_height_controller")
-    inst.AnimState:PlayAnimation("no_face")
-
-    inst:AddTag("FX")
-
-    if not TheNet:IsDedicated() then
-        inst._anim = CreateBlueAnim()
-        inst._anim.AnimState:SetScale(0.7, 0.7, 0.7)
-        inst._anim.AnimState:SetAddColour(1, 1, 1, 1)
-
-        inst:AddChild(inst._anim)
-
-        inst._anim.entity:AddFollower()
-        inst._anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-    end
-
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/beam_hit")
-
-    inst.particle = inst:SpawnChild("blythe_beam_hit_particle_blue")
-    inst.particle.entity:AddFollower()
-    inst.particle.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-
-
-
-    inst:DoTaskInTime(2, inst.Remove)
-
-    return inst
-end
-
-
-return Prefab("blythe_beam_yellow_hit_fx", yellow_fn, assets),
-    Prefab("blythe_beam_purple_hit_fx", purple_fn, assets),
-    Prefab("blythe_beam_white_hit_fx", white_fn, assets)
+return MakeHitFX("blythe_beam_yellow_hit_fx", yellow_anim_fn, "blythe_beam_hit_particle"),
+    MakeHitFX("blythe_beam_purple_hit_fx", purple_anim_fn, "blythe_beam_hit_particle_purple"),
+    MakeHitFX("blythe_beam_green_hit_fx", green_anim_fn, "blythe_beam_hit_particle_green"),
+    MakeHitFX("blythe_beam_green_purple_hit_fx", green_anim_fn, "blythe_beam_hit_particle_green_half",
+        "blythe_beam_hit_particle_purple_half"),
+    MakeHitFX("blythe_beam_white_hit_fx", white_anim_fn, "blythe_beam_hit_particle_blue")

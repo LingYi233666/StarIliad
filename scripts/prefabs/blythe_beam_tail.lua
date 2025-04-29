@@ -4,6 +4,8 @@ local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 
 local ARROW_YELLOW_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_yellow_colourenvelope"
 local ARROW_PURPLE_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_purple_colourenvelope"
+local ARROW_GREEN_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_green_colourenvelope"
+
 local ARROW_SCALE_ENVELOPE_NAME = "blythe_beam_tail_scaleenvelope"
 
 local assets =
@@ -40,6 +42,19 @@ local function InitEnvelope()
             { 1,    IntColour(255, 175, 193, 0) },
         }
     )
+
+    EnvelopeManager:AddColourEnvelope(
+        ARROW_GREEN_COLOUR_ENVELOPE_NAME,
+        {
+            { 0,    IntColour(2, 255, 2, 25) },
+            { .075, IntColour(5, 255, 5, 200) },
+            { .3,   IntColour(5, 255, 5, 255) },
+            { .6,   IntColour(10, 255, 10, 255) },
+            { .9,   IntColour(10, 255, 10, 230) },
+            { 1,    IntColour(10, 255, 10, 0) },
+        }
+    )
+
 
     local arrow_max_scale = 5
     EnvelopeManager:AddVector2Envelope(
@@ -149,5 +164,15 @@ local function purple_fn()
     return inst
 end
 
+local function green_fn()
+    local inst = common_fn()
+
+    local effect = inst.VFXEffect
+    effect:SetColourEnvelope(0, ARROW_GREEN_COLOUR_ENVELOPE_NAME)
+
+    return inst
+end
+
 return Prefab("blythe_beam_tail_yellow", yellow_fn, assets),
-    Prefab("blythe_beam_tail_purple", purple_fn, assets)
+    Prefab("blythe_beam_tail_purple", purple_fn, assets),
+    Prefab("blythe_beam_tail_green", green_fn, assets)

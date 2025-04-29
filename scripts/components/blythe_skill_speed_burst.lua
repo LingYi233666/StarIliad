@@ -90,6 +90,7 @@ function BlytheSkillSpeedBurst:StartSpeedBurst()
 
     self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst", self.speed_mult)
     -- self.inst.components.locomotor:EnableGroundSpeedMultiplier(false)
+    self.inst.components.locomotor:SetTriggersCreep(false)
 
     self.inst.components.hunger.burnratemodifiers:SetModifier(self.inst, self.hunger_burn_rate,
         "blythe_skill_speed_burst")
@@ -115,6 +116,7 @@ function BlytheSkillSpeedBurst:StopSpeedBurst()
 
     self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst")
     -- self.inst.components.locomotor:EnableGroundSpeedMultiplier(true)
+    self.inst.components.locomotor:SetTriggersCreep(true)
 
     self.inst.components.hunger.burnratemodifiers:RemoveModifier(self.inst, "blythe_skill_speed_burst")
 
@@ -205,6 +207,7 @@ function BlytheSkillSpeedBurst:OnUpdate(dt)
     local pos = self.inst:GetPosition()
 
     if not self.inst.sg:HasStateTag("moving")
+        or self.inst:HasTag("playerghost")
         or self.inst.components.hunger:IsStarving()
         or velocity:Length() < 5.5 then
         -- if self.in_speed_burst then

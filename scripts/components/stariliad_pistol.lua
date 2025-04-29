@@ -67,6 +67,22 @@ function StarIliadPistol:GetProjectileData()
     return data
 end
 
+local function LaunchProjectile(proj, target_pos, attacker)
+    if proj.components.complexprojectile then
+        proj.components.complexprojectile:Launch(target_pos, attacker)
+    elseif proj.LaunchBeam then
+        proj:LaunchBeam(target_pos, attacker)
+    end
+end
+
+local function ApplyBeamStrengthen(inst, proj, attacker)
+    if proj.prefab == "blythe_beam_basic" then
+        proj._is_wide_beam:set(true)
+        proj._is_wave_beam:set(true)
+        proj._is_plasma_beam:set(true)
+    end
+end
+
 function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
     if target then
         target_pos = target:GetPosition()
@@ -85,9 +101,9 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
     end
     proj.target = target
 
-    if proj.components.complexprojectile then
-        proj.components.complexprojectile:Launch(target_pos, attacker)
-    end
+    ApplyBeamStrengthen(self.inst, proj, attacker)
+
+    LaunchProjectile(proj, target_pos, attacker)
 
     if proj_data.fx then
         local cloud = SpawnAt(proj_data.fx, attacker)
