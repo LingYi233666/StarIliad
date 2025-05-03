@@ -16,7 +16,7 @@ local BlytheSkillSpeedBurst = Class(BlytheSkillBase_Passive, function(self, inst
     self.last_velocity = nil
     self.last_pos = nil
     -- self.last_rotate_time = nil
-    self.last_static_time = nil
+    self.static_duration = 0
     self.in_speed_burst = false
     self.charge_time = 0
 end)
@@ -39,9 +39,9 @@ function BlytheSkillSpeedBurst:ResetChargeTime()
     self:DoDeltaChargeTime(-self.required_charge_time)
 end
 
-function BlytheSkillSpeedBurst:Enable(enable)
+function BlytheSkillSpeedBurst:Enable(enable, is_onload)
     local old_enable = self.enable
-    BlytheSkillBase_Passive.Enable(self, enable)
+    BlytheSkillBase_Passive.Enable(self, enable, is_onload)
 
     if not old_enable and enable then
         self:ResetChargeTime()
@@ -78,9 +78,11 @@ local function CollideTask(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO", "FX" })
     for _, v in pairs(ents) do
-        local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-        if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) and self:CanCollide(v) then
-            self:OnPhysicsCollision(v)
+        if v:IsValid() then
+            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
+            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) and self:CanCollide(v) then
+                self:OnPhysicsCollision(v)
+            end
         end
     end
 end
@@ -89,7 +91,6 @@ function BlytheSkillSpeedBurst:StartSpeedBurst()
     self.in_speed_burst = true
 
     self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst", self.speed_mult)
-    -- self.inst.components.locomotor:EnableGroundSpeedMultiplier(false)
     self.inst.components.locomotor:SetTriggersCreep(false)
 
     self.inst.components.hunger.burnratemodifiers:SetModifier(self.inst, self.hunger_burn_rate,
@@ -115,7 +116,6 @@ function BlytheSkillSpeedBurst:StopSpeedBurst()
     self.in_speed_burst = false
 
     self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst")
-    -- self.inst.components.locomotor:EnableGroundSpeedMultiplier(true)
     self.inst.components.locomotor:SetTriggersCreep(true)
 
     self.inst.components.hunger.burnratemodifiers:RemoveModifier(self.inst, "blythe_skill_speed_burst")
@@ -140,8 +140,6 @@ function BlytheSkillSpeedBurst:StopSpeedBurst()
 
     self.last_velocity = nil
     self.last_pos = nil
-    -- self.last_rotate_time = nil
-    self.last_static_time = nil
 end
 
 function BlytheSkillSpeedBurst:CanCollide(other)
@@ -191,8 +189,7 @@ function BlytheSkillSpeedBurst:OnPhysicsCollision(other)
     if success_hit then
         ShakeAllCameras(CAMERASHAKE.SIDE, .5, .05, .1, self.inst, 40)
 
-        -- self.last_rotate_time = nil
-        self.last_static_time = nil
+
 
         self.last_collide_time = GetTime()
 
@@ -206,10 +203,30 @@ function BlytheSkillSpeedBurst:OnUpdate(dt)
     local velocity = Vector3(self.inst.Physics:GetVelocity())
     local pos = self.inst:GetPosition()
 
+    -- if not self.inst.sg:HasStateTag("moving")
+    --     or self.inst:HasTag("playerghost")
+    --     or self.inst.components.hunger:IsStarving()
+    --     or velocity:Length() < 5.5 then
+    --     if self.in_speed_burst then
+    --         print("stop 1", self.inst.sg:HasStateTag("moving"), velocity:Length())
+    --     end
+    --     self:ResetChargeTime()
+
     if not self.inst.sg:HasStateTag("moving")
-        or self.inst:HasTag("playerghost")
-        or self.inst.components.hunger:IsStarving()
-        or velocity:Length() < 5.5 then
+        or velocity:Length() < 5.5
+        or (self.last_pos and (pos - self.last_pos):Length() < 5.5 * FRAMES) then
+        -- if self.last_static_time and GetTime() - self.last_static_time > 0.3 then
+        --     self:ResetChargeTime()
+        -- else
+        --     self.last_static_time = GetTime()
+        -- end
+
+        self.static_duration = self.static_duration + dt
+    else
+        self.static_duration = 0
+    end
+
+    if self.inst:HasTag("playerghost") or self.inst.components.hunger:IsStarving() or self.static_duration > 0.2 then
         -- if self.in_speed_burst then
         --     print("stop 1")
         -- end
@@ -229,19 +246,7 @@ function BlytheSkillSpeedBurst:OnUpdate(dt)
         --     print("stop 2")
         -- end
         self:ResetChargeTime()
-    elseif self.last_pos and (pos - self.last_pos):Length() < 5.5 * FRAMES then
-        if self.last_static_time and GetTime() - self.last_static_time > 0.3 then
-            -- if self.in_speed_burst then
-            --     print("stop 3")
-            -- end
-            self:ResetChargeTime()
-        else
-            self.last_static_time = GetTime()
-        end
     else
-        -- self.last_rotate_time = nil
-        self.last_static_time = nil
-
         self:DoDeltaChargeTime(dt)
     end
 

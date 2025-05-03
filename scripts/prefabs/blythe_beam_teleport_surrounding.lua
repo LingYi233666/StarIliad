@@ -212,7 +212,7 @@ local function fn()
 
 
     inst:ListenForEvent("inst._stop_event", function()
-        print("Stop event trigger!")
+        -- print("Stop event trigger!")
         inst.VFXEffect:SetDragCoefficient(0, 9999999)
         inst.VFXEffect:SetDragCoefficient(1, 9999999)
 

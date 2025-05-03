@@ -30,7 +30,7 @@ end)
 local function GetRawData(target)
 	local x, y, z = target.Transform:GetWorldPosition()
 	local x2, y2 = TheSim:GetScreenPos(x, y, z)
-	local sw, sh = 300, 300
+	local sw, sh = 400, 400
 
 	-- if target:HasTag("smallcreature") then
 	-- 	sw, sh = 200, 200
@@ -42,7 +42,9 @@ local function GetRawData(target)
 	-- end
 
 	y2 = y2 + 25
-
+	if target:HasTag("flying") then
+		y2 = y2 + 30
+	end
 
 	return x2, y2, sw, sh
 end
@@ -66,10 +68,11 @@ function StarIliadUsurperShotScreen:SetTargets(target1, target2)
 		local axis_side = forward:Cross(Vector3(0, 0, 1)):GetNormalized()
 
 		local offset = axis_side * 50
-		local speed = 0.75
+		-- local speed = 0.75
+		-- local speed = 5
 
-		self.arrows_1:Init(Vector3(sx1, sy1, 0) + offset, Vector3(sx2, sy2, 0) + offset, speed)
-		self.arrows_2:Init(Vector3(sx2, sy2, 0) - offset, Vector3(sx1, sy1, 0) - offset, speed)
+		self.arrows_1:Init(Vector3(sx1, sy1, 0) + offset, Vector3(sx2, sy2, 0) + offset)
+		self.arrows_2:Init(Vector3(sx2, sy2, 0) - offset, Vector3(sx1, sy1, 0) - offset)
 	end
 end
 
@@ -90,10 +93,23 @@ function StarIliadUsurperShotScreen:OnUpdate()
 	end
 
 	if self.targets[1] and self.targets[2] and self.arrows_1.finish_flag and not self.sending then
-		if self.targets[1]:IsValid() and self.targets[2]:IsValid() then
-			SendModRPCToServer(MOD_RPC["stariliad_rpc"]["usurper_shot_teleport"], self.targets[1], self.targets[2])
-			self.sending = true
+		-- if self.targets[1]:IsValid() and self.targets[2]:IsValid() then
+		-- 	SendModRPCToServer(MOD_RPC["stariliad_rpc"]["usurper_shot_teleport"], self.targets[1], self.targets[2])
+		-- 	self.sending = true
+		-- end
+
+		local target_1_is_valid = self.targets[1] and self.targets[1]:IsValid()
+		local target_2_is_valid = self.targets[2] and self.targets[2]:IsValid()
+
+		if target_1_is_valid or target_2_is_valid then
+			SendModRPCToServer(MOD_RPC["stariliad_rpc"]["usurper_shot_teleport"],
+				target_1_is_valid and self.targets[1] or nil,
+				target_2_is_valid and self.targets[2] or nil)
 		end
+		self.sending = true
+
+		-- self.sending = true
+
 		self:StopUpdating()
 		TheFrontEnd:PopScreen(self)
 	end

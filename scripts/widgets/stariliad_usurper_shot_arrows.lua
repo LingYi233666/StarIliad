@@ -6,7 +6,7 @@ local StarIliadUsurperShotArrows = Class(Widget, function(self, use_sound)
 
     self.arrows = {}
     self.progress = 0
-    self.speed = 0.5
+    self.speed = 5
     self.use_sound = use_sound
 end)
 
@@ -20,7 +20,7 @@ function StarIliadUsurperShotArrows:ClearArrows()
     self.progress = 0
 end
 
-function StarIliadUsurperShotArrows:Init(pos1, pos2, speed)
+function StarIliadUsurperShotArrows:Init(pos1, pos2)
     self:ClearArrows()
 
     local delta_dist = 50
@@ -45,7 +45,7 @@ function StarIliadUsurperShotArrows:Init(pos1, pos2, speed)
 
     -- print("num_arrows:", #(self.arrows))
 
-    self.speed = speed
+    self.speed = math.max(5, num_arrows / 1)
 
     self:StartUpdating()
 end
@@ -56,29 +56,47 @@ function StarIliadUsurperShotArrows:OnUpdate()
         return
     end
 
+    -- local num_arrows = #(self.arrows)
+    -- local last_shown_arrows = 0
+    -- local will_shown_arrows = math.floor(num_arrows * math.min(1, self.progress))
+
+    -- for _, v in pairs(self.arrows) do
+    --     if v.shown then
+    --         last_shown_arrows = last_shown_arrows + 1
+    --     end
+    -- end
+
+    -- for i = 1, will_shown_arrows do
+    --     self.arrows[i]:Show()
+    -- end
+
+    -- if self.use_sound and will_shown_arrows > last_shown_arrows then
+    --     TheFocalPoint.SoundEmitter:PlaySound("stariliad_sfx/hud/swap_click")
+    -- end
+
+    -- if self.progress >= 1 + (1.0 / num_arrows) * 2 then
+    --     self.finish_flag = true
+    -- end
+
+    -- self.progress = self.progress + self.speed * FRAMES
+
     local num_arrows = #(self.arrows)
-    local last_shown_arrows = 0
-    local will_shown_arrows = math.floor(num_arrows * math.min(1, self.progress))
 
-    for _, v in pairs(self.arrows) do
-        if v.shown then
-            last_shown_arrows = last_shown_arrows + 1
-        end
-    end
+    local old_cnt = math.min(math.floor(self.progress), num_arrows)
+    self.progress = self.progress + self.speed * FRAMES
+    local new_cnt = math.min(math.floor(self.progress), num_arrows)
 
-    for i = 1, will_shown_arrows do
+    for i = 1, new_cnt do
         self.arrows[i]:Show()
     end
 
-    if self.use_sound and will_shown_arrows > last_shown_arrows then
-        TheFocalPoint.SoundEmitter:PlaySound("stariliad_sfx/hud/swap_click")
-    end
-
-    if self.progress >= 1 + (1.0 / num_arrows) * 2 then
+    if self.progress >= num_arrows + 1 then
         self.finish_flag = true
     end
 
-    self.progress = self.progress + self.speed * FRAMES
+    if self.use_sound and new_cnt > old_cnt then
+        TheFocalPoint.SoundEmitter:PlaySound("stariliad_sfx/hud/swap_click")
+    end
 end
 
 return StarIliadUsurperShotArrows

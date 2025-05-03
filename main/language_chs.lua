@@ -21,3 +21,23 @@ STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER = "这是我最信赖的小手
 
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "射击"
 STRINGS.ACTIONS.CASTAOE.BLYTHE_BLASTER = "射击"
+
+
+
+--------------------- HUD ------------------------
+STRINGS.STARILIAD_UI = {}
+
+STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL = {
+    -- SELECTED = "（当前弹药）",
+    -- ENABLED = "（已启用）",
+
+    BASIC_BEAM = "光束",
+    ICE_FOG = "冰雾",
+    MISSILE = "导弹",
+    USURPER_SHOT_TELEPORT = "夺位射击-抓取",
+    USURPER_SHOT_SWAP = "夺位射击-互换",
+    WIDE_BEAM = "宽光束-散射（开/关）",
+    WAVE_BEAM = "波动光束-穿透障碍物（开/关）",
+    PLASMA_BEAM = "等离子光束-穿透敌人（开/关）",
+    SPEED_BURST = "速度推进器（开/关）",
+}

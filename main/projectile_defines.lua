@@ -9,6 +9,14 @@ STARILIAD_PROJECTILE_DEFINES = {
     },
 
     {
+        prefab = "blythe_ice_fog",
+        range = 8,
+        attack_sg = "blythe_release_ice_fog",
+        castaoe_sg = "blythe_release_ice_fog_castaoe",
+        repeat_cast = true,
+    },
+
+    {
         prefab = "blythe_beam_teleport",
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot",
         fx = "stariliad_pistol_shoot_cloud",
@@ -20,16 +28,19 @@ STARILIAD_PROJECTILE_DEFINES = {
         enable_shoot_at = true, -- enable shoot at certain target, not attack
     },
 
-    -- {
-    --     prefab = "blythe_beam_swap",
-    --     sound = "stariliad_sfx/prefabs/blaster/beam_shoot",
-    --     fx = "stariliad_pistol_shoot_cloud",
-    --     attack_sg = "blythe_shoot_beam",
-    --     castaoe_sg = "blythe_shoot_beam_castaoe",
-    --     shoot_at_sg = "blythe_shoot_beam_shoot_at",
-    --     repeat_cast = true,
-    --     enable_shoot_at = true, -- enable shoot at certain target, not attack
-    -- },
+    {
+        prefab = "blythe_beam_swap",
+        -- sound = "stariliad_sfx/prefabs/blaster/beam_shoot",
+        -- sound = "stariliad_sfx/prefabs/blaster/swap_beam",
+        sound = "stariliad_sfx/prefabs/blaster/teleport_beam",
+        range = 10,
+        fx = "stariliad_pistol_shoot_cloud",
+        attack_sg = "blythe_shoot_beam",
+        castaoe_sg = "blythe_shoot_beam_castaoe",
+        shoot_at_sg = "blythe_shoot_beam_shoot_at",
+        repeat_cast = true,
+        enable_shoot_at = true, -- enable shoot at certain target, not attack
+    },
 
     {
         prefab = "blythe_missile",

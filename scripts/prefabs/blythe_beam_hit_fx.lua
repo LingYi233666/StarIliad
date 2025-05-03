@@ -1,6 +1,7 @@
 local assets = {
     Asset("ANIM", "anim/deer_fire_charge.zip"),
     Asset("ANIM", "anim/deer_ice_charge.zip"),
+    Asset("ANIM", "anim/laser_explode_sm.zip"),
 }
 
 local function CreateYellowAnim()
@@ -43,6 +44,26 @@ local function CreateBlueAnim()
     return inst
 end
 
+local function CreateRedAnim()
+    local inst = CreateEntity()
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("laser_explode_sm")
+    inst.AnimState:SetBuild("laser_explode_sm")
+    inst.AnimState:PlayAnimation("anim")
+    inst.AnimState:SetLightOverride(1)
+
+    return inst
+end
+
 local function yellow_anim_fn()
     local inst = CreateYellowAnim()
     inst.AnimState:SetScale(0.5, 0.5, 0.5)
@@ -67,6 +88,15 @@ local function green_anim_fn()
 
     inst.AnimState:SetMultColour(1, 1, 0.1, 1)
     inst.AnimState:SetAddColour(0, 1, 0, 1)
+
+    return inst
+end
+
+local function red_anim_fn()
+    local inst = CreateRedAnim()
+    inst.AnimState:HideSymbol("sprks01")
+    inst.AnimState:SetScale(0.5, 0.5, 0.5)
+    -- inst.AnimState:SetAddColour(1, 1, 1, 1)
 
     return inst
 end
@@ -135,4 +165,5 @@ return MakeHitFX("blythe_beam_yellow_hit_fx", yellow_anim_fn, "blythe_beam_hit_p
     MakeHitFX("blythe_beam_green_hit_fx", green_anim_fn, "blythe_beam_hit_particle_green"),
     MakeHitFX("blythe_beam_green_purple_hit_fx", green_anim_fn, "blythe_beam_hit_particle_green_half",
         "blythe_beam_hit_particle_purple_half"),
+    MakeHitFX("blythe_beam_red_hit_fx", red_anim_fn, "blythe_beam_hit_particle_red"),
     MakeHitFX("blythe_beam_white_hit_fx", white_anim_fn, "blythe_beam_hit_particle_blue")

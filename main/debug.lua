@@ -34,4 +34,13 @@ function StarIliadDebug.GetTargetScreenPos(target)
     return x2, y2
 end
 
+-- si_allskills()
+function GLOBAL.si_allskills()
+    for _, v in pairs(BLYTHE_SKILL_DEFINES) do
+        if not ThePlayer.components.blythe_skiller:IsLearned(v.name) then
+            ThePlayer.components.blythe_skiller:Learn(v.name)
+        end
+    end
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

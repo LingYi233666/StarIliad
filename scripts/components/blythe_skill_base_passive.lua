@@ -3,7 +3,7 @@ local BlytheSkillBase_Passive = Class(function(self, inst)
     self.enable = false
 end)
 
-function BlytheSkillBase_Passive:Enable(enable)
+function BlytheSkillBase_Passive:Enable(enable, is_onload)
     self.enable = enable
 end
 

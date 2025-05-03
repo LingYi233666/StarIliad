@@ -6,7 +6,18 @@ AddAction("STARILIAD_SHOOT_AT", "STARILIAD_SHOOT_AT", function(act)
     return false
 end)
 ACTIONS.STARILIAD_SHOOT_AT.priority = -1
-ACTIONS.STARILIAD_SHOOT_AT.distance = TUNING.BLYTHE_BLASTER_ATTACK_RANGE
+-- ACTIONS.STARILIAD_SHOOT_AT.distance = 0.1
+-- ACTIONS.STARILIAD_SHOOT_AT.arrivedist = 0
+
+local function ExtraShootRange(doer, dest)
+    if doer.replica.combat then
+        return doer.replica.combat:GetAttackRangeWithWeapon()
+    end
+
+    return 0
+end
+ACTIONS.STARILIAD_SHOOT_AT.extra_arrive_dist = ExtraShootRange
+
 -- ACTIONS.STARILIAD_SHOOT_AT.invalid_hold_action = true
 
 -- AddComponentAction("POINT", "stariliad_pistol", function(inst, doer, pos, actions, right, target)

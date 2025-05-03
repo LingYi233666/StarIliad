@@ -90,7 +90,6 @@ local function fn()
         return inst
     end
 
-    inst:AddComponent("stariliad_pistol")
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
@@ -98,8 +97,9 @@ local function fn()
     inst.components.weapon:SetProjectile("stariliad_fake_projectile")
     inst.components.weapon:SetOnProjectileLaunch(OnProjectileLaunch)
 
-    inst:AddComponent("inspectable")
+    inst:AddComponent("stariliad_pistol")
 
+    inst:AddComponent("inspectable")
     StarIliadDebug.SetDebugInventoryImage(inst)
 
     inst:AddComponent("equippable")

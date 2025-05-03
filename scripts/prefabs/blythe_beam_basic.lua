@@ -214,13 +214,23 @@ end
 
 local function ConfigureArrowTail(inst)
     if inst._is_wave_beam:value() and inst._is_plasma_beam:value() then
-        inst.arrow_prefab = "blythe_beam_arrow_green"
+        -- inst.arrow_prefab = "blythe_beam_arrow_green"
+        inst.arrow_prefab = "blythe_beam_arrow_red"
+
         inst.tail_prefab = "blythe_beam_tail_purple"
-        inst.hit_fx_prefab = "blythe_beam_green_purple_hit_fx"
+        -- inst.tail_prefab = "blythe_beam_tail_red"
+
+        -- inst.hit_fx_prefab = "blythe_beam_green_purple_hit_fx"
+        inst.hit_fx_prefab = "blythe_beam_red_hit_fx"
     elseif inst._is_plasma_beam:value() then
-        inst.arrow_prefab = "blythe_beam_arrow_green"
-        inst.tail_prefab = "blythe_beam_tail_green"
-        inst.hit_fx_prefab = "blythe_beam_green_hit_fx"
+        -- inst.arrow_prefab = "blythe_beam_arrow_green"
+        inst.arrow_prefab = "blythe_beam_arrow_red"
+
+        -- inst.tail_prefab = "blythe_beam_tail_green"
+        inst.tail_prefab = "blythe_beam_tail_red"
+
+        -- inst.hit_fx_prefab = "blythe_beam_green_hit_fx"
+        inst.hit_fx_prefab = "blythe_beam_red_hit_fx"
     elseif inst._is_wave_beam:value() then
         inst.arrow_prefab = "blythe_beam_arrow_purple"
         inst.tail_prefab = "blythe_beam_tail_purple"
@@ -369,4 +379,5 @@ return Prefab("blythe_beam_basic", fn, assets),
     MakeArrow("blythe_beam_arrow_white", nil, { 1, 1, 1, 1 }),
     MakeArrow("blythe_beam_arrow_yellow", nil, { 1, 1, 0, 1 }),
     MakeArrow("blythe_beam_arrow_purple", nil, { 1, 0, 1, 1 }),
-    MakeArrow("blythe_beam_arrow_green", { 0.1, 1, 1, 1 }, { 0, 1, 0, 1 })
+    MakeArrow("blythe_beam_arrow_green", { 0.1, 1, 1, 1 }, { 0, 1, 0, 1 }),
+    MakeArrow("blythe_beam_arrow_red", nil, { 1, 0, 0, 1 })

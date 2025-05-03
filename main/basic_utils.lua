@@ -8,6 +8,16 @@ function StarIliadBasic.GetFaceVector(inst)
     return Vector3(sinangle, 0, cosangle)
 end
 
+function StarIliadBasic.GetSkillDefine(name)
+    name = name:lower()
+
+    for _, data in pairs(BLYTHE_SKILL_DEFINES) do
+        if data.name == name then
+            return data
+        end
+    end
+end
+
 -- COLLISION =
 -- {
 --     GROUND            = 32,

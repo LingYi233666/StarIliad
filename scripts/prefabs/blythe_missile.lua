@@ -150,7 +150,7 @@ local function arrow_fn()
 
     inst.AnimState:SetBank("blythe_missile")
     inst.AnimState:SetBuild("blythe_missile")
-    inst.AnimState:PlayAnimation("idle2")
+    inst.AnimState:PlayAnimation("idle")
 
     -- inst.Transform:SetScale(1, 0.8, 1)
 
@@ -158,8 +158,8 @@ local function arrow_fn()
 
     inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 
-    local s = 1.5
-    inst.AnimState:SetScale(s, s, s)
+    -- local s = 1.5
+    -- inst.AnimState:SetScale(s, s, s)
     -- inst.AnimState:SetAddColour(1, 1, 0, 0)
 
     inst:AddTag("FX")

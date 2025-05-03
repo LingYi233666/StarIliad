@@ -17,6 +17,16 @@ PrefabFiles = {
     "blythe_beam_teleport_surrounding",
 
     "blythe_speed_burst_particle",
+
+    "blythe_beam_swap",
+    "blythe_beam_swap_particle",
+
+    "stariliad_normal_explode_particle",
+
+    "blythe_clone",
+
+    "blythe_ice_fog",
+    "blythe_ice_fog_particle",
 }
 
 Assets = {

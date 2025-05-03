@@ -29,6 +29,10 @@ local POINT_COLOUR_GREEN_ENVELOPE_NAME = "blythe_beam_hit_particle_point_green_c
 local ARROW_COLOUR_GREEN_ENVELOPE_NAME = "blythe_beam_hit_particle_arrow_green_colourenvelope"
 local SMOKE_COLOUR_GREEN_ENVELOPE_NAME = "blythe_beam_hit_particle_smoke_green_colourenvelope"
 
+local POINT_COLOUR_RED_ENVELOPE_NAME = "blythe_beam_hit_particle_point_red_colourenvelope"
+local ARROW_COLOUR_RED_ENVELOPE_NAME = "blythe_beam_hit_particle_arrow_red_colourenvelope"
+-- local SMOKE_COLOUR_RED_ENVELOPE_NAME = "blythe_beam_hit_particle_smoke_red_colourenvelope"
+
 
 local assets =
 {
@@ -97,6 +101,18 @@ local function InitEnvelope()
     table.insert(envs, { 1, IntColour(5, 229, 10, 255) })
     EnvelopeManager:AddColourEnvelope(POINT_COLOUR_GREEN_ENVELOPE_NAME, envs)
 
+    -- Red
+    envs = {}
+    t = 0
+    while t + step + .01 < 0.8 do
+        table.insert(envs, { t, IntColour(220, 10, 0, 255) })
+        t = t + step
+        table.insert(envs, { t, IntColour(220, 229, 229, 200) })
+        t = t + .01
+    end
+    table.insert(envs, { 1, IntColour(220, 10, 0, 255) })
+    EnvelopeManager:AddColourEnvelope(POINT_COLOUR_RED_ENVELOPE_NAME, envs)
+
     local sparkle_max_scale = 0.33
     EnvelopeManager:AddVector2Envelope(
         POINT_SCALE_ENVELOPE_NAME,
@@ -155,6 +171,17 @@ local function InitEnvelope()
             { .2, IntColour(5, 240, 20, 255) },
             { .6, IntColour(5, 240, 20, 175) },
             { 1,  IntColour(5, 200, 10, 0) },
+        }
+    )
+
+    -- Red
+    EnvelopeManager:AddColourEnvelope(
+        ARROW_COLOUR_RED_ENVELOPE_NAME,
+        {
+            { 0,  IntColour(200, 10, 5, 180) },
+            { .2, IntColour(240, 20, 5, 255) },
+            { .6, IntColour(240, 20, 5, 175) },
+            { 1,  IntColour(200, 10, 5, 0) },
         }
     )
 
@@ -451,6 +478,21 @@ local function green_fn()
     return inst
 end
 
+local function red_fn()
+    local inst = common_fn()
+
+    if TheNet:IsDedicated() then
+        return inst
+    end
+
+    inst.VFXEffect:SetColourEnvelope(0, POINT_COLOUR_RED_ENVELOPE_NAME)
+    inst.VFXEffect:SetColourEnvelope(1, ARROW_COLOUR_RED_ENVELOPE_NAME)
+    -- inst.VFXEffect:SetColourEnvelope(2, SMOKE_COLOUR_RED_ENVELOPE_NAME)
+    -- inst.VFXEffect:SetBlendMode(2, BLENDMODE.AlphaAdditive) --AlphaBlended Premultiplied
+
+    return inst
+end
+
 local function purple_half_fn()
     local inst = common_fn(0.5, 0.75, 0.5)
 
@@ -487,5 +529,6 @@ return Prefab("blythe_beam_hit_particle", fn, assets),
     Prefab("blythe_beam_hit_particle_blue", blue_fn, assets),
     Prefab("blythe_beam_hit_particle_purple", purple_fn, assets),
     Prefab("blythe_beam_hit_particle_green", green_fn, assets),
+    Prefab("blythe_beam_hit_particle_red", red_fn, assets),
     Prefab("blythe_beam_hit_particle_purple_half", purple_half_fn, assets),
     Prefab("blythe_beam_hit_particle_green_half", green_half_fn, assets)

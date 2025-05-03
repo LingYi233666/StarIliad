@@ -324,6 +324,7 @@ AddStategraphState("wilson",
         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
 )
 
+------------------------------------------------------
 
 AddStategraphState("wilson",
     CreateShootAttackState("blythe_shoot_missile",
@@ -339,4 +340,181 @@ AddStategraphState("wilson",
         TUNING.BLYTHE_MISSILE_SHOOT_TIME,
         TUNING.BLYTHE_MISSILE_FREE_TIME,
         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
+)
+-------------------------------------------------------
+
+AddStategraphState("wilson", State {
+    name = "blythe_release_ice_fog",
+    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
+
+    onenter = function(inst)
+        if inst.components.combat:InCooldown() then
+            inst.sg:RemoveStateTag("abouttoattack")
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle", true)
+            return
+        end
+
+        local buffaction = inst:GetBufferedAction()
+        local target = buffaction ~= nil and buffaction.target or nil
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        inst.components.combat:SetTarget(target)
+        inst.components.combat:StartAttack()
+        inst.components.locomotor:Stop()
+
+
+        if target ~= nil and target:IsValid() then
+            inst:FacePoint(target.Transform:GetWorldPosition())
+            inst.sg.statemem.attacktarget = target
+            inst.sg.statemem.retarget = target
+        end
+
+        -- inst.sg.statemem.chained = inst.AnimState:IsCurrentAnimation("hand_shoot")
+        inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
+
+        inst.AnimState:PlayAnimation("hand_shoot")
+
+
+        local timeout = inst.components.combat.min_attack_period
+        if inst.sg.statemem.chained then
+            inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
+            timeout = math.max(timeout, TUNING.BLYTHE_ICE_FOG_FREE_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
+        else
+            timeout = math.max(timeout, TUNING.BLYTHE_ICE_FOG_FREE_TIME)
+        end
+
+        inst.sg:SetTimeout(timeout)
+    end,
+
+
+    ontimeout = function(inst)
+        inst.sg:RemoveStateTag("attack")
+        inst.sg:AddStateTag("idle")
+    end,
+
+    timeline =
+    {
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
+            if inst.sg.statemem.chained then
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("abouttoattack")
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
+            if inst.sg.statemem.chained then
+                inst.AnimState:SetTime(27 * FRAMES)
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME, function(inst)
+            if not inst.sg.statemem.chained then
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("abouttoattack")
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME, function(inst)
+            if not inst.sg.statemem.chained then
+                inst.AnimState:SetTime(27 * FRAMES)
+            end
+        end),
+    },
+
+    events =
+    {
+        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("animqueueover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("idle")
+            end
+        end),
+    },
+
+
+    onexit = function(inst)
+        inst.components.combat:SetTarget(nil)
+        if inst.sg:HasStateTag("abouttoattack") then
+            inst.components.combat:CancelAttack()
+        end
+    end,
+}
+)
+
+AddStategraphState("wilson", State {
+    name = "blythe_release_ice_fog_castaoe",
+    tags = { "notalking", "aoe", "stariliad_no_face_point" },
+
+    onenter = function(inst)
+        local buffaction = inst:GetBufferedAction()
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+        inst.AnimState:PlayAnimation("hand_shoot")
+        inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
+
+        inst.components.locomotor:Stop()
+
+        if inst.sg.statemem.chained then
+            inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
+            inst.sg:SetTimeout(TUNING.BLYTHE_ICE_FOG_FREE_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
+        else
+            inst.sg:SetTimeout(TUNING.BLYTHE_ICE_FOG_FREE_TIME)
+        end
+
+        inst.sg.statemem.weapon = equip
+    end,
+
+
+    ontimeout = function(inst)
+        inst.sg:RemoveStateTag("aoe")
+        inst.sg:RemoveStateTag("stariliad_no_face_point")
+        inst.sg:AddStateTag("idle")
+    end,
+
+    timeline =
+    {
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
+            if inst.sg.statemem.chained then
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("abouttoattack")
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
+            if inst.sg.statemem.chained then
+                inst.AnimState:SetTime(27 * FRAMES)
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME, function(inst)
+            if not inst.sg.statemem.chained then
+                inst:PerformBufferedAction()
+                inst.sg:RemoveStateTag("abouttoattack")
+            end
+        end),
+
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME, function(inst)
+            if not inst.sg.statemem.chained then
+                inst.AnimState:SetTime(27 * FRAMES)
+            end
+        end),
+    },
+
+    events =
+    {
+        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("animqueueover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("idle")
+            end
+        end),
+    },
+
+
+    onexit = function(inst)
+
+    end,
+}
 )

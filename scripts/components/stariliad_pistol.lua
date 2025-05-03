@@ -1,63 +1,38 @@
--- local function onmain_projectile_prefab(self, val)
---     self.inst.replica.stariliad_pistol:SetMainProjectilePrefab(val)
--- end
-
--- local function onsub_projectile_prefab(self, val)
---     self.inst.replica.stariliad_pistol:SetSubProjectilePrefab(val)
--- end
-
 local function onprojectile_prefab(self, val)
     self.inst.replica.stariliad_pistol:SetProjectilePrefab(val)
 end
 
+local DEFAULT_BEAM_PREFAB = "blythe_beam_basic"
+
 local StarIliadPistol = Class(function(self, inst)
     self.inst = inst
 
-    -- self.main_projectile_prefab = "blythe_beam_basic"
-    -- self.main_projectile_data = nil
-
-    -- self.sub_projectile_prefab = "blythe_missile"
-    -- self.sub_projectile_data = nil
-
-    self.projectile_prefab = "blythe_beam_basic"
+    self.projectile_prefab = DEFAULT_BEAM_PREFAB
 
     self:SetProjectilePrefab(self.projectile_prefab)
+
+    inst:ListenForEvent("equipped", function(_, data)
+        if data.owner and data.owner.components.blythe_powersuit_configure then
+            self:SetProjectilePrefab(data.owner.components.blythe_powersuit_configure.projectile_prefab)
+        end
+    end)
+
+    inst:ListenForEvent("unequipped", function(_, data)
+        self:SetProjectilePrefab(DEFAULT_BEAM_PREFAB)
+    end)
 end, nil, {
-    -- main_projectile_prefab = onmain_projectile_prefab,
-    -- sub_projectile_prefab = onsub_projectile_prefab,
-
     projectile_prefab = onprojectile_prefab,
-
 })
-
--- function StarIliadPistol:SetMainProjectilePrefab(val)
---     local data = StarIliadBasic.GetProjectileDefine(val)
---     if data then
---         self.main_projectile_prefab = val
---         self.main_projectile_data = data
---     end
--- end
-
--- function StarIliadPistol:SetSubProjectilePrefab(val)
---     local data = StarIliadBasic.GetProjectileDefine(val)
---     if data then
---         self.sub_projectile_prefab = val
---         self.sub_projectile_data = data
---     end
--- end
-
--- function StarIliadPistol:GetMainProjectileData()
---     return self.main_projectile_data
--- end
-
--- function StarIliadPistol:GetSubProjectileData()
---     return self.sub_projectile_data
--- end
 
 function StarIliadPistol:SetProjectilePrefab(val)
     local data = StarIliadBasic.GetProjectileDefine(val)
     if data then
         self.projectile_prefab = val
+        if data.range then
+            self.inst.components.weapon:SetRange(data.range)
+        else
+            self.inst.components.weapon:SetRange(TUNING.BLYTHE_BLASTER_ATTACK_RANGE)
+        end
     end
 end
 
@@ -77,9 +52,11 @@ end
 
 local function ApplyBeamStrengthen(inst, proj, attacker)
     if proj.prefab == "blythe_beam_basic" then
-        proj._is_wide_beam:set(true)
-        proj._is_wave_beam:set(true)
-        proj._is_plasma_beam:set(true)
+        if attacker.components.blythe_skiller then
+            proj._is_wide_beam:set(attacker.components.blythe_skiller:IsEnabled("wide_beam"))
+            proj._is_wave_beam:set(attacker.components.blythe_skiller:IsEnabled("wave_beam"))
+            proj._is_plasma_beam:set(attacker.components.blythe_skiller:IsEnabled("plasma_beam"))
+        end
     end
 end
 
@@ -87,8 +64,6 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
     if target then
         target_pos = target:GetPosition()
     end
-
-    -- local proj_data = is_main and self:GetMainProjectileData() or self:GetSubProjectileData()
 
     local proj_data = self:GetProjectileData()
     if proj_data == nil or proj_data.prefab == nil then
@@ -110,6 +85,7 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
         cloud.Transform:SetRotation(attacker.Transform:GetRotation())
     end
 
+    -- will handle in SG
     -- if proj_data.sound then
     --     attacker.SoundEmitter:PlaySound(proj_data.sound)
     -- end
