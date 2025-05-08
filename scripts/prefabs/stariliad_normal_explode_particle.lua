@@ -6,16 +6,17 @@ local ARROW_TEXTURE = "fx/spark.tex"
 local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 local REVEAL_SHADER = "shaders/vfx_particle_reveal.ksh"
 
-local COLOUR_ENVELOPE_NAME_SMOKE = "stariliad_normal_explode_particle_colourenvelope_smoke"
-local SCALE_ENVELOPE_NAME_SMOKE = "stariliad_normal_explode_particle_scaleenvelope_smoke"
-local COLOUR_ENVELOPE_NAME_EMBER = "stariliad_normal_explode_particle_colourenvelope_ember"
-local SCALE_ENVELOPE_NAME_EMBER = "stariliad_normal_explode_particle_scaleenvelope_ember"
-local COLOUR_ENVELOPE_NAME_CIRCLE = "stariliad_normal_explode_particle_colourenvelope_circle"
-local SCALE_ENVELOPE_NAME_CIRCLE = "stariliad_normal_explode_particle_scaleenvelope_circle"
-local COLOUR_ENVELOPE_NAME_SMOKE2 = "stariliad_normal_explode_particle_colourenvelope_smoke2"
-local SCALE_ENVELOPE_NAME_SMOKE2 = "stariliad_normal_explode_particle_scaleenvelope_smoke2"
-local COLOUR_ENVELOPE_NAME_ARROW = "stariliad_normal_explode_particle_colourenvelope_arrow"
-local SCALE_ENVELOPE_NAME_ARROW = "stariliad_normal_explode_particle_scaleenvelope_arrow"
+local COLOUR_ENVELOPE_NAME_SMOKE = "stariliad_normal_explode_colourenvelope_smoke"
+local SCALE_ENVELOPE_NAME_SMOKE = "stariliad_normal_explode_scaleenvelope_smoke"
+local COLOUR_ENVELOPE_NAME_EMBER = "stariliad_normal_explode_colourenvelope_ember"
+local SCALE_ENVELOPE_NAME_EMBER = "stariliad_normal_explode_scaleenvelope_ember"
+local COLOUR_ENVELOPE_NAME_CIRCLE = "stariliad_normal_explode_colourenvelope_circle"
+local SCALE_ENVELOPE_NAME_CIRCLE = "stariliad_normal_explode_scaleenvelope_circle"
+local COLOUR_ENVELOPE_NAME_SMOKE2 = "stariliad_normal_explode_colourenvelope_smoke2"
+local SCALE_ENVELOPE_NAME_SMOKE2 = "stariliad_normal_explode_scaleenvelope_smoke2"
+local COLOUR_ENVELOPE_NAME_ARROW = "stariliad_normal_explode_colourenvelope_arrow"
+local SCALE_ENVELOPE_NAME_ARROW = "stariliad_normal_explode_scaleenvelope_arrow"
+local COLOUR_ENVELOPE_NAME_SMOKE_SMALL = "stariliad_normal_explode_colourenvelope_smoke_small"
 
 local assets =
 {
@@ -44,6 +45,8 @@ local function InitEnvelope()
             { 1,   IntColour(10, 10, 10, 0) },
         }
     )
+
+
 
     local smoke_max_scale = 0.5
     EnvelopeManager:AddVector2Envelope(
@@ -139,6 +142,16 @@ local function InitEnvelope()
         {
             { 0, { arrow_max_scale, arrow_max_scale } },
             { 1, { arrow_max_scale * 0.125, arrow_max_scale * 0.8 } },
+        }
+    )
+
+    EnvelopeManager:AddColourEnvelope(
+        COLOUR_ENVELOPE_NAME_SMOKE_SMALL,
+        {
+            { 0,   IntColour(10, 10, 10, 0) },
+            { .1,  IntColour(10, 10, 10, 175) },
+            { .52, IntColour(10, 10, 10, 90) },
+            { 1,   IntColour(10, 10, 10, 0) },
         }
     )
 
@@ -375,26 +388,115 @@ local function fn()
     EmitterManager:AddEmitter(inst, nil, function()
         -- print("start AddEmitter")
 
-        while num_to_emit_circle > 1 do
-            emit_circle_fn(effect)
-            emit_smoke2_fn(effect)
-            num_to_emit_circle = num_to_emit_circle - 1
+        local parent = inst.entity:GetParent()
+        if not parent then
+            return
         end
 
-        while num_to_emit_arrow > 1 do
-            emit_arrow_fn(effect, arrow_sphere_emitter)
-            num_to_emit_arrow = num_to_emit_arrow - 1
-        end
+        local time_alive = inst:GetTimeAlive()
 
-        while num_to_emit_ember > 1 do
-            emit_ember_fn(effect, ember_sphere_emitter)
-            num_to_emit_ember = num_to_emit_ember - 1
-        end
+        if time_alive > FRAMES and time_alive < 3 * FRAMES then
+            while num_to_emit_circle > 1 do
+                emit_circle_fn(effect)
+                emit_smoke2_fn(effect)
+                num_to_emit_circle = num_to_emit_circle - 1
+            end
 
-        if not inst:IsOnOcean() then
+            while num_to_emit_arrow > 1 do
+                emit_arrow_fn(effect, arrow_sphere_emitter)
+                num_to_emit_arrow = num_to_emit_arrow - 1
+            end
+
+            while num_to_emit_ember > 1 do
+                emit_ember_fn(effect, ember_sphere_emitter)
+                num_to_emit_ember = num_to_emit_ember - 1
+            end
+
+            -- if not inst:IsOnOcean() then
             while num_to_emit_smoke > 1 do
                 emit_smoke_fn(effect, smoke_sphere_emitter)
                 num_to_emit_smoke = num_to_emit_smoke - 1
+            end
+            -- end
+        end
+    end)
+
+    return inst
+end
+
+
+local function small_smoke_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    inst.persists = false
+
+    --Dedicated server does not need to spawn local particle fx
+    if TheNet:IsDedicated() then
+        return inst
+    elseif InitEnvelope ~= nil then
+        InitEnvelope()
+    end
+
+    -- print(inst,"AddVFXEffect")
+
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters(2)
+
+    --EMBER
+    effect:SetRenderResources(0, EMBER_TEXTURE, ADD_SHADER)
+    effect:SetMaxNumParticles(0, 128)
+    effect:SetMaxLifetime(0, EMBER_MAX_LIFETIME)
+    effect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME_EMBER)
+    effect:SetScaleEnvelope(0, SCALE_ENVELOPE_NAME_EMBER)
+    effect:SetBlendMode(0, BLENDMODE.Additive)
+    effect:EnableBloomPass(0, true)
+    effect:SetSortOffset(0, 0)
+    effect:SetDragCoefficient(0, .4)
+
+    --SMOKE
+    effect:SetRenderResources(1, ANIM_SMOKE_TEXTURE, REVEAL_SHADER)
+    effect:SetMaxNumParticles(1, 64)
+    effect:SetRotationStatus(1, true)
+    effect:SetMaxLifetime(1, SMOKE_MAX_LIFETIME)
+    effect:SetColourEnvelope(1, COLOUR_ENVELOPE_NAME_SMOKE_SMALL)
+    effect:SetScaleEnvelope(1, SCALE_ENVELOPE_NAME_SMOKE)
+    effect:SetBlendMode(1, BLENDMODE.AlphaBlended) --AlphaBlended Premultiplied
+    --effect:EnableBloomPass(1, true)
+    --effect:SetUVFrameSize(1, .25, 1)
+    effect:SetSortOffset(1, 0)
+    effect:SetRadius(1, 3) --only needed on a single emitter
+    effect:SetDragCoefficient(1, .2)
+
+
+
+    local ember_sphere_emitter = CreateSphereEmitter(0.07)
+    local smoke_sphere_emitter = CreateSphereEmitter(.1)
+
+
+
+    EmitterManager:AddEmitter(inst, nil, function()
+        -- print("start AddEmitter")
+
+        local parent = inst.entity:GetParent()
+        if not parent then
+            return
+        end
+
+        local time_alive = inst:GetTimeAlive()
+
+        if time_alive > FRAMES and time_alive < 3 * FRAMES then
+            for i = 1, 3 do
+                emit_ember_fn(effect, ember_sphere_emitter)
+            end
+            for i = 1, 3 do
+                emit_smoke_fn(effect, smoke_sphere_emitter)
             end
         end
     end)
@@ -402,4 +504,5 @@ local function fn()
     return inst
 end
 
-return Prefab("stariliad_normal_explode_particle", fn, assets)
+return Prefab("stariliad_normal_explode_particle", fn, assets),
+    Prefab("stariliad_small_explode_particle", small_smoke_fn, assets)

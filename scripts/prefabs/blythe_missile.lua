@@ -12,24 +12,37 @@ local function CollisionCallback(inst, other)
     end
 end
 
-local function ProjectileOnHit(inst, attacker, target)
-    SpawnAt("slingshotammo_hitfx_gunpowder", inst)
+local function CanInteract(inst, target, my_range)
+    local dist = math.sqrt(inst:GetDistanceSqToInst(target))
+    my_range = my_range or inst:GetPhysicsRadius(0)
 
-    -- 1 tiny damage make target set attacker as target
-    if attacker
-        and attacker:IsValid()
-        and attacker.components.combat
-        and attacker.components.combat:CanTarget(target) then
-        target.components.combat:GetAttacked(attacker, 1, inst)
-    end
+    return dist < my_range + target:GetPhysicsRadius(0)
+end
 
-    inst.components.stariliad_spdamage_force:SetBaseDamage(TUNING.BLYTHE_MISSILE_DAMAGE)
-    if inst.ispvp then
-        inst.components.explosive:SetPvpAttacker(attacker)
+
+local function OnHit(inst, attacker, target)
+    if type(inst.explode_prefab) == "string" then
+        SpawnAt(inst.explode_prefab, inst)
     else
-        inst.components.explosive:SetAttacker(attacker)
+        for _, v in pairs(inst.explode_prefab) do
+            SpawnAt(v, inst)
+        end
     end
-    inst.components.explosive:OnBurnt()
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, inst.explode_range + 2, nil, { "INLIMBO", "FX" })
+    for k, v in pairs(ents) do
+        if CanInteract(inst, v, inst.explode_range) then
+            -- if attacker.components.combat and attacker.components.combat:CanTarget(v) then
+            if not IsEntityDeadOrGhost(v, true) and v.components.combat and v.components.combat:CanBeAttacked(attacker) then
+                attacker.components.combat:DoAttack(v, inst, inst, nil, nil, math.huge)
+            elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
+                v.components.workable:WorkedBy(attacker, 15)
+            end
+        end
+    end
+
+    ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .2, inst, 40)
 
     inst.SoundEmitter:KillSound("missile_loop")
 
@@ -37,7 +50,7 @@ local function ProjectileOnHit(inst, attacker, target)
 end
 
 
-local function ProjectileOnUpdate(inst)
+local function OnUpdate(inst)
     inst.max_range = inst.max_range or GetRandomMinMax(20, 25)
     inst.start_pos = inst.start_pos or inst:GetPosition()
 
@@ -53,16 +66,18 @@ local function ProjectileOnUpdate(inst)
         end
     end
 
-    -- if inst.entity:IsVisible() and not inst.tail then
-    --     inst.tail = inst:SpawnChild("blythe_beam_basic_tail")
-    --     inst.tail.entity:AddFollower()
-    --     inst.tail.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
-    -- end
+    if inst.entity:IsVisible() then
+        if not inst.anim then
+            inst.anim = inst:SpawnChild(inst.anim_prefab)
+            inst.anim.entity:AddFollower()
+            inst.anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        end
 
-    if inst.entity:IsVisible() and not inst.anim then
-        inst.anim = inst:SpawnChild("blythe_missile_anim_normal")
-        inst.anim.entity:AddFollower()
-        inst.anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        if not inst.tail then
+            inst.tail = inst:SpawnChild("blythe_missile_tail")
+            inst.tail.entity:AddFollower()
+            inst.tail.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
+        end
     end
 
     inst.Physics:SetMotorVel(inst.components.complexprojectile.horizontalSpeed, 0, 0)
@@ -71,19 +86,21 @@ local function ProjectileOnUpdate(inst)
     local attacker = inst.components.complexprojectile.attacker
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    -- local ents = TheSim:FindEntities(x, y, z, 1, { "_combat", "_health" }, { "INLIMBO" })
-    -- for k, v in pairs(ents) do
-    --     if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
-    --         inst.components.complexprojectile:Hit(v)
-    --         break
-    --     end
-    -- end
-
-    local ents = TheSim:FindEntities(x, y, z, 3, { "_combat", "_health" }, { "INLIMBO" })
+    local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO", "FX" })
     for k, v in pairs(ents) do
-        if attacker.components.combat and attacker.components.combat:CanTarget(v) and not attacker.components.combat:IsAlly(v) then
-            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) then
+        -- if (attacker.components.combat
+        --         and attacker.components.combat:CanTarget(v)
+        --         and not attacker.components.combat:IsAlly(v))
+
+        if (v.components.combat
+                and v.components.combat:CanBeAttacked(attacker)
+                and attacker.components.combat
+                and attacker.components.combat:IsValidTarget(v))
+            or (v.components.workable
+                and v.components.workable:CanBeWorked()
+                and v.components.workable.action ~= ACTIONS.NET
+                and v.components.workable.action ~= ACTIONS.DIG) then
+            if CanInteract(inst, v, 0.5) then
                 inst.components.complexprojectile:Hit(v)
                 break
             end
@@ -95,85 +112,105 @@ local function ProjectileOnUpdate(inst)
 end
 
 
-local function fn()
-    local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
-    inst.entity:AddSoundEmitter()
+local function MakeMissile(prefab, anim_prefab, explode_prefab, explode_range, damage)
+    local function fn()
+        local inst = CreateEntity()
 
-    StarIliadBasic.MakeCollidableProjectilePhysics(inst)
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
+        inst.entity:AddSoundEmitter()
 
-    inst.AnimState:SetBank("stariliad_height_controller")
-    inst.AnimState:SetBuild("stariliad_height_controller")
-    inst.AnimState:PlayAnimation("no_face")
+        StarIliadBasic.MakeCollidableProjectilePhysics(inst)
 
-    inst.AnimState:SetMultColour(0, 0, 0, 0)
+        inst.AnimState:SetBank("stariliad_height_controller")
+        inst.AnimState:SetBuild("stariliad_height_controller")
+        inst.AnimState:PlayAnimation("no_face")
 
-    inst.entity:SetPristine()
+        inst.AnimState:SetMultColour(0, 0, 0, 0)
 
-    if not TheWorld.ismastersim then
+        inst.entity:SetPristine()
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.anim_prefab = anim_prefab
+        inst.explode_prefab = explode_prefab
+        inst.explode_range = explode_range
+
+        inst.Physics:SetCollisionCallback(CollisionCallback)
+
+        inst:AddComponent("weapon")
+        inst.components.weapon:SetDamage(0)
+
+        inst:AddComponent("planardamage")
+        inst.components.planardamage:SetBaseDamage(1)
+
+        inst:AddComponent("stariliad_spdamage_force")
+        inst.components.stariliad_spdamage_force:SetBaseDamage(damage)
+
+        inst:AddComponent("complexprojectile")
+        inst.components.complexprojectile:SetHorizontalSpeed(30)
+        inst.components.complexprojectile:SetOnHit(OnHit)
+        inst.components.complexprojectile.onupdatefn = OnUpdate
+
+        inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/missile_loop", "missile_loop")
+
         return inst
     end
 
-    inst.Physics:SetCollisionCallback(CollisionCallback)
-
-    inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(0)
-
-    inst:AddComponent("stariliad_spdamage_force")
-    inst.components.stariliad_spdamage_force:SetBaseDamage(0)
-
-    inst:AddComponent("explosive")
-    inst.components.explosive.explosiverange = TUNING.BLYTHE_MISSILE_RANGE
-    inst.components.explosive.explosivedamage = 0
-    inst.components.explosive.lightonexplode = false
-
-    inst:AddComponent("complexprojectile")
-    -- inst.components.complexprojectile:SetLaunchOffset(Vector3(0.5, 0, 0))
-    inst.components.complexprojectile:SetHorizontalSpeed(30)
-    inst.components.complexprojectile:SetOnHit(ProjectileOnHit)
-    inst.components.complexprojectile.onupdatefn = ProjectileOnUpdate
-
-    inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/missile_loop", "missile_loop")
-
-    return inst
+    return Prefab(prefab, fn, assets)
 end
 
-local function arrow_fn()
-    local inst = CreateEntity()
+local function MakeAnim(prefab, anim)
+    local function arrow_fn()
+        local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddAnimState()
-    inst.entity:AddNetwork()
+        inst.entity:AddTransform()
+        inst.entity:AddAnimState()
+        inst.entity:AddNetwork()
 
-    inst.AnimState:SetBank("blythe_missile")
-    inst.AnimState:SetBuild("blythe_missile")
-    inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:SetBank("blythe_missile")
+        inst.AnimState:SetBuild("blythe_missile")
+        inst.AnimState:PlayAnimation(anim)
 
-    -- inst.Transform:SetScale(1, 0.8, 1)
+        -- inst.Transform:SetScale(1, 0.8, 1)
 
-    inst.AnimState:SetLightOverride(1)
+        inst.AnimState:SetLightOverride(1)
 
-    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+        inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 
-    -- local s = 1.5
-    -- inst.AnimState:SetScale(s, s, s)
-    -- inst.AnimState:SetAddColour(1, 1, 0, 0)
+        -- local s = 1.5
+        -- inst.AnimState:SetScale(s, s, s)
+        -- inst.AnimState:SetAddColour(1, 1, 0, 0)
 
-    inst:AddTag("FX")
+        inst:AddTag("FX")
 
-    inst.entity:SetPristine()
+        inst.entity:SetPristine()
 
-    if not TheWorld.ismastersim then
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.persists = false
+
         return inst
     end
 
-    inst.persists = false
-
-    return inst
+    return Prefab(prefab, arrow_fn, assets)
 end
 
-return Prefab("blythe_missile", fn, assets),
-    Prefab("blythe_missile_anim_normal", arrow_fn, assets)
+
+
+-- return Prefab("blythe_missile", fn, assets),
+
+return
+    MakeMissile("blythe_missile", "blythe_missile_anim_normal",
+        { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
+        TUNING.BLYTHE_MISSILE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE),
+    MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_explode_fx",
+        TUNING.BLYTHE_SUPER_MISSILE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE),
+    MakeAnim("blythe_missile_anim_normal", "idle"),
+    MakeAnim("blythe_missile_anim_super", "idle_super")

@@ -31,10 +31,14 @@ AddStategraphPostInit("wilson_client", function(sg)
             and weapon ~= nil
             and not (inst.replica.rider and inst.replica.rider:IsRiding()) then
             if weapon.prefab == "blythe_blaster" then
+                local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
+
                 if inst.sg:HasStateTag("aoe") then
+                    if proj_data.aoe_reject_fn then
+                        proj_data.aoe_reject_fn(inst, action)
+                    end
                     return
                 else
-                    local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
                     return proj_data.castaoe_sg
                 end
                 -- local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
@@ -345,9 +349,14 @@ AddStategraphState("wilson_client",
                 return
             end
 
+            local buffaction = inst:GetBufferedAction()
+
+
             local cooldown = combat:MinAttackPeriod()
             inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
 
+            -- local target = buffaction ~= nil and buffaction.target or nil
+            -- combat:SetTarget(target)
             combat:StartAttack()
             inst.components.locomotor:Stop()
             local equip = inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
@@ -355,7 +364,6 @@ AddStategraphState("wilson_client",
             inst.AnimState:PlayAnimation("hand_shoot")
 
 
-            local buffaction = inst:GetBufferedAction()
             if buffaction ~= nil then
                 inst:PerformPreviewBufferedAction()
 
@@ -411,6 +419,8 @@ AddStategraphState("wilson_client",
             -- inst.components.playercontroller.attack_buffer = CONTROL_ATTACK
 
             -- inst.components.playercontroller:DoAttackButton()
+
+            print("Remove attack tag at frame:", inst.sg:GetTimeInState() / FRAMES)
         end,
 
         -- onupdate = function(inst)
@@ -581,5 +591,126 @@ AddStategraphState("wilson_client",
         onexit = function(inst)
 
         end,
+    }
+)
+
+
+AddStategraphState("wilson_client",
+    State {
+        name = "blythe_release_ice_fog2",
+        tags = { "attack", "notalking", "abouttoattack" },
+        server_states = { "blythe_release_ice_fog2" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if not inst.sg:ServerStateMatches() then
+                inst.AnimState:PlayAnimation("hand_shoot")
+            end
+
+            inst:PerformPreviewBufferedAction()
+        end,
+
+        onupdate = function(inst)
+            -- if not inst.sg:ServerStateMatches()
+            --     or not inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY, CONTROL_ATTACK) then
+            --     inst.AnimState:PlayAnimation("hand_shoot")
+            --     inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+            --     inst.sg:GoToState("idle", true)
+            -- end
+
+            -- if not inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY, CONTROL_ATTACK) then
+            --     inst.AnimState:PlayAnimation("hand_shoot")
+            --     inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+            --     inst.sg:GoToState("idle", true)
+            --     return
+            -- end
+
+            if not inst.sg.statemem.state_matched then
+                if inst.sg:ServerStateMatches() then
+                    inst.sg.statemem.state_matched = true
+                end
+            else
+                if inst.sg:ServerStateMatches() then
+                    -- if inst.entity:FlattenMovementPrediction() then
+                    --     inst.sg:GoToState("idle", "noanim")
+                    -- else
+                    --     local anim_time = inst.AnimState:GetCurrentAnimationTime()
+                    --     if anim_time > TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                    --         inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
+                    --     end
+                    -- end
+
+                    local anim_time = inst.AnimState:GetCurrentAnimationTime()
+                    if anim_time > TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                        inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
+                    end
+                else
+                    local anim_time = inst.AnimState:GetCurrentAnimationTime()
+                    if anim_time >= TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                        inst.AnimState:PlayAnimation("hand_shoot")
+                        inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+                        inst.sg:GoToState("idle", true)
+                    end
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME, function(inst)
+                -- inst.sg.statemem.release_ice_fog = true
+                inst.sg:RemoveStateTag("abouttoattack")
+            end),
+        },
+    }
+)
+
+
+-- TODO: Finish this
+AddStategraphState("wilson_client",
+    State {
+        name = "blythe_release_ice_fog_castaoe2",
+        tags = { "notalking", "aoe", "stariliad_no_face_point" },
+        server_states = { "blythe_release_ice_fog_castaoe2" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            if not inst.sg:ServerStateMatches() then
+                inst.AnimState:PlayAnimation("hand_shoot")
+            end
+
+            inst:PerformPreviewBufferedAction()
+        end,
+
+        onupdate = function(inst)
+            if not inst.sg.statemem.state_matched then
+                if inst.sg:ServerStateMatches() then
+                    inst.sg.statemem.state_matched = true
+                end
+            else
+                if inst.sg:ServerStateMatches() then
+                    local anim_time = inst.AnimState:GetCurrentAnimationTime()
+                    if anim_time > TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                        inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
+                    end
+                else
+                    local anim_time = inst.AnimState:GetCurrentAnimationTime()
+                    if anim_time >= TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                        inst.AnimState:PlayAnimation("hand_shoot")
+                        inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+                        inst.sg:GoToState("idle", true)
+                    end
+                end
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME, function(inst)
+                -- inst.sg.statemem.release_ice_fog = true
+                -- inst.sg:RemoveStateTag("abouttoattack")
+            end),
+        },
+
     }
 )

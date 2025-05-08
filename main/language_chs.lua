@@ -34,6 +34,7 @@ STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL = {
     BASIC_BEAM = "光束",
     ICE_FOG = "冰雾",
     MISSILE = "导弹",
+    SUPER_MISSILE = "超级导弹",
     USURPER_SHOT_TELEPORT = "夺位射击-抓取",
     USURPER_SHOT_SWAP = "夺位射击-互换",
     WIDE_BEAM = "宽光束-散射（开/关）",

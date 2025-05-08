@@ -1,6 +1,7 @@
 AddReplicableComponent("stariliad_pistol")
 AddReplicableComponent("blythe_skiller")
 AddReplicableComponent("blythe_powersuit_configure")
+AddReplicableComponent("blythe_missile_counter")
 
 AddComponentPostInit("playercontroller", function(self)
     local old_OnUpdate = self.OnUpdate

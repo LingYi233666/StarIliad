@@ -25,16 +25,21 @@ StarIliadUsurper = {}
 --     return caster and caster:IsValid() and caster.components.combat:CanTarget(target)
 -- end
 
-StarIliadUsurper.MustCantSwapPrefabs = {
+StarIliadUsurper.CanSwapBlackList = {
     "otterden"
 }
+
+StarIliadUsurper.CanSwapWhiteList = {
+    "tumbleweed"
+}
+
 
 function StarIliadUsurper.CanSwap(caster, target)
     if not (target and target:IsValid()) then
         return false
     end
 
-    if table.contains(StarIliadUsurper.MustCantSwapPrefabs, target.prefab) then
+    if table.contains(StarIliadUsurper.CanSwapBlackList, target.prefab) then
         return false
     end
 
@@ -55,6 +60,10 @@ function StarIliadUsurper.CanSwap(caster, target)
     if target.components.workable
         and target.components.workable:CanBeWorked()
         and table.contains(valid_actions, target.components.workable.action) then
+        return true
+    end
+
+    if table.contains(StarIliadUsurper.CanSwapWhiteList, target.prefab) then
         return true
     end
 

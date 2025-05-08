@@ -2,6 +2,7 @@ STARILIAD_PROJECTILE_DEFINES = {
     {
         prefab = "blythe_beam_basic",
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot",
+        -- sound = "stariliad_sfx/prefabs/blaster/beam_shoot_samus",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_beam",
         castaoe_sg = "blythe_shoot_beam_castaoe",
@@ -11,8 +12,28 @@ STARILIAD_PROJECTILE_DEFINES = {
     {
         prefab = "blythe_ice_fog",
         range = 8,
-        attack_sg = "blythe_release_ice_fog",
-        castaoe_sg = "blythe_release_ice_fog_castaoe",
+        attack_sg = "blythe_release_ice_fog2",
+        castaoe_sg = "blythe_release_ice_fog_castaoe2",
+        aoe_reject_fn = function(inst, action)
+            if not TheNet:IsDedicated() and TheInput then
+                local mouse_pos = TheInput:GetWorldPosition()
+                SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_ice_fog_aoe_action_pos"], mouse_pos.x, mouse_pos.y,
+                    mouse_pos.z)
+
+                inst:ForceFacePoint(DynamicPosition(mouse_pos):GetPosition())
+            end
+
+            if not TheWorld.ismastersim then
+                return
+            end
+
+            if inst.sg.currentstate
+                and inst.sg.currentstate.name == "blythe_release_ice_fog_castaoe2"
+                and inst.sg.statemem.action
+                and action.pos then
+                inst.sg.statemem.action.pos = action.pos
+            end
+        end,
         repeat_cast = true,
     },
 
@@ -44,6 +65,15 @@ STARILIAD_PROJECTILE_DEFINES = {
 
     {
         prefab = "blythe_missile",
+        sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
+        fx = "stariliad_pistol_shoot_cloud",
+        attack_sg = "blythe_shoot_missile",
+        castaoe_sg = "blythe_shoot_missile_castaoe",
+        repeat_cast = true,
+    },
+
+    {
+        prefab = "blythe_super_missile",
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_missile",

@@ -1,3 +1,5 @@
+require("stategraphs/commonstates")
+
 -- attack
 AddStategraphPostInit("wilson", function(sg)
     local old_ATTACK = sg.actionhandlers[ACTIONS.ATTACK].deststate
@@ -29,10 +31,14 @@ AddStategraphPostInit("wilson", function(sg)
             if weapon.prefab == "blythe_blaster" then
                 -- StarIliadDebug.PrintStackTrace()
 
+                local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
+
                 if inst.sg:HasStateTag("aoe") then
+                    if proj_data.aoe_reject_fn then
+                        proj_data.aoe_reject_fn(inst, action)
+                    end
                     return
                 else
-                    local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
                     return proj_data.castaoe_sg
                 end
                 -- local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
@@ -518,3 +524,390 @@ AddStategraphState("wilson", State {
     end,
 }
 )
+
+
+
+AddStategraphState("wilson", State {
+    name = "blythe_release_ice_fog2",
+    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
+
+    onenter = function(inst)
+        if inst.components.combat:InCooldown() then
+            inst.sg:RemoveStateTag("abouttoattack")
+            inst:ClearBufferedAction()
+            inst.sg:GoToState("idle", true)
+            return
+        end
+
+        local buffaction = inst:GetBufferedAction()
+        local target = buffaction ~= nil and buffaction.target or nil
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        inst.components.combat:SetTarget(target)
+        inst.components.combat:StartAttack()
+        inst.components.locomotor:Stop()
+
+        if target ~= nil and target:IsValid() then
+            inst:FacePoint(target.Transform:GetWorldPosition())
+            inst.sg.statemem.attacktarget = target
+            inst.sg.statemem.retarget = target
+        end
+        inst.sg.statemem.action = buffaction
+        inst.sg.statemem.release_period = 2 * FRAMES
+
+        inst.AnimState:PlayAnimation("hand_shoot")
+    end,
+
+    onupdate = function(inst, dt)
+        local target = inst.sg.statemem.attacktarget
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+        if equip
+            and equip:IsValid()
+            and inst.components.combat:CanTarget(target)
+            and inst.components.playercontroller
+            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY,
+                CONTROL_ATTACK)
+            and not inst.sg.statemem.target_miss then
+            -- local anim_time = inst.AnimState:GetCurrentAnimationTime()
+            -- local hold_time = TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME
+            -- if anim_time > hold_time then
+            --     inst.AnimState:SetTime(hold_time)
+            -- end
+
+            if inst.sg.statemem.release_ice_fog then
+                inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
+
+                inst.sg.statemem.cooldown = inst.sg.statemem.cooldown - dt
+                if inst.sg.statemem.cooldown <= 0 then
+                    if inst.bufferedaction then
+                        inst:PerformBufferedAction()
+                    else
+                        inst.sg.statemem.action.options.instant = true
+                        inst.sg.statemem.action.options.no_predict_fastforward = true
+                        inst:PushBufferedAction(inst.sg.statemem.action)
+                    end
+                    inst.sg.statemem.cooldown = inst.sg.statemem.release_period
+                end
+            end
+        else
+            local anim_time = inst.AnimState:GetCurrentAnimationTime()
+            if anim_time >= TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                inst.AnimState:PlayAnimation("hand_shoot")
+                inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+                inst.sg:GoToState("idle", true)
+            end
+        end
+    end,
+
+    timeline =
+    {
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME, function(inst)
+            inst.sg.statemem.cooldown = 0
+            inst.sg.statemem.release_ice_fog = true
+            inst.sg:RemoveStateTag("abouttoattack")
+
+            inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/ice_fog_loop", "ice_fog_loop")
+        end),
+    },
+
+    events =
+    {
+        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("animqueueover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("idle")
+            end
+        end),
+        EventHandler("onmissother", function(inst)
+            inst.sg.statemem.target_miss = true
+        end),
+
+
+    },
+
+
+    onexit = function(inst)
+        inst.components.combat:SetTarget(nil)
+        if inst.sg:HasStateTag("abouttoattack") then
+            inst.components.combat:CancelAttack()
+        end
+
+        if inst.SoundEmitter:PlayingSound("ice_fog_loop") then
+            inst.SoundEmitter:KillSound("ice_fog_loop")
+        end
+
+        inst:ClearBufferedAction()
+    end,
+}
+)
+
+
+AddStategraphState("wilson", State {
+    name = "blythe_release_ice_fog_castaoe2",
+    tags = { "notalking", "aoe", "stariliad_no_face_point", "autopredict" },
+
+    onenter = function(inst)
+        local buffaction = inst:GetBufferedAction()
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+        inst.AnimState:PlayAnimation("hand_shoot")
+
+        inst.components.locomotor:Stop()
+
+        inst.sg.statemem.action = buffaction
+        inst.sg.statemem.release_period = 2 * FRAMES
+    end,
+
+    onupdate = function(inst, dt)
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+        if equip
+            and equip:IsValid()
+            and inst.components.playercontroller
+            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY) then
+            if inst.sg.statemem.release_ice_fog then
+                inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
+
+                inst.sg.statemem.cooldown = inst.sg.statemem.cooldown - dt
+                if inst.sg.statemem.cooldown <= 0 then
+                    if inst.bufferedaction then
+                        inst:ForceFacePoint(inst.bufferedaction:GetActionPoint())
+                        inst:PerformBufferedAction()
+                    else
+                        inst:ForceFacePoint(inst.sg.statemem.action:GetActionPoint())
+
+                        inst.sg.statemem.action.options.instant = true
+                        inst.sg.statemem.action.options.no_predict_fastforward = true
+                        inst:PushBufferedAction(inst.sg.statemem.action)
+                    end
+                    inst.sg.statemem.cooldown = inst.sg.statemem.release_period
+
+
+                    if not inst.SoundEmitter:PlayingSound("ice_fog_loop") then
+                        inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/ice_fog_loop", "ice_fog_loop")
+                    end
+                end
+            end
+        else
+            local anim_time = inst.AnimState:GetCurrentAnimationTime()
+            if anim_time >= TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME then
+                inst.AnimState:PlayAnimation("hand_shoot")
+                inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME)
+                inst.sg:GoToState("idle", true)
+            end
+        end
+    end,
+
+    timeline =
+    {
+        TimeEvent(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME, function(inst)
+            inst.sg.statemem.cooldown = 0
+            inst.sg.statemem.release_ice_fog = true
+        end),
+    },
+
+    events =
+    {
+        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
+        EventHandler("animqueueover", function(inst)
+            if inst.AnimState:AnimDone() then
+                inst.sg:GoToState("idle")
+            end
+        end),
+    },
+
+
+    onexit = function(inst)
+        if inst.SoundEmitter:PlayingSound("ice_fog_loop") then
+            inst.SoundEmitter:KillSound("ice_fog_loop")
+        end
+
+        inst:ClearBufferedAction()
+    end,
+}
+)
+
+-- ------------------------------------------------------------------
+
+local FREEZE_COLOUR_2 = { 82 / 255, 115 / 255, 124 / 255, 1 }
+
+AddStategraphEvent("gelblob", CommonHandlers.OnFreezeEx())
+
+local function onunfreeze(inst)
+    inst.sg:GoToState(inst.sg.sg.states.hit ~= nil and "hit" or "idle")
+end
+
+local function onthaw(inst)
+    inst.sg.statemem.thawing = true
+    inst.sg:GoToState("thaw")
+end
+
+local function onenterfrozenpre(inst)
+    if inst.components.locomotor ~= nil then
+        inst.components.locomotor:StopMoving()
+    end
+    -- inst.AnimState:PlayAnimation("frozen", true)
+    -- inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+
+    -- inst.AnimState:OverrideSymbol("goo_parts", "stariliad_gelblob_frozen", "frozen")
+
+    inst.AnimState:Pause()
+    -- inst.AnimState:SetAddColour(0, 1, 1, 1)
+    inst.components.colouradder:PushColour("freezable_2", FREEZE_COLOUR_2[1], FREEZE_COLOUR_2[2], FREEZE_COLOUR_2[3],
+        FREEZE_COLOUR_2[4])
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/freezecreature")
+end
+
+local function onenterfrozenpst(inst)
+    --V2C: cuz... freezable component and SG need to match state,
+    --     but messages to SG are queued, so it is not great when
+    --     when freezable component tries to change state several
+    --     times within one frame...
+    if inst.components.freezable == nil then
+        onunfreeze(inst)
+    elseif inst.components.freezable:IsThawing() then
+        onthaw(inst)
+    elseif not inst.components.freezable:IsFrozen() then
+        onunfreeze(inst)
+    end
+end
+
+local function onexitfrozen(inst)
+    if not inst.sg.statemem.thawing then
+        -- inst.AnimState:ClearOverrideSymbol("swap_frozen")
+        -- inst.AnimState:ClearOverrideSymbol("goo_parts")
+
+        inst.AnimState:Resume()
+        -- inst.AnimState:SetAddColour(0, 0, 0, 0)
+        inst.components.colouradder:PopColour("freezable_2")
+    end
+end
+
+local function onenterthawpre(inst)
+    if inst.components.locomotor ~= nil then
+        inst.components.locomotor:StopMoving()
+    end
+    -- inst.AnimState:PlayAnimation("frozen_loop_pst", true)
+    -- inst.AnimState:OverrideSymbol("swap_frozen", "frozen", "frozen")
+    -- inst.AnimState:OverrideSymbol("goo_parts", "stariliad_gelblob_frozen", "frozen")
+
+    inst.AnimState:Pause()
+    -- inst.AnimState:SetAddColour(0, 1, 1, 1)
+    inst.components.colouradder:PushColour("freezable_2", FREEZE_COLOUR_2[1], FREEZE_COLOUR_2[2], FREEZE_COLOUR_2[3],
+        FREEZE_COLOUR_2[4])
+
+
+    inst.SoundEmitter:PlaySound("dontstarve/common/freezethaw", "thawing")
+end
+
+local function onenterthawpst(inst)
+    --V2C: cuz... freezable component and SG need to match state,
+    --     but messages to SG are queued, so it is not great when
+    --     when freezable component tries to change state several
+    --     times within one frame...
+    if inst.components.freezable == nil or not inst.components.freezable:IsFrozen() then
+        onunfreeze(inst)
+    end
+end
+
+
+
+local function onexitthaw(inst)
+    inst.AnimState:Resume()
+    -- inst.AnimState:SetAddColour(0, 0, 0, 0)
+    inst.components.colouradder:PopColour("freezable_2")
+
+    inst.SoundEmitter:KillSound("thawing")
+    -- inst.AnimState:ClearOverrideSymbol("swap_frozen")
+    -- inst.AnimState:ClearOverrideSymbol("goo_parts")
+end
+
+local gelblob_freeze_states = {
+    State {
+        name = "frozen",
+        tags = { "busy", "frozen" },
+
+        onenter = function(inst)
+            onenterfrozenpre(inst)
+            onenterfrozenpst(inst)
+        end,
+
+        events =
+        {
+            EventHandler("unfreeze", onunfreeze),
+            EventHandler("onthaw", onthaw),
+        },
+
+        onexit = function(inst)
+            onexitfrozen(inst)
+        end,
+    },
+
+    State {
+        name = "thaw",
+        tags = { "busy", "thawing" },
+
+        onenter = function(inst)
+            onenterthawpre(inst)
+            onenterthawpst(inst)
+
+            local anim = "contact_jiggle"
+            anim = anim .. inst.size
+            inst.AnimState:Resume()
+            inst.AnimState:PlayAnimation(anim, true)
+            -- inst.back.AnimState:PlayAnimation(anim, true)
+            inst.AnimState:SetDeltaTimeMultiplier(3)
+        end,
+
+        events =
+        {
+            EventHandler("unfreeze", onunfreeze),
+        },
+
+        onexit = function(inst)
+            onexitthaw(inst)
+            inst.AnimState:SetDeltaTimeMultiplier(1)
+        end,
+    }
+}
+
+-- local function onoverridesymbols(inst)
+--     inst.AnimState:SetMultColour(0, 1, 1, 1)
+-- end
+
+-- local function onclearsymbols(inst)
+--     inst.AnimState:SetMultColour(1, 1, 1, 1)
+-- end
+
+-- CommonStates.AddFrozenStates(gelblob_freeze_states, onoverridesymbols, onclearsymbols)
+
+for _, v in pairs(gelblob_freeze_states) do
+    AddStategraphState("gelblob", v)
+end
+
+AddStategraphPostInit("gelblob", function(sg)
+    local idle_state = sg.states["idle"]
+    if not idle_state then
+        return
+    end
+
+    local old_onenter = idle_state.onenter
+
+    idle_state.onenter = function(inst, ...)
+        local ret = old_onenter(inst, ...)
+        if inst.components.freezable then
+            if inst.components.freezable:IsFrozen() then
+                inst.sg:GoToState("frozen")
+            elseif inst.components.freezable:IsThawing() then
+                inst.sg:GoToState("thaw")
+            elseif not inst.components.freezable:IsFrozen() then
+            end
+        end
+        return ret
+    end
+end)
+
+-- ------------------------------------------------------------------

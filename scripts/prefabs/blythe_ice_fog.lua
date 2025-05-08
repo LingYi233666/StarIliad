@@ -5,13 +5,28 @@ local assets =
 
 local function AddColdnessToTarget(inst, attacker, target)
     if target and target:IsValid() then
+        local effective = false
+        local factor = target:GetIsWet() and 2 or 1
         if target.components.freezable then
-            target.components.freezable:AddColdness(0.3)
+            target.components.freezable:AddColdness(0.3 * factor)
+            effective = true
         end
 
-        inst.victims[target] = inst:DoTaskInTime(1, function()
-            inst.victims[target] = nil
-        end)
+        if target.components.temperature then
+            target.components.temperature:DoDelta(-3 * factor)
+            effective = true
+        end
+
+        if target.components.burnable and target.components.burnable:IsBurning() then
+            target.components.burnable:Extinguish()
+            effective = true
+        end
+
+        if effective then
+            inst.victims[target] = inst:DoTaskInTime(1, function()
+                inst.victims[target] = nil
+            end)
+        end
     end
 end
 
@@ -68,26 +83,26 @@ local function OnLaunch(inst, attacker, target_pos)
     -- end
     -- end
 
-    if not attacker.SoundEmitter:PlayingSound("ice_fog_loop") then
-        attacker.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/ice_fog_loop", "ice_fog_loop")
-    end
+    -- if not attacker.SoundEmitter:PlayingSound("ice_fog_loop") then
+    --     attacker.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/ice_fog_loop", "ice_fog_loop")
+    -- end
 
-    if attacker.ice_fog_sound_task then
-        attacker.ice_fog_sound_task:Cancel()
-        attacker.ice_fog_sound_task = nil
-    end
+    -- if attacker.ice_fog_sound_task then
+    --     attacker.ice_fog_sound_task:Cancel()
+    --     attacker.ice_fog_sound_task = nil
+    -- end
 
-    attacker.ice_fog_sound_task = attacker:DoTaskInTime(3 * FRAMES, function()
-        if attacker.SoundEmitter:PlayingSound("ice_fog_loop") then
-            attacker.SoundEmitter:KillSound("ice_fog_loop")
-        end
+    -- attacker.ice_fog_sound_task = attacker:DoTaskInTime(3 * FRAMES, function()
+    --     if attacker.SoundEmitter:PlayingSound("ice_fog_loop") then
+    --         attacker.SoundEmitter:KillSound("ice_fog_loop")
+    --     end
 
-        -- if attacker.ice_fog_sound_task then
-        --     attacker.ice_fog_sound_task:Cancel()
-        --     attacker.ice_fog_sound_task = nil
-        -- end
-        attacker.ice_fog_sound_task = nil
-    end)
+    --     -- if attacker.ice_fog_sound_task then
+    --     --     attacker.ice_fog_sound_task:Cancel()
+    --     --     attacker.ice_fog_sound_task = nil
+    --     -- end
+    --     attacker.ice_fog_sound_task = nil
+    -- end)
 end
 
 
@@ -122,9 +137,13 @@ local function ProjectileOnUpdate(inst)
     local attacker = inst.components.complexprojectile.attacker
     local x, y, z = inst.Transform:GetWorldPosition()
 
-    local combat_ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO" }, { "freezable" })
+    local combat_ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO" })
     for k, v in pairs(combat_ents) do
-        if CanInteract(inst, v) and v ~= attacker and v.components.freezable and not inst.victims[v] then
+        if v ~= attacker
+            and v:IsValid()
+            and CanInteract(inst, v)
+            and not inst.victims[v]
+            and (v.components.freezable or v.components.temperature or v.components.burnable) then
             AddColdnessToTarget(inst, attacker, v)
         end
     end
@@ -136,6 +155,13 @@ local function ProjectileOnUpdate(inst)
     return true
 end
 
+-- local function GetHeatFn(inst, observer)
+--     if observer and observer == inst.components.complexprojectile.attacker then
+--         return nil
+--     end
+
+--     return -99999
+-- end
 
 local function fn()
     local inst = CreateEntity()
@@ -161,6 +187,9 @@ local function fn()
 
     inst.victims = {}
 
+    -- inst:AddComponent("heater")
+    -- inst.components.heater.heatfn = GetHeatFn
+    -- inst.components.heater:SetThermics(false, true)
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)

@@ -79,6 +79,7 @@ local master_postinit = function(inst)
 
 	inst.Physics:SetCollisionCallback(OnCollide)
 
+	inst:AddComponent("blythe_missile_counter")
 
 	inst:AddComponent("stariliad_spdamage_force")
 

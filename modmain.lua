@@ -27,9 +27,18 @@ PrefabFiles = {
 
     "blythe_ice_fog",
     "blythe_ice_fog_particle",
+
+    "blythe_missile_explode_fx",
+
+    "blythe_missile_tail",
 }
 
 Assets = {
+    -- Asset("ANIM", "anim/stariliad_gelblob_frozen.zip"),
+
+    -- Circle ring anim
+    Asset("ANIM", "anim/stariliad_autocast_ring.zip"),
+
     -- Common height controller
     Asset("ANIM", "anim/stariliad_height_controller.zip"),
 

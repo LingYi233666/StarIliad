@@ -21,6 +21,12 @@ AddModRPCHandler("stariliad_rpc", "switch_enable_skill", function(player, skill_
     end
 end)
 
+AddModRPCHandler("stariliad_rpc", "set_ice_fog_aoe_action_pos", function(player, x, y, z)
+    if player and player.sg and player.sg.currentstate and player.sg.currentstate.name == "blythe_release_ice_fog_castaoe2" and player.sg.statemem.action then
+        player.sg.statemem.action.pos = DynamicPosition(Vector3(x, y, z))
+    end
+end)
+
 AddClientModRPCHandler("stariliad_rpc", "show_usurper_shot_screen", function(target1, target2)
     local StarIliadUsurperShotScreen = require("screens/stariliad_usurper_shot_screen")
 

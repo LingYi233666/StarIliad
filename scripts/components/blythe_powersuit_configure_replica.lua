@@ -31,8 +31,9 @@ local function AddCirclingRing(wheel_item, valid_fn, onupdatefn, toggle_on_sound
     wheel_item.ring = wheel_item:AddChild(UIAnim())
     wheel_item.ring:GetAnimState():SetBank("spell_icons_woby")
     wheel_item.ring:GetAnimState():SetBuild("spell_icons_woby")
+    wheel_item.ring:GetAnimState():OverrideSymbol("frame_woby", "stariliad_autocast_ring", "frame_woby")
     wheel_item.ring:GetAnimState():PlayAnimation("autocast_ring", true)
-    wheel_item.ring:GetAnimState():Hide("frame_woby_0")
+    -- wheel_item.ring:GetAnimState():Hide("frame_woby_0")
     wheel_item.ring.OnUpdate = function(ring, dt)
         local is_valid = valid_fn()
         if is_valid then
@@ -110,6 +111,24 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_missile")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_missile")),
+        bank = "spell_icons_willow",
+        build = "spell_icons_willow",
+        anims =
+        {
+            idle = { anim = "fire_throw" },
+            focus = { anim = "fire_throw" },
+            down = { anim = "fire_throw_pressed" },
+        },
+        widget_scale = widget_scale,
+    },
+
+    {
+        required_skill = "super_missile",
+        label = STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL.SUPER_MISSILE,
+        execute = function(inst)
+            SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_super_missile")
+        end,
+        postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_super_missile")),
         bank = "spell_icons_willow",
         build = "spell_icons_willow",
         anims =
