@@ -50,6 +50,85 @@ AddStategraphPostInit("wilson", function(sg)
     end
 end)
 
+-- locomote
+AddStategraphPostInit("wilson", function(sg)
+    local old_locomote = sg.events["locomote"].fn
+
+    sg.events["locomote"].fn = function(inst, data, ...)
+        if inst.sg:HasStateTag("busy") or
+            inst.sg:HasStateTag("overridelocomote") then
+            return
+        end
+
+        local is_moving = inst.sg:HasStateTag("moving")
+        local should_move = inst.components.locomotor:WantsToMoveForward()
+        local is_swimming = inst.components.stariliad_ocean_land_jump and
+            inst.components.stariliad_ocean_land_jump:IsSwimming()
+
+        local handle_by_old = true
+
+
+
+        if inst:HasTag("ingym") then
+
+        elseif inst.sg:HasStateTag("bedroll") or inst.sg:HasStateTag("tent") or
+            inst.sg:HasStateTag("waking") then -- wakeup on locomote
+
+        elseif is_moving and not should_move then
+            if inst:HasTag("acting") then
+
+            else
+                if not (inst.components.rider and inst.components.rider:IsRiding()) then
+                    if is_swimming then
+                        handle_by_old = false
+                        inst.sg:GoToState("blythe_swim_stop")
+                    end
+                end
+            end
+        elseif not is_moving and should_move then
+            if not (inst.components.rider and inst.components.rider:IsRiding()) then
+                if is_swimming then
+                    if data and data.dir then
+                        inst.components.locomotor:SetMoveDir(data.dir)
+                    end
+                    handle_by_old = false
+                    inst.sg:GoToState("blythe_swim_start")
+                end
+            end
+        elseif data.force_idle_state and
+            not (is_moving or should_move or inst.sg:HasStateTag("idle") or
+                inst:HasTag("is_furling")) then
+
+        end
+
+        if handle_by_old then
+            return old_locomote(inst, data)
+        else
+
+        end
+    end
+end)
+
+local function PlayWaterSound(inst)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, nil, true)
+end
+
+local function DoEquipmentFoleySounds(inst)
+    for k, v in pairs(inst.components.inventory.equipslots) do
+        if v.foleysound ~= nil then
+            inst.SoundEmitter:PlaySound(v.foleysound, nil, nil, true)
+        end
+    end
+end
+
+local function DoFoleySounds(inst)
+    DoEquipmentFoleySounds(inst)
+    if inst.foleysound ~= nil then
+        inst.SoundEmitter:PlaySound(inst.foleysound, nil, nil, true)
+    end
+end
+
+
 local function SpawnAimReticule(inst, equip, buffaction)
     if equip
         and equip.components.stariliad_pistol
@@ -729,7 +808,178 @@ AddStategraphState("wilson", State {
 }
 )
 
--- ------------------------------------------------------------------
+AddStategraphState("wilson",
+    State {
+        name = "stariliad_ocean_land_jump",
+        tags = { "busy", "nopredict", "jumping" },
+
+        onenter = function(inst)
+            local bufferedaction = inst:GetBufferedAction()
+            local target_pos = bufferedaction and bufferedaction:GetActionPoint()
+            if not target_pos or not inst.components.stariliad_ocean_land_jump then
+                inst:ClearBufferedAction()
+                inst.sg:GoToState("idle", true)
+                return
+            end
+
+            inst.components.locomotor:Stop()
+
+            inst.AnimState:PlayAnimation("jumpout")
+            inst.AnimState:SetTime(4 * FRAMES)
+
+
+            inst.sg.statemem.should_update = true
+            inst.sg.statemem.stopped = false
+
+            inst.components.stariliad_ocean_land_jump:SetJumpDuration(14 * FRAMES)
+            inst.components.stariliad_ocean_land_jump:OnStartJump(target_pos)
+
+            -- inst.SoundEmitter:PlaySound("spark_hammer/sfx/enm_hand_jump")
+            inst.SoundEmitter:PlaySound("dontstarve/common/deathpoof")
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.should_update then
+                inst.components.stariliad_ocean_land_jump:OnJumpUpdate()
+            end
+        end,
+
+        timeline =
+        {
+            TimeEvent(14 * FRAMES, function(inst)
+                inst:PerformBufferedAction()
+
+                inst.sg:RemoveStateTag("jumping")
+
+                inst.sg.statemem.should_update = false
+                inst.components.stariliad_ocean_land_jump:OnStopJump()
+
+                inst.sg.statemem.stopped = true
+
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.sg:RemoveStateTag("jumping")
+
+            if inst.sg.statemem.stopped == false then
+                inst.components.stariliad_ocean_land_jump:OnStopJump()
+            end
+        end
+    }
+)
+
+AddStategraphState("wilson",
+    State {
+        name = "blythe_swim_start",
+        tags = { "moving", "running", "canrotate", "autopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            inst.AnimState:PlayAnimation("careful_walk_pre")
+            inst.sg.mem.footsteps = 0
+        end,
+
+        onupdate = function(inst)
+            inst.components.locomotor:RunForward()
+        end,
+
+        timeline = {
+            TimeEvent(0 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("blythe_swim")
+                end
+            end),
+        },
+    }
+)
+
+AddStategraphState("wilson",
+    State {
+        name = "blythe_swim",
+        tags = { "moving", "running", "canrotate", "autopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+
+            local anim = "careful_walk"
+            if not inst.AnimState:IsCurrentAnimation(anim) then
+                inst.AnimState:PlayAnimation(anim, true)
+            end
+
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        onupdate = function(inst)
+            inst.components.locomotor:RunForward()
+        end,
+
+        timeline =
+        {
+            TimeEvent(11 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+
+            TimeEvent(26 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+        },
+
+        events =
+        {
+
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("blythe_swim")
+        end,
+    }
+)
+
+AddStategraphState("wilson",
+    State {
+        name = "blythe_swim_stop",
+        tags = { "canrotate", "idle", "autopredict" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("careful_walk_pst")
+        end,
+
+        timeline = {},
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+    }
+)
+
+--------------------------------------------------------------------
 
 local FREEZE_COLOUR_2 = { 82 / 255, 115 / 255, 124 / 255, 1 }
 

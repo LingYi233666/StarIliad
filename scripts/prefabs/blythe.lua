@@ -63,6 +63,33 @@ local function OnCollide(inst, other)
 	end
 end
 
+local function LeftClickPicker(inst, target, pos)
+	if not inst.components.playercontroller:IsEnabled()
+		or pos == nil
+		or TheWorld.Map:GetPlatformAtPoint(pos.x, pos.z) then
+		return {}, true
+	end
+
+	local inst_on_ocean = inst:IsOnOcean()
+	local dest_on_ocean = TheWorld.Map:IsOceanAtPoint(pos:Get())
+
+	if inst_on_ocean == dest_on_ocean then
+		return {}, true
+	end
+
+	local actions = inst.components.playeractionpicker:SortActionList({ ACTIONS.STARILIAD_OCEAN_LAND_JUMP }, pos, nil)
+
+	return actions
+end
+
+local function PointSpecialActions(inst, pos, useitem, right)
+	if not right and inst.components.playercontroller:IsEnabled() then
+		return { ACTIONS.STARILIAD_OCEAN_LAND_JUMP }
+	end
+	return {}
+end
+
+
 --这个函数将在服务器和客户端都会执行
 --一般用于添加小地图标签等动画文件或者需要主客机都执行的组件（少数）
 local common_postinit = function(inst)
@@ -70,6 +97,13 @@ local common_postinit = function(inst)
 	inst.MiniMapEntity:SetIcon("blythe.tex")
 
 	inst:AddTag("blythe")
+
+	inst:DoTaskInTime(1, function()
+		if TheWorld and TheWorld.has_ocean and inst.components.playeractionpicker ~= nil then
+			inst.components.playeractionpicker.leftclickoverride = LeftClickPicker
+			-- inst.components.playeractionpicker.pointspecialactionsfn = PointSpecialActions
+		end
+	end)
 end
 
 -- 这里的的函数只在主机执行  一般组件之类的都写在这里
@@ -78,6 +112,10 @@ local master_postinit = function(inst)
 	inst.soundsname = "wendy"
 
 	inst.Physics:SetCollisionCallback(OnCollide)
+
+	inst.components.drownable.enabled = false
+
+	inst:AddComponent("stariliad_ocean_land_jump")
 
 	inst:AddComponent("blythe_missile_counter")
 

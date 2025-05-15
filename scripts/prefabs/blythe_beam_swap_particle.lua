@@ -265,6 +265,7 @@ local function line_fn()
     local line_sphere_emitter = CreateSphereEmitter(0.1)
     local arrow_sphere_emitter = CreateSphereEmitter(0.2)
 
+    local num_to_emit = 3
 
     EmitterManager:AddEmitter(inst, nil, function()
         local parent = inst.entity:GetParent()
@@ -275,17 +276,21 @@ local function line_fn()
 
         local time_alive = inst:GetTimeAlive()
 
-        if time_alive > FRAMES and time_alive < 3 * FRAMES then
-            local forward = StarIliadBasic.GetFaceVector(parent)
-            local velocity = forward * 0.3
-            emit_line_thin(effect, Vector3(line_sphere_emitter()), velocity)
+        if time_alive > FRAMES then
+            while num_to_emit > 0 do
+                local forward = StarIliadBasic.GetFaceVector(parent)
+                local velocity = forward * 0.3
+                emit_line_thin(effect, Vector3(line_sphere_emitter()), velocity)
 
-            for i = 1, 2 do
-                emit_line(effect, Vector3(line_sphere_emitter()), velocity)
-            end
-            for i = 1, 4 do
-                -- emit_arrow(effect, Vector3(arrow_sphere_emitter()) + velocity * GetRandomMinMax(-2, 2), velocity)
-                emit_arrow(effect, Vector3(arrow_sphere_emitter()), velocity)
+                for i = 1, 2 do
+                    emit_line(effect, Vector3(line_sphere_emitter()), velocity)
+                end
+                for i = 1, 4 do
+                    -- emit_arrow(effect, Vector3(arrow_sphere_emitter()) + velocity * GetRandomMinMax(-2, 2), velocity)
+                    emit_arrow(effect, Vector3(arrow_sphere_emitter()), velocity)
+                end
+
+                num_to_emit = num_to_emit - 1
             end
         end
     end)
@@ -355,7 +360,8 @@ local function explode_fn()
 
     -----------------------------------------------------
     local norm_sphere_emitter = CreateSphereEmitter(1)
-    local remain_time = FRAMES * 3
+    local num_to_emit = 3
+
     EmitterManager:AddEmitter(inst, nil, function()
         local parent = inst.entity:GetParent()
 
@@ -365,22 +371,24 @@ local function explode_fn()
 
         local time_alive = inst:GetTimeAlive()
 
-        if time_alive > FRAMES and time_alive < 3 * FRAMES then
-            for i = 1, 8 do
-                local velocity = Vector3(norm_sphere_emitter()) * 0.3
-                -- velocity.y = math.abs(velocity.y)
-                -- local pos = Vector3(line_sphere_emitter())
-                local pos = velocity:GetNormalized() * 0.66
-                emit_line_thin(effect, pos, velocity)
-                emit_line(effect, pos, velocity)
-            end
+        if time_alive > FRAMES then
+            while num_to_emit > 0 do
+                for i = 1, 8 do
+                    local velocity = Vector3(norm_sphere_emitter()) * 0.3
+                    -- velocity.y = math.abs(velocity.y)
+                    -- local pos = Vector3(line_sphere_emitter())
+                    local pos = velocity:GetNormalized() * 0.66
+                    emit_line_thin(effect, pos, velocity)
+                    emit_line(effect, pos, velocity)
+                end
 
-            for i = 1, 75 do
-                local pos = Vector3(norm_sphere_emitter()) * 0.2
-                local velocity = Vector3(0.2 * UnitRand(), 0.1 + 0.1 * UnitRand(), 0.2 * UnitRand())
-                emit_black_smoke(effect, pos, velocity)
+                for i = 1, 75 do
+                    local pos = Vector3(norm_sphere_emitter()) * 0.2
+                    local velocity = Vector3(0.2 * UnitRand(), 0.1 + 0.1 * UnitRand(), 0.2 * UnitRand())
+                    emit_black_smoke(effect, pos, velocity)
+                end
+                num_to_emit = num_to_emit - 1
             end
-            remain_time = remain_time - FRAMES
         end
     end)
 

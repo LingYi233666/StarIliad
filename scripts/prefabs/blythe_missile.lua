@@ -74,7 +74,7 @@ local function OnUpdate(inst)
         end
 
         if not inst.tail then
-            inst.tail = inst:SpawnChild("blythe_missile_tail")
+            inst.tail = inst:SpawnChild(inst.tail_prefab)
             inst.tail.entity:AddFollower()
             inst.tail.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
         end
@@ -113,7 +113,7 @@ end
 
 
 
-local function MakeMissile(prefab, anim_prefab, explode_prefab, explode_range, damage)
+local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, explode_range, damage)
     local function fn()
         local inst = CreateEntity()
 
@@ -137,6 +137,7 @@ local function MakeMissile(prefab, anim_prefab, explode_prefab, explode_range, d
         end
 
         inst.anim_prefab = anim_prefab
+        inst.tail_prefab = tail_prefab
         inst.explode_prefab = explode_prefab
         inst.explode_range = explode_range
 
@@ -205,12 +206,13 @@ end
 
 
 -- return Prefab("blythe_missile", fn, assets),
-
+-- blythe_super_missile_tail
 return
-    MakeMissile("blythe_missile", "blythe_missile_anim_normal",
+    MakeMissile("blythe_missile", "blythe_missile_anim_normal", "blythe_missile_tail",
         { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
         TUNING.BLYTHE_MISSILE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE),
-    MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_explode_fx",
+    MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_tail",
+        "blythe_super_missile_explode_fx",
         TUNING.BLYTHE_SUPER_MISSILE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE),
     MakeAnim("blythe_missile_anim_normal", "idle"),
     MakeAnim("blythe_missile_anim_super", "idle_super")

@@ -103,15 +103,16 @@ local function fn()
     local sphere_emitter = CreateSphereEmitter(.3)
     -- local sphere_emitter = CreateSphereEmitter(.1)
 
+    local num_to_emit = 6
+
     EmitterManager:AddEmitter(inst, nil, function()
         local time_alive = inst:GetTimeAlive()
 
-        if time_alive > FRAMES and time_alive < 3 * FRAMES then
-            for i = 1, 5 do
+        if time_alive > FRAMES then
+            while num_to_emit > 0 do
                 emit_smoke_fn(effect, sphere_emitter)
+                num_to_emit = num_to_emit - 1
             end
-
-            -- emit_smoke_fn(effect, sphere_emitter)
         end
     end)
 

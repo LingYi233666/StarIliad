@@ -50,6 +50,85 @@ AddStategraphPostInit("wilson_client", function(sg)
     end
 end)
 
+-- locomote
+AddStategraphPostInit("wilson_client", function(sg)
+    local old_locomote = sg.events["locomote"].fn
+    sg.events["locomote"].fn = function(inst, data)
+        --#HACK for hopping prediction: ignore busy when boathopping... (?_?)
+        if (inst.sg:HasStateTag("busy") or inst:HasTag("busy")) and
+            not (inst.sg:HasStateTag("boathopping") or inst:HasTag("boathopping")) then
+            return
+        elseif inst.sg:HasStateTag("overridelocomote") then
+            return
+        end
+
+        local is_moving = inst.sg:HasStateTag("moving")
+        local should_move = inst.components.locomotor:WantsToMoveForward()
+        local is_swimming = inst.replica.stariliad_ocean_land_jump and
+            inst.replica.stariliad_ocean_land_jump:IsSwimming()
+
+        local handle_by_old = true
+
+
+        if inst:HasTag("ingym") then
+
+        elseif inst:HasTag("sleeping") then
+
+        elseif not inst.entity:CanPredictMovement() then
+
+        elseif is_moving and not should_move then
+            if not (inst.replica.rider and inst.replica.rider:IsRiding()) then
+                if is_swimming then
+                    handle_by_old = false
+                    inst.sg:GoToState("blythe_swim_stop")
+                end
+            end
+        elseif not is_moving and should_move then
+            if not (inst.replica.rider and inst.replica.rider:IsRiding()) then
+                if data and data.dir then
+                    if inst.components.locomotor then
+                        inst.components.locomotor:SetMoveDir(data.dir)
+                    else
+                        inst.Transform:SetRotation(data.dir)
+                    end
+                end
+
+                if is_swimming then
+                    handle_by_old = false
+                    inst.sg:GoToState("blythe_swim_start")
+                end
+            end
+        end
+
+        if handle_by_old then
+            return old_locomote(inst, data)
+        else
+
+        end
+    end
+end)
+
+local function PlayWaterSound(inst)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, nil, true)
+end
+
+local function DoEquipmentFoleySounds(inst)
+    local inventory = inst.replica.inventory
+    if inventory ~= nil then
+        for k, v in pairs(inventory:GetEquips()) do
+            if v.foleysound ~= nil then
+                inst.SoundEmitter:PlaySound(v.foleysound, nil, nil, true)
+            end
+        end
+    end
+end
+
+local function DoFoleySounds(inst)
+    DoEquipmentFoleySounds(inst)
+    if inst.foleysound ~= nil then
+        inst.SoundEmitter:PlaySound(inst.foleysound, nil, nil, true)
+    end
+end
 
 
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
@@ -666,7 +745,6 @@ AddStategraphState("wilson_client",
 )
 
 
--- TODO: Finish this
 AddStategraphState("wilson_client",
     State {
         name = "blythe_release_ice_fog_castaoe2",
@@ -709,6 +787,113 @@ AddStategraphState("wilson_client",
             TimeEvent(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME, function(inst)
                 -- inst.sg.statemem.release_ice_fog = true
                 -- inst.sg:RemoveStateTag("abouttoattack")
+            end),
+        },
+
+    }
+)
+
+AddStategraphState("wilson_client",
+    State {
+        name = "blythe_swim_start",
+        tags = { "moving", "running", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+            inst.AnimState:PlayAnimation("careful_walk_pre")
+
+            inst.sg.mem.footsteps = 0
+        end,
+
+        onupdate = function(inst)
+            inst.components.locomotor:RunForward()
+        end,
+
+        timeline = {
+            TimeEvent(0 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("blythe_swim")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            inst.Transform:SetFourFaced()
+        end,
+    }
+)
+
+AddStategraphState("wilson_client",
+    State {
+        name = "blythe_swim",
+        tags = { "moving", "running", "canrotate" },
+
+        onenter = function(inst)
+            inst.components.locomotor:RunForward()
+
+            local anim = "careful_walk"
+            if not inst.AnimState:IsCurrentAnimation(anim) then
+                inst.AnimState:PlayAnimation(anim, true)
+            end
+
+            inst.sg:SetTimeout(inst.AnimState:GetCurrentAnimationLength())
+        end,
+
+        onupdate = function(inst)
+            inst.components.locomotor:RunForward()
+        end,
+
+        timeline =
+        {
+            TimeEvent(11 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+
+            TimeEvent(26 * FRAMES, function(inst)
+                PlayWaterSound(inst)
+                DoFoleySounds(inst)
+            end),
+        },
+
+        events = {
+
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("blythe_swim")
+        end,
+    }
+)
+
+AddStategraphState("wilson_client",
+    State {
+        name = "blythe_swim_stop",
+        tags = { "canrotate", "idle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+            inst.AnimState:PlayAnimation("careful_walk_pst")
+        end,
+
+        timeline =
+        {
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
 

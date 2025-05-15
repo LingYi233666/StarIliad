@@ -31,6 +31,8 @@ PrefabFiles = {
     "blythe_missile_explode_fx",
 
     "blythe_missile_tail",
+
+    "stariliad_water_tail",
 }
 
 Assets = {
@@ -48,6 +50,15 @@ Assets = {
     -- swap beam ui
     Asset("IMAGE", "images/ui/stariliad_8star.tex"),
     Asset("ATLAS", "images/ui/stariliad_8star.xml"),
+
+    Asset("IMAGE", "images/ui/test_powersuit_display.tex"),
+    Asset("ATLAS", "images/ui/test_powersuit_display.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_dtype_bg.tex"),
+    Asset("ATLAS", "images/ui/stariliad_dtype_bg.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_bg_upright.tex"),
+    Asset("ATLAS", "images/ui/stariliad_bg_upright.xml"),
 
     -- swap beam ui shader
     Asset("SHADER", "shaders/8star.ksh"),

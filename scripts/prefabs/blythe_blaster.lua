@@ -2,10 +2,15 @@ local assets =
 {
     Asset("ANIM", "anim/trusty_shooter.zip"),
     Asset("ANIM", "anim/swap_trusty_shooter.zip"),
+
+    Asset("ANIM", "anim/blythe_blaster.zip"),
+
+    Asset("IMAGE", "images/inventoryimages/blythe_blaster.tex"),
+    Asset("ATLAS", "images/inventoryimages/blythe_blaster.xml"),
 }
 
 local function OnEquip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "swap_trusty_shooter", "swap_trusty_shooter")
+    owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", "swap_blythe_blaster")
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
@@ -68,8 +73,8 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("trusty_shooter")
-    inst.AnimState:SetBuild("trusty_shooter")
+    inst.AnimState:SetBank("blythe_blaster")
+    inst.AnimState:SetBuild("blythe_blaster")
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
@@ -100,7 +105,11 @@ local function fn()
     inst:AddComponent("stariliad_pistol")
 
     inst:AddComponent("inspectable")
-    StarIliadDebug.SetDebugInventoryImage(inst)
+
+    -- StarIliadDebug.SetDebugInventoryImage(inst)
+    inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.imagename = "blythe_blaster"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/blythe_blaster.xml"
 
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(OnEquip)

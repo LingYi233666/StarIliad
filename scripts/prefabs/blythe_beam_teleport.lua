@@ -95,7 +95,7 @@ local function ProjectileOnHit(inst, attacker, target)
             end
         elseif attacker.components.combat and attacker.components.combat:CanTarget(target) then
             -- Can't teleport, just do attack
-            attacker.components.combat:DoAttack(target, inst, inst, nil, nil, math.huge)
+            -- attacker.components.combat:DoAttack(target, inst, inst, nil, nil, math.huge)
         end
     end
 
@@ -204,12 +204,8 @@ local function fn()
 
     inst.Physics:SetCollisionCallback(CollisionCallback)
 
-
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
-
-    inst:AddComponent("stariliad_spdamage_force")
-    inst.components.stariliad_spdamage_force:SetBaseDamage(17)
 
     inst:AddComponent("complexprojectile")
     inst.components.complexprojectile:SetHorizontalSpeed(27)

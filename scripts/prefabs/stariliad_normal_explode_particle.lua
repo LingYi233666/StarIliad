@@ -395,7 +395,7 @@ local function fn()
 
         local time_alive = inst:GetTimeAlive()
 
-        if time_alive > FRAMES and time_alive < 3 * FRAMES then
+        if time_alive > FRAMES then
             while num_to_emit_circle > 1 do
                 emit_circle_fn(effect)
                 emit_smoke2_fn(effect)
@@ -479,7 +479,7 @@ local function small_smoke_fn()
     local ember_sphere_emitter = CreateSphereEmitter(0.07)
     local smoke_sphere_emitter = CreateSphereEmitter(.1)
 
-
+    local num_to_emit = 1
 
     EmitterManager:AddEmitter(inst, nil, function()
         -- print("start AddEmitter")
@@ -491,12 +491,15 @@ local function small_smoke_fn()
 
         local time_alive = inst:GetTimeAlive()
 
-        if time_alive > FRAMES and time_alive < 3 * FRAMES then
-            for i = 1, 3 do
-                emit_ember_fn(effect, ember_sphere_emitter)
-            end
-            for i = 1, 3 do
-                emit_smoke_fn(effect, smoke_sphere_emitter)
+        if time_alive > FRAMES then
+            while num_to_emit > 0 do
+                for i = 1, 9 do
+                    emit_ember_fn(effect, ember_sphere_emitter)
+                end
+                for i = 1, 9 do
+                    emit_smoke_fn(effect, smoke_sphere_emitter)
+                end
+                num_to_emit = num_to_emit - 1
             end
         end
     end)

@@ -92,6 +92,8 @@ local function LaunchBeam(inst, target_pos, attacker)
 
     if victim then
         SpawnAt("blythe_beam_swap_hit_fx", final_pos)
+        ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .2, inst, 40)
+
         StarIliadUsurper.SwapPositionPre(attacker, victim)
     end
 

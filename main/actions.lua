@@ -63,3 +63,57 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_SHOO
         end
     end
 end))
+
+--------------------------------------------------------------
+
+AddAction("STARILIAD_OCEAN_LAND_JUMP", "STARILIAD_OCEAN_LAND_JUMP", function(act)
+    return true
+end)
+ACTIONS.STARILIAD_OCEAN_LAND_JUMP.priority = 0
+ACTIONS.STARILIAD_OCEAN_LAND_JUMP.distance = 3
+ACTIONS.STARILIAD_OCEAN_LAND_JUMP.strfn = function(act)
+    local dest_pos = act:GetActionPoint()
+    if TheWorld.Map:IsOceanAtPoint(dest_pos:Get()) then
+        return "TO_OCEAN"
+    end
+
+    return "TO_LAND"
+end
+ACTIONS.STARILIAD_OCEAN_LAND_JUMP.pre_action_cb = function(act)
+    local my_pos = act.doer:GetPosition()
+    local dest_pos = act:GetActionPoint()
+    local delta_pos = dest_pos - my_pos
+    local forward = delta_pos:GetNormalized()
+    local step = 0.2
+    local search_distance = math.min(delta_pos:Length(), 10)
+    local num_steps = search_distance / step
+
+    local search_bool = not act.doer:IsOnOcean()
+
+    num_steps = math.ceil(num_steps)
+    step = delta_pos:Length() / num_steps
+
+    local step2 = 1
+    -- local search_distance2 = 1
+
+    for i = 0, num_steps do
+        local tmp_pos = my_pos + forward * i * step
+        if TheWorld.Map:IsOceanAtPoint(tmp_pos:Get()) == search_bool then
+            local tmp_pos2 = tmp_pos + forward * step2
+            if TheWorld.Map:IsOceanAtPoint(tmp_pos2:Get()) == search_bool then
+                act:SetActionPoint((tmp_pos + tmp_pos2) / 2)
+                break
+            end
+        end
+    end
+end
+
+
+AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.STARILIAD_OCEAN_LAND_JUMP, function(inst, action)
+    return "stariliad_ocean_land_jump"
+end))
+
+AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_OCEAN_LAND_JUMP, function(inst)
+    inst:PerformPreviewBufferedAction()
+    return
+end))
