@@ -18,6 +18,13 @@ function StarIliadBasic.GetSkillDefine(name)
     end
 end
 
+function StarIliadBasic.IsCastByButton(name)
+    local skill_define = StarIliadBasic.GetSkillDefine(name)
+    return skill_define and
+        (skill_define.on_pressed or skill_define.on_released or skill_define.on_pressed_client or
+            skill_define.on_released_client)
+end
+
 -- COLLISION =
 -- {
 --     GROUND            = 32,

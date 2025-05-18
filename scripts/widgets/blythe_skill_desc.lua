@@ -3,6 +3,7 @@ local Image = require "widgets/image"
 local Grid = require "widgets/grid"
 local Text = require "widgets/text"
 local TextButton = require "widgets/textbutton"
+local StarIliadHUDTimelineExecuter = require "widgets/stariliad_hud_timeline_executer"
 
 local BlytheSkillDesc = Class(Widget, function(self, options)
     Widget._ctor(self, "BlytheSkillDesc")
@@ -57,7 +58,7 @@ end)
 
 
 function BlytheSkillDesc:SetText(text)
-    if text and type(text) == "string" then
+    if text and type(text) == "string" and #text > 0 then
         self.text:SetMultilineTruncatedString(text, 999, self.options.width - self.options.space_width * 2)
 
         local w, h = self.text:GetRegionSize()
@@ -68,6 +69,56 @@ function BlytheSkillDesc:SetText(text)
         self.text:SetString("")
         self.text:Hide()
     end
+end
+
+-----------------------------------------------------------------
+
+local SG_slide_show_text = {
+    onenter  = function(self, mem)
+        mem.length = 0
+        mem.max_length = StarIliadString.StrLen(mem.sliding_text)
+
+        self.te:SetTimeout(mem.max_length / mem.speed)
+    end,
+
+    onupdate = function(self, mem, dt)
+        mem.length = mem.length + dt * mem.speed
+
+        local l = math.floor(mem.length)
+        local text = StarIliadString.Strip(mem.sliding_text, 1, l)
+        self:SetText(text)
+    end,
+
+    onexit   = function(self, mem)
+        -- print("BlytheSkillDesc te exit")
+
+        self:SetText(mem.sliding_text)
+        self.te = nil
+    end,
+}
+
+function BlytheSkillDesc:SlideShowText(sliding_text)
+    self:CancelSlideShowText()
+
+    if #sliding_text <= 0 then
+        return
+    end
+
+    self.te = self:AddChild(StarIliadHUDTimelineExecuter(self))
+    self.te:SetFromTable(SG_slide_show_text)
+    self.te:Run({
+        sliding_text = sliding_text,
+        speed = 20,
+    })
+
+    self:SetText(nil)
+end
+
+function BlytheSkillDesc:CancelSlideShowText()
+    if self.te then
+        self.te:Cancel()
+    end
+    self.te = nil
 end
 
 return BlytheSkillDesc

@@ -87,7 +87,7 @@ end
 --         self:EndLearningAnim()
 --     end)
 
---     TheFocalPoint.SoundEmitter:PlaySound("wilson_rework/ui/skill_mastered")
+--     TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/skill_mastered")
 -- end
 
 -- function BlytheSkillListItem:EndLearningAnim(interrupt)

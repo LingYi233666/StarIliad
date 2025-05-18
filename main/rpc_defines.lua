@@ -1,3 +1,21 @@
+AddModRPCHandler("stariliad_rpc", "cast_skill", function(inst, name, pressed, x, y, z, ent)
+    local data = StarIliadBasic.GetSkillDefine(name)
+    local is_learned = inst.components.blythe_skiller:IsLearned(name)
+
+    if is_learned then
+        if pressed then
+            if data.on_pressed then
+                data.on_pressed(inst, x, y, z, ent)
+            end
+        else
+            if data.on_released then
+                data.on_released(inst, x, y, z, ent)
+            end
+        end
+    end
+end)
+
+
 AddModRPCHandler("stariliad_rpc", "usurper_shot_teleport", function(player, target1, target2)
     StarIliadUsurper.SwapPositionPst(target1, target2)
 end)
@@ -33,4 +51,27 @@ AddClientModRPCHandler("stariliad_rpc", "show_usurper_shot_screen", function(tar
     TheFrontEnd:PushScreen(StarIliadUsurperShotScreen(target1, target2))
 end)
 
--- SendModRPCToClient(MOD_RPC["stariliad_rpc"]["show_usurper_shot_screen"],ThePlayer.userid,ThePlayer,c_findnext("dummytarget"))
+-- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","missile")
+AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
+    function(sound, skill_name1, skill_name2, skill_name3)
+        local BlytheItemAcquired = require("screens/blythe_item_acquired")
+
+        local skill_names = {}
+        for _, v in pairs({ skill_name1, skill_name2, skill_name3 }) do
+            if v ~= nil then
+                table.insert(skill_names, v)
+            end
+        end
+
+        if #skill_names <= 0 then
+            return
+        end
+
+        local title = STRINGS.STARILIAD_UI.ITEM_ACQUIRED.FOUND ..
+            STRINGS.STARILIAD_UI.SKILL_DETAIL[skill_names[1]:upper()].NAME
+
+        TheFrontEnd:PushScreen(BlytheItemAcquired(ThePlayer, title, nil, sound, nil, skill_names))
+    end)
+
+
+-- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_usurper_shot_screen"],ThePlayer.userid,ThePlayer,c_findnext("dummytarget"))

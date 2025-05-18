@@ -41,6 +41,25 @@ STRINGS.STARILIAD_UI.MAIN_MENU = {
     },
 }
 
+STRINGS.STARILIAD_UI.MAGIC_TAB = {
+    KEY_CONFIG = "设置键位",
+}
+
+STRINGS.STARILIAD_UI.KEY_CONFIG_DIALOG = {
+    TITLE = "设置键位",
+    TEXT_BEFORE = "请按下对应的键位后再按确定来完成键位设置。\n不仅仅是键盘按键，鼠标中键或者侧键也可以进行设置哦！",
+    TEXT_AFTER = "当前选的按键是：%s。您可以点击确定键完成键位设置，或者重新选择按键。",
+
+    DO_SET_SKILL_KEY = "确定",
+    CLEAR_SKILL_KEY = "清除按键",
+    SET_KEY_CANCEL = "取消"
+}
+
+STRINGS.STARILIAD_UI.ITEM_ACQUIRED = {
+    FOUND = "获得了",
+    END = "。",
+}
+
 STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL = {
     -- SELECTED = "（当前弹药）",
     -- ENABLED = "（已启用）",
@@ -77,7 +96,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     WIDE_BEAM = {
         NAME = "宽光束",
-        DESC = "你的光束攻击能额外射出两条子光束，子光束的攻击力为主光束的25%。",
+        DESC = "你的光束攻击能额外射出两条子光束（此功能可在配置页面开关），子光束的攻击力为主光束的25%。",
     },
 
     WAVE_BEAM = {
@@ -92,7 +111,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     USURPER_SHOT = {
         NAME = "夺位射击",
-        DESC = "夺位射击是一种特殊的非杀伤性光束，它有两种工作模式。其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
+        DESC = "能够使用星际游侠爆能枪进行夺位射击。夺位射击能射出两种特殊的非杀伤性光束，其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
     },
 
     MISSILE = {
@@ -113,5 +132,10 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     GRAVITY_CONTROL = {
         NAME = "重力控制器",
         DESC = "通过引力平衡你受到的阻力。可以在水中行动自如。",
+    },
+
+    CONFIGURE_POWERSUIT = {
+        NAME = "调整装备",
+        DESC = "打开一个设置轮盘，在轮盘中，你可以切换爆能枪使用的弹药，或是开关某些特殊能力。",
     },
 }

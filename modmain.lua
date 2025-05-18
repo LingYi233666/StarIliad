@@ -60,6 +60,30 @@ Assets = {
     Asset("IMAGE", "images/ui/stariliad_bg_upright.tex"),
     Asset("ATLAS", "images/ui/stariliad_bg_upright.xml"),
 
+    Asset("IMAGE", "images/ui/blythe_down_view.tex"),
+    Asset("ATLAS", "images/ui/blythe_down_view.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_hexagon.tex"),
+    Asset("ATLAS", "images/ui/stariliad_hexagon.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_hexagon2.tex"),
+    Asset("ATLAS", "images/ui/stariliad_hexagon2.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_honeycomb.tex"),
+    Asset("ATLAS", "images/ui/stariliad_honeycomb.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_honeycomb_fill.tex"),
+    Asset("ATLAS", "images/ui/stariliad_honeycomb_fill.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_circle.tex"),
+    Asset("ATLAS", "images/ui/stariliad_circle.xml"),
+
+    Asset("IMAGE", "images/ui/stariliad_square.tex"),
+    Asset("ATLAS", "images/ui/stariliad_square.xml"),
+
+    Asset("IMAGE", "images/ui/skill_slot/unknown.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/unknown.xml"),
+
     -- swap beam ui shader
     Asset("SHADER", "shaders/8star.ksh"),
 
@@ -88,6 +112,7 @@ local import_list = {
     "actions",
     "language_chs",
     "basic_utils",
+    "string_utils",
     "math_utils",
     "weaponskill_utils",
     "usurper_utils",

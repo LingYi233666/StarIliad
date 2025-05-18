@@ -29,11 +29,6 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "wide_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
-
-
-        on_learned = function(inst, is_onload)
-
-        end,
     },
 
     {
@@ -83,9 +78,22 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 
         root = true,
+
+        on_pressed_client = function(inst)
+            if inst.replica.blythe_powersuit_configure then
+                inst.replica.blythe_powersuit_configure:TryOpenWheel()
+            end
+        end,
     },
 }
 
+-- Test
+-- for i = 1, 60 do
+--     table.insert(BLYTHE_SKILL_DEFINES, {
+--         name = "test_" .. tostring(i),
+--         dtype = BLYTHE_SKILL_TYPE.MAGIC,
+--     })
+-- end
 
 
 GLOBAL.BLYTHE_SKILL_TYPE = BLYTHE_SKILL_TYPE

@@ -48,6 +48,10 @@ function BlytheSkillList:CreateOutBarAndTitle()
     local up_bar_height = 33
 
     local bar_color = UICOLOURS.BROWN_MEDIUM
+    -- local bar_color = UICOLOURS.BLUE
+    -- local bar_color = RGB(103, 242, 167)
+
+
 
     self.left_bar = self:AddChild(Image("images/global.xml", "square.tex"))
     self.left_bar:SetTint(unpack(bar_color))
@@ -81,12 +85,13 @@ function BlytheSkillList:CreateOutBarAndTitle()
     self.upright_corner = self:AddChild(Image("images/ui/stariliad_bg_upright.xml", "stariliad_bg_upright.tex"))
     -- self.upright_corner:SetTint(107 / 255, 67 / 255, 42 / 255, 1)
     self.upright_corner:SetTint(73 / 255, 44 / 255, 25 / 255, 1)
-
+    -- self.upright_corner:SetTint(6 / 255, 177 / 255, 179 / 255, 1)
 
     -----------------------------------------------------------------------------
 
     self.title = self:AddChild(Text(TITLEFONT, 34))
     self.title:SetString(self.options.title)
+    -- self.title:SetColour(0, 0, 0, 1)
 
     local w, h = self.title:GetRegionSize()
     self.title:SetPosition(-self.options.width / 2 + w / 2 + 5, self.options.height / 2 + h / 2 + 3)

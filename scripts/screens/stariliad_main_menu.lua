@@ -105,6 +105,27 @@ function StarIliadMainMenu:_BuildHeaderTab(subscreener)
     return self.header_tabs.menu
 end
 
+function StarIliadMainMenu:SlideIn(duration, when_done)
+    duration = duration or 1
+    local start_pos = Vector3(0, -800)
+    self.bg:SetPosition(start_pos)
+    self.bg:MoveTo(start_pos, Vector3(0, 0), duration, when_done)
+end
+
+function StarIliadMainMenu:CancelSlideIn()
+    self.bg:CancelMoveTo()
+    self.bg:SetPosition(0, 0)
+end
+
+function StarIliadMainMenu:PlayLearningAnim(skill_names)
+    self.headertab_screener:OnMenuButtonSelected("powersuit_display")
+    self.tab_screens.powersuit_display:PlayLearningAnim(skill_names)
+end
+
+function StarIliadMainMenu:InterruptLearningAnim()
+    self.tab_screens.powersuit_display:InterruptLearningAnim()
+end
+
 function StarIliadMainMenu:OnControl(control, down)
     if StarIliadMainMenu._base.OnControl(self, control, down) then return true end
 

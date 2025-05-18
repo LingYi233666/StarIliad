@@ -71,7 +71,7 @@ function StarIliadUsurperShotArrows:OnUpdate()
     -- end
 
     -- if self.use_sound and will_shown_arrows > last_shown_arrows then
-    --     TheFocalPoint.SoundEmitter:PlaySound("stariliad_sfx/hud/swap_click")
+    --     TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/swap_click")
     -- end
 
     -- if self.progress >= 1 + (1.0 / num_arrows) * 2 then
@@ -95,7 +95,7 @@ function StarIliadUsurperShotArrows:OnUpdate()
     end
 
     if self.use_sound and new_cnt > old_cnt then
-        TheFocalPoint.SoundEmitter:PlaySound("stariliad_sfx/hud/swap_click")
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/swap_click")
     end
 end
 
