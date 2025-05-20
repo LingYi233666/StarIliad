@@ -1,5 +1,16 @@
 StarIliadBasic = {}
 
+function StarIliadBasic.IsWearingArmor(inst)
+    for k, v in pairs(inst.components.inventory.equipslots) do
+        if (v.components.armor ~= nil or v.components.resistance ~= nil)
+            and not v:HasTag("ignore_stariliad_armor_limit") then
+            return true
+        end
+    end
+
+    return false
+end
+
 function StarIliadBasic.GetFaceVector(inst)
     local angle = (inst.Transform:GetRotation() + 90) * DEGREES
     local sinangle = math.sin(angle)

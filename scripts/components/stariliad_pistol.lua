@@ -56,6 +56,15 @@ local function ApplyBeamStrengthen(inst, proj, attacker)
             proj._is_wide_beam:set(attacker.components.blythe_skiller:IsEnabled("wide_beam"))
             proj._is_wave_beam:set(attacker.components.blythe_skiller:IsEnabled("wave_beam"))
             proj._is_plasma_beam:set(attacker.components.blythe_skiller:IsEnabled("plasma_beam"))
+
+            if attacker.components.blythe_skiller:IsLearned("wave_beam") then
+                proj.components.planardamage:AddBonus(attacker, TUNING.BLYTHE_BEAM_WAVE_DAMAGE_BONUS, "wave_beam")
+            end
+
+            if attacker.components.blythe_skiller:IsLearned("plasma_beam") then
+                proj.components.stariliad_spdamage_force:AddBonus(attacker, TUNING.BLYTHE_BEAM_PLASMA_DAMAGE_BONUS,
+                    "plasma_beam")
+            end
         end
     end
 end

@@ -66,6 +66,14 @@ local function OnHit(inst, attacker, target)
     inst:Remove()
 end
 
+local function CopyDamage(proj_side, proj_main)
+    local sp_damage_planar = proj_main.components.planardamage:GetDamage()
+    local sp_damage_force = proj_main.components.stariliad_spdamage_force:GetDamage()
+
+    proj_side.components.planardamage:SetBaseDamage(sp_damage_planar)
+    proj_side.components.stariliad_spdamage_force:SetBaseDamage(sp_damage_force)
+end
+
 local function SpawnSideBeam(inst, attacker)
     local main_pos = inst:GetPosition()
     local attacker_pos = attacker:GetPosition()
@@ -101,8 +109,10 @@ local function SpawnSideBeam(inst, attacker)
         proj_side.side_beam_widen_duration_tmp = offset_data.duration
         proj_side.side_beam_widen_duration = 0
 
+        CopyDamage(proj_side, inst)
 
-        proj_side.components.stariliad_spdamage_force:AddMultiplier(attacker, 0.25, "wide_beam")
+        proj_side.components.planardamage:AddMultiplier(attacker, 0.25, "blythe_beam_side")
+        proj_side.components.stariliad_spdamage_force:AddMultiplier(attacker, 0.25, "blythe_beam_side")
 
         local forward_speed = inst.components.complexprojectile.horizontalSpeed
 
@@ -317,6 +327,9 @@ local function fn()
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
+
+    inst:AddComponent("planardamage")
+    inst.components.planardamage:SetBaseDamage(0)
 
     inst:AddComponent("stariliad_spdamage_force")
     inst.components.stariliad_spdamage_force:SetBaseDamage(TUNING.BLYTHE_BEAM_BASIC_DAMAGE)
