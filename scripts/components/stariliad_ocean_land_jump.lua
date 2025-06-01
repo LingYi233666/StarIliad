@@ -111,11 +111,16 @@ end
 
 function StarIliadOceanLandJump:EnableSwimming(enable)
     local x, y, z = self.inst.Transform:GetWorldPosition()
+    local has_gravity_control = StarIliadBasic.HasGravityControl(self.inst)
 
     if not self.is_swimming and enable then
         self:CreateSplash(Vector3(x, y + 1, z))
 
-        self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "stariliad_swimming", 0.5)
+        -- self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "stariliad_swimming", 0.5)
+
+        if not has_gravity_control then
+            self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "stariliad_swimming", 0.5)
+        end
     elseif self.is_swimming and not enable then
         self:CreateSplash(Vector3(x, y + 1, z))
 
@@ -123,6 +128,8 @@ function StarIliadOceanLandJump:EnableSwimming(enable)
 
         self.last_pos = nil
         self.distance_travel = 0
+    elseif self.is_swimming and has_gravity_control then
+        self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "stariliad_swimming")
     end
 
     self.is_swimming = enable
@@ -173,6 +180,18 @@ function StarIliadOceanLandJump:OnUpdate(dt)
         -- if not is_riding and moisture then
         --     moisture:DoDelta(10 * dt, true)
         -- end
+    end
+
+    -- if self:IsSwimming() and self.inst.components.moisture and self.inst.components.moisture:GetMoisturePercent() < 1.0 then
+    --     self.inst.components.moisture:AddRateBonus(self.inst, 1, "stariliad_swimming")
+    -- else
+    --     self.inst.components.moisture:RemoveRateBonus(self.inst, "stariliad_swimming")
+    -- end
+
+    if self:IsSwimming() and self.inst.components.moisture and self.inst.components.moisture:GetMoisturePercent() < 0.5 then
+        self.inst.components.moisture:AddRateBonus(self.inst, 0.25, "stariliad_swimming")
+    else
+        self.inst.components.moisture:RemoveRateBonus(self.inst, "stariliad_swimming")
     end
 end
 

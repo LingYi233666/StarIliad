@@ -4,6 +4,11 @@ local MakePlayerCharacter = require "prefabs/player_common"
 local assets = {
 	Asset("SCRIPT", "scripts/prefabs/player_common.lua"),
 
+	Asset("ANIM", "anim/blythe_parry.zip"),
+	Asset("ANIM", "anim/blythe_parry_fx.zip"),
+
+	Asset("ANIM", "anim/blythe_speedrun.zip"),
+
 	Asset("IMAGE", "images/saveslot_portraits/blythe.tex"), --存档图片
 	Asset("ATLAS", "images/saveslot_portraits/blythe.xml"),
 
@@ -96,6 +101,10 @@ local common_postinit = function(inst)
 	-- Minimap icon
 	inst.MiniMapEntity:SetIcon("blythe.tex")
 
+	inst.AnimState:AddOverrideBuild("blythe_parry_fx")
+	inst.AnimState:SetSymbolLightOverride("blythe_parry_fx", 0.7)
+	-- inst.AnimState:SetSymbolMultColour("blythe_parry_fx", 1, 1, 0, 1)
+
 	inst:AddTag("blythe")
 
 	inst:DoTaskInTime(1, function()
@@ -126,6 +135,10 @@ local master_postinit = function(inst)
 	inst:AddComponent("blythe_powersuit_configure")
 
 	inst:AddComponent("blythe_skill_speed_burst")
+
+	inst:AddComponent("blythe_skill_dodge")
+
+	inst:AddComponent("blythe_skill_parry")
 
 	--最喜欢的食物
 	-- inst.components.foodaffinity:AddPrefabAffinity("baconeggs", TUNING.AFFINITY_15_CALORIES_HUGE)

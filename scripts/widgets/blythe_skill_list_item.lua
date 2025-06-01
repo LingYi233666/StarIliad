@@ -20,7 +20,8 @@ local BlytheSkillListItem = Class(Widget, function(self, owner, options)
     -- }
 
     self.text_button = self:AddChild(TextButton())
-    self.text_button:SetFont(TITLEFONT)
+    -- self.text_button:SetFont(TITLEFONT)
+    self.text_button:SetFont(NUMBERFONT)
     self.text_button:SetTextSize(34)
     self.text_button:SetTextFocusColour({ 1, 1, 1, 1 })
 

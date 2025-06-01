@@ -35,9 +35,10 @@ local function OnHit(inst, attacker, target)
         if CanInteract(inst, v, inst.explode_range) then
             -- if attacker.components.combat and attacker.components.combat:CanTarget(v) then
             if not IsEntityDeadOrGhost(v, true) and v.components.combat and v.components.combat:CanBeAttacked(attacker) then
+                -- StarIliadBasic.TryBreakShieldState(target)
                 attacker.components.combat:DoAttack(v, inst, inst, nil, nil, math.huge)
             elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
-                v.components.workable:WorkedBy(attacker, 15)
+                v.components.workable:WorkedBy(attacker, inst.work_damage)
             end
         end
     end
@@ -113,7 +114,7 @@ end
 
 
 
-local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, explode_range, damage)
+local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, explode_range, damage, work_damage)
     local function fn()
         local inst = CreateEntity()
 
@@ -140,6 +141,7 @@ local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, exp
         inst.tail_prefab = tail_prefab
         inst.explode_prefab = explode_prefab
         inst.explode_range = explode_range
+        inst.work_damage = work_damage
 
         inst.Physics:SetCollisionCallback(CollisionCallback)
 
@@ -210,9 +212,9 @@ end
 return
     MakeMissile("blythe_missile", "blythe_missile_anim_normal", "blythe_missile_tail",
         { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
-        TUNING.BLYTHE_MISSILE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE),
+        TUNING.BLYTHE_MISSILE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE, TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
     MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_tail",
         "blythe_super_missile_explode_fx",
-        TUNING.BLYTHE_SUPER_MISSILE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE),
+        TUNING.BLYTHE_SUPER_MISSILE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE, TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE),
     MakeAnim("blythe_missile_anim_normal", "idle"),
     MakeAnim("blythe_missile_anim_super", "idle_super")

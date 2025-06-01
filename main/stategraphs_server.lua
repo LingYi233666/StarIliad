@@ -109,8 +109,44 @@ AddStategraphPostInit("wilson", function(sg)
     end
 end)
 
-local function PlayWaterSound(inst)
-    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, nil, true)
+-- attacked
+AddStategraphPostInit("wilson", function(sg)
+    local old_attacked = sg.events["attacked"].fn
+
+    sg.events["attacked"].fn = function(inst, ...)
+        if inst.sg.currentstate.name == "blythe_parry" then
+            return
+        end
+
+        return old_attacked(inst, ...)
+    end
+end)
+
+
+-- knockback
+AddStategraphPostInit("wilson", function(sg)
+    local old_knockback = sg.events["knockback"].fn
+
+    sg.events["knockback"].fn = function(inst, data, ...)
+        if inst.sg.currentstate.name == "blythe_parry" then
+            inst.sg:GoToState("knockbacklanded", data)
+            return
+        end
+
+        if inst.sg.currentstate.name == "blythe_dodge" and inst.components.health:IsInvincible() then
+            return
+        end
+
+        return old_knockback(inst, data, ...)
+    end
+end)
+
+local function PlayWaterSound(inst, volume)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, volume, true)
+end
+
+local function PlayRunWaterSound(inst)
+    return PlayWaterSound(inst, 0.5)
 end
 
 local function DoEquipmentFoleySounds(inst)
@@ -150,6 +186,19 @@ local function KillAimReticule(inst)
     end
 end
 
+local function IsShootChained(inst)
+    if inst.sg.laststate == inst.sg.currentstate then
+        return true
+    end
+
+    if inst:HasTag("blythe_can_counter") then
+        print("is counter !")
+        return true
+    end
+
+    return false
+end
+
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
     local state = State {
         name = name,
@@ -171,7 +220,7 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("hand_shoot")
-            inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
+            inst.sg.statemem.chained = IsShootChained(inst)
 
             if inst.sg.statemem.chained then
                 inst.AnimState:SetTime(chain_bonus + enter_bonus)
@@ -256,7 +305,7 @@ local function CreateShootCastAoeState(name, enter_bonus, shoot_time, free_time,
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
             inst.AnimState:PlayAnimation("hand_shoot")
-            inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
+            inst.sg.statemem.chained = IsShootChained(inst)
 
             inst.components.locomotor:Stop()
 
@@ -325,7 +374,7 @@ local function CreateShootAtState(name, enter_bonus, shoot_time, free_time, chai
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
             inst.AnimState:PlayAnimation("hand_shoot")
-            inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
+            inst.sg.statemem.chained = IsShootChained(inst)
 
             inst.components.locomotor:Stop()
 
@@ -428,182 +477,6 @@ AddStategraphState("wilson",
 )
 -------------------------------------------------------
 
-AddStategraphState("wilson", State {
-    name = "blythe_release_ice_fog",
-    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
-
-    onenter = function(inst)
-        if inst.components.combat:InCooldown() then
-            inst.sg:RemoveStateTag("abouttoattack")
-            inst:ClearBufferedAction()
-            inst.sg:GoToState("idle", true)
-            return
-        end
-
-        local buffaction = inst:GetBufferedAction()
-        local target = buffaction ~= nil and buffaction.target or nil
-        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-        inst.components.combat:SetTarget(target)
-        inst.components.combat:StartAttack()
-        inst.components.locomotor:Stop()
-
-
-        if target ~= nil and target:IsValid() then
-            inst:FacePoint(target.Transform:GetWorldPosition())
-            inst.sg.statemem.attacktarget = target
-            inst.sg.statemem.retarget = target
-        end
-
-        -- inst.sg.statemem.chained = inst.AnimState:IsCurrentAnimation("hand_shoot")
-        inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
-
-        inst.AnimState:PlayAnimation("hand_shoot")
-
-
-        local timeout = inst.components.combat.min_attack_period
-        if inst.sg.statemem.chained then
-            inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
-            timeout = math.max(timeout, TUNING.BLYTHE_ICE_FOG_FREE_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
-        else
-            timeout = math.max(timeout, TUNING.BLYTHE_ICE_FOG_FREE_TIME)
-        end
-
-        inst.sg:SetTimeout(timeout)
-    end,
-
-
-    ontimeout = function(inst)
-        inst.sg:RemoveStateTag("attack")
-        inst.sg:AddStateTag("idle")
-    end,
-
-    timeline =
-    {
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
-            if inst.sg.statemem.chained then
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
-            if inst.sg.statemem.chained then
-                inst.AnimState:SetTime(27 * FRAMES)
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME, function(inst)
-            if not inst.sg.statemem.chained then
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME, function(inst)
-            if not inst.sg.statemem.chained then
-                inst.AnimState:SetTime(27 * FRAMES)
-            end
-        end),
-    },
-
-    events =
-    {
-        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-        EventHandler("animqueueover", function(inst)
-            if inst.AnimState:AnimDone() then
-                inst.sg:GoToState("idle")
-            end
-        end),
-    },
-
-
-    onexit = function(inst)
-        inst.components.combat:SetTarget(nil)
-        if inst.sg:HasStateTag("abouttoattack") then
-            inst.components.combat:CancelAttack()
-        end
-    end,
-}
-)
-
-AddStategraphState("wilson", State {
-    name = "blythe_release_ice_fog_castaoe",
-    tags = { "notalking", "aoe", "stariliad_no_face_point" },
-
-    onenter = function(inst)
-        local buffaction = inst:GetBufferedAction()
-        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-
-        inst.AnimState:PlayAnimation("hand_shoot")
-        inst.sg.statemem.chained = (inst.sg.laststate == inst.sg.currentstate)
-
-        inst.components.locomotor:Stop()
-
-        if inst.sg.statemem.chained then
-            inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
-            inst.sg:SetTimeout(TUNING.BLYTHE_ICE_FOG_FREE_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS)
-        else
-            inst.sg:SetTimeout(TUNING.BLYTHE_ICE_FOG_FREE_TIME)
-        end
-
-        inst.sg.statemem.weapon = equip
-    end,
-
-
-    ontimeout = function(inst)
-        inst.sg:RemoveStateTag("aoe")
-        inst.sg:RemoveStateTag("stariliad_no_face_point")
-        inst.sg:AddStateTag("idle")
-    end,
-
-    timeline =
-    {
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
-            if inst.sg.statemem.chained then
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME - TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS, function(inst)
-            if inst.sg.statemem.chained then
-                inst.AnimState:SetTime(27 * FRAMES)
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_SHOOT_TIME, function(inst)
-            if not inst.sg.statemem.chained then
-                inst:PerformBufferedAction()
-                inst.sg:RemoveStateTag("abouttoattack")
-            end
-        end),
-
-        TimeEvent(TUNING.BLYTHE_ICE_FOG_WITHDRAW_GUN_TIME, function(inst)
-            if not inst.sg.statemem.chained then
-                inst.AnimState:SetTime(27 * FRAMES)
-            end
-        end),
-    },
-
-    events =
-    {
-        EventHandler("equip", function(inst) inst.sg:GoToState("idle") end),
-        EventHandler("unequip", function(inst) inst.sg:GoToState("idle") end),
-        EventHandler("animqueueover", function(inst)
-            if inst.AnimState:AnimDone() then
-                inst.sg:GoToState("idle")
-            end
-        end),
-    },
-
-
-    onexit = function(inst)
-
-    end,
-}
-)
-
 
 
 AddStategraphState("wilson", State {
@@ -639,14 +512,16 @@ AddStategraphState("wilson", State {
     onupdate = function(inst, dt)
         local target = inst.sg.statemem.attacktarget
         local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        local cur_proj = inst.components.blythe_powersuit_configure and
+            inst.components.blythe_powersuit_configure.projectile_prefab
 
         if equip
             and equip:IsValid()
             and inst.components.combat:CanTarget(target)
             and inst.components.playercontroller
-            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY,
-                CONTROL_ATTACK)
-            and not inst.sg.statemem.target_miss then
+            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY, CONTROL_ATTACK)
+            and not inst.sg.statemem.target_miss
+            and cur_proj == "blythe_ice_fog" then
             -- local anim_time = inst.AnimState:GetCurrentAnimationTime()
             -- local hold_time = TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME
             -- if anim_time > hold_time then
@@ -740,11 +615,14 @@ AddStategraphState("wilson", State {
 
     onupdate = function(inst, dt)
         local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        local cur_proj = inst.components.blythe_powersuit_configure and
+            inst.components.blythe_powersuit_configure.projectile_prefab
 
         if equip
             and equip:IsValid()
             and inst.components.playercontroller
-            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY) then
+            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY)
+            and cur_proj == "blythe_ice_fog" then
             if inst.sg.statemem.release_ice_fog then
                 inst.AnimState:SetTime(TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME)
 
@@ -886,8 +764,15 @@ AddStategraphState("wilson",
 
         onenter = function(inst)
             inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation("careful_walk_pre")
+
             inst.sg.mem.footsteps = 0
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            if inst.sg.statemem.gravity_control then
+                inst.AnimState:PlayAnimation("run_pre")
+            else
+                inst.AnimState:PlayAnimation("careful_walk_pre")
+            end
         end,
 
         onupdate = function(inst)
@@ -896,8 +781,18 @@ AddStategraphState("wilson",
 
         timeline = {
             TimeEvent(0 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            TimeEvent(4 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
         },
 
@@ -920,7 +815,15 @@ AddStategraphState("wilson",
         onenter = function(inst)
             inst.components.locomotor:RunForward()
 
-            local anim = "careful_walk"
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            local anim = "run_loop"
+            if inst.sg.statemem.gravity_control then
+                anim = "run_loop"
+            else
+                anim = "careful_walk"
+            end
+
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
@@ -934,14 +837,35 @@ AddStategraphState("wilson",
 
         timeline =
         {
+            TimeEvent(7 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+
             TimeEvent(11 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            TimeEvent(15 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
 
             TimeEvent(26 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
         },
 
@@ -963,7 +887,14 @@ AddStategraphState("wilson",
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("careful_walk_pst")
+
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            if inst.sg.statemem.gravity_control then
+                inst.AnimState:PlayAnimation("run_pst")
+            else
+                inst.AnimState:PlayAnimation("careful_walk_pst")
+            end
         end,
 
         timeline = {},
@@ -976,6 +907,164 @@ AddStategraphState("wilson",
                 end
             end),
         },
+    }
+)
+
+
+AddStategraphState("wilson", State {
+    name = "blythe_dodge",
+    tags = { "busy", "nopredict", "nointerrupt" },
+
+    onenter = function(inst, data)
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+
+        -- if equip then
+        --     inst.AnimState:PlayAnimation("atk_leap_lag")
+        -- else
+        --     inst.AnimState:PlayAnimation("blythe_speedrun_pre")
+        --     inst.AnimState:PushAnimation("blythe_speedrun_loop", true)
+        -- end
+        inst.AnimState:PlayAnimation("blythe_speedrun_pre")
+        inst.AnimState:PushAnimation("blythe_speedrun_loop", true)
+
+
+        inst.components.blythe_skill_dodge:OnDodgeStart(data.pos)
+
+        inst.sg:SetTimeout(0.2)
+        -- inst.sg:SetTimeout(0.33)
+    end,
+
+    onupdate = function(inst)
+        inst.components.blythe_skill_dodge:OnDodging()
+    end,
+
+    timeline = {
+        TimeEvent(0.15, function(inst)
+            if not inst.sg.statemem.dodge_stop then
+                inst.components.blythe_skill_dodge:ClearDodgeFX()
+            end
+        end),
+    },
+
+    ontimeout = function(inst)
+        -- if inst.sg.statemem.equip then
+        --     inst.AnimState:PlayAnimation("pickup_pst")
+        -- else
+        --     inst.AnimState:PlayAnimation("blythe_speedrun_pst")
+        -- end
+
+        -- inst.AnimState:PlayAnimation("blythe_speedrun_pst")
+        -- inst.AnimState:SetTime(0.05)
+        -- inst.AnimState:PlayAnimation("give_pst")
+        -- inst.AnimState:SetFrame(5)
+
+        -- if inst.sg.statemem.equip then
+        --     inst.AnimState:PlayAnimation("blythe_speedrun_withitem_pst")
+        -- else
+        --     inst.AnimState:PlayAnimation("blythe_speedrun_pst")
+        -- end
+
+        -- inst.AnimState:PlayAnimation("blythe_speedrun_withitem_pst")
+        -- inst.AnimState:SetTime(0.05)
+
+        inst.AnimState:PlayAnimation("run_pst")
+
+        if not inst.sg.statemem.dodge_stop then
+            -- print("OnDodgeStop ontimeout")
+            inst.components.blythe_skill_dodge:OnDodgeStop()
+            inst.sg.statemem.dodge_stop = true
+        end
+
+        inst.sg:GoToState("idle", true)
+    end,
+
+    onexit = function(inst)
+        if not inst.sg.statemem.dodge_stop then
+            -- print("OnDodgeStop onexit")
+            inst.components.blythe_skill_dodge:OnDodgeStop()
+            inst.sg.statemem.dodge_stop = true
+        end
+    end
+})
+
+AddStategraphState("wilson",
+    State {
+        name = "blythe_parry",
+        -- tags = { "parrying", "busy", "nomorph", },
+        tags = { "parrying", "busy", "nomorph", "autopredict" },
+        -- tags = { "parrying", "busy", "nomorph", "pausepredict" },
+
+
+        onenter = function(inst, data)
+            data = data or {}
+            if not inst.components.blythe_skill_parry then
+                inst.sg:GoToState("idle")
+                return
+            end
+
+            inst.components.locomotor:Stop()
+
+            local parry_target_pos = data.pos
+            -- local function callback(_, data)
+            --     parry_target_pos = data.pos
+            -- end
+            -- inst:ListenForEvent("blythe_parry_target_pos", callback)
+            -- inst:PerformBufferedAction()
+            -- inst:RemoveEventCallback("blythe_parry_target_pos", callback)
+
+            if parry_target_pos then
+                inst:ForceFacePoint(parry_target_pos)
+            end
+
+            inst.AnimState:PlayAnimation("blythe_parry")
+
+            inst.components.blythe_skill_parry:OnStartParry()
+
+            inst.sg.statemem.stop_when_exit = true
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/attack_weapon", nil, nil, true)
+
+
+            -- if inst.components.playercontroller ~= nil then
+            --     inst.components.playercontroller:RemotePausePrediction(3)
+            -- end
+            inst.sg:SetTimeout(13 * FRAMES)
+        end,
+
+        ontimeout = function(inst)
+            inst.components.blythe_skill_parry:OnStopParry()
+            inst.sg.statemem.stop_when_exit = false
+
+            inst.sg:GoToState("idle", true)
+        end,
+
+        timeline = {
+            -- TimeEvent(10 * FRAMES, function(inst)
+            --     inst.components.blythe_skill_parry:OnStopParry()
+            --     inst.sg.statemem.stop_when_exit = false
+            -- end),
+
+            TimeEvent(5 * FRAMES, function(inst)
+                inst.components.blythe_skill_parry:TrySpawnWaterSplash()
+            end),
+
+        },
+
+        events =
+        {
+            EventHandler("animover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            print("onexit at", inst.AnimState:GetCurrentAnimationFrame())
+            if inst.sg.statemem.stop_when_exit then
+                inst.components.blythe_skill_parry:OnStopParry()
+            end
+        end
     }
 )
 

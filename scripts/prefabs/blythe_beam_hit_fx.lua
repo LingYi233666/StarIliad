@@ -2,6 +2,9 @@ local assets = {
     Asset("ANIM", "anim/deer_fire_charge.zip"),
     Asset("ANIM", "anim/deer_ice_charge.zip"),
     Asset("ANIM", "anim/laser_explode_sm.zip"),
+
+    Asset("ANIM", "anim/lavaarena_firebomb.zip"),
+    Asset("ANIM", "anim/stariliad_firebomb_red_white.zip"),
 }
 
 local function CreateYellowAnim()
@@ -64,6 +67,26 @@ local function CreateRedAnim()
     return inst
 end
 
+local function CreateFireAnim()
+    local inst = CreateEntity()
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+    --[[Non-networked entity]]
+    inst.entity:SetCanSleep(false)
+    inst.persists = false
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+
+    inst.AnimState:SetBank("lavaarena_firebomb")
+    inst.AnimState:SetBuild("lavaarena_firebomb")
+    inst.AnimState:PlayAnimation("used")
+    inst.AnimState:SetLightOverride(1)
+
+    return inst
+end
+
 local function yellow_anim_fn()
     local inst = CreateYellowAnim()
     inst.AnimState:SetScale(0.5, 0.5, 0.5)
@@ -109,7 +132,31 @@ local function white_anim_fn()
     return inst
 end
 
-local function MakeHitFX(name, anim_fn, particle_prefab, particle_prefab2)
+local function fire_anim_fn()
+    local inst = CreateFireAnim()
+    inst.AnimState:SetScale(0.7, 0.7, 0.7)
+
+    return inst
+end
+
+local function purple_fire_anim_fn()
+    local inst = CreateFireAnim()
+    inst.AnimState:SetScale(0.7, 0.7, 0.7)
+    inst.AnimState:SetAddColour(0, 0, 1, 1)
+
+    return inst
+end
+
+local function red_fire_anim_fn()
+    local inst = CreateFireAnim()
+    inst.AnimState:SetScale(0.7, 0.7, 0.7)
+    inst.AnimState:SetAddColour(1, 0, 0, 1)
+    inst.AnimState:OverrideSymbol("sprkup", "stariliad_firebomb_red_white", "sprkup")
+
+    return inst
+end
+
+local function MakeHitFX(name, anim_fn, particle_prefab, particle_prefab2, soundoverride)
     local function fn()
         local inst = CreateEntity()
 
@@ -138,7 +185,7 @@ local function MakeHitFX(name, anim_fn, particle_prefab, particle_prefab2)
             return inst
         end
 
-        inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/beam_hit")
+        inst.SoundEmitter:PlaySound(soundoverride or "stariliad_sfx/prefabs/blaster/beam_hit")
 
         if particle_prefab then
             inst.particle = inst:SpawnChild(particle_prefab)
@@ -166,4 +213,7 @@ return MakeHitFX("blythe_beam_yellow_hit_fx", yellow_anim_fn, "blythe_beam_hit_p
     MakeHitFX("blythe_beam_green_purple_hit_fx", green_anim_fn, "blythe_beam_hit_particle_green_half",
         "blythe_beam_hit_particle_purple_half"),
     MakeHitFX("blythe_beam_red_hit_fx", red_anim_fn, "blythe_beam_hit_particle_red"),
-    MakeHitFX("blythe_beam_white_hit_fx", white_anim_fn, "blythe_beam_hit_particle_blue")
+    MakeHitFX("blythe_beam_white_hit_fx", white_anim_fn, "blythe_beam_hit_particle_blue"),
+    MakeHitFX("blythe_beam_large_yellow_hit_fx", fire_anim_fn, "blythe_beam_hit_particle"),
+    MakeHitFX("blythe_beam_large_purple_hit_fx", purple_fire_anim_fn, "blythe_beam_hit_particle_purple"),
+    MakeHitFX("blythe_beam_large_red_hit_fx", red_fire_anim_fn, "blythe_beam_hit_particle_red")

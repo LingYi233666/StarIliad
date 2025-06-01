@@ -28,8 +28,8 @@ local StarIliadOceanLandJump = Class(function(self, inst)
             if self.shadow_fx == nil then
                 self.shadow_fx = inst:SpawnChild("float_fx_back")
                 self.shadow_fx.Transform:SetPosition(0, 0.5, 0)
-                self.shadow_fx.Transform:SetScale(0.6, 1.3, 0.6)
-
+                self.shadow_fx.Transform:SetScale(0.6, 1, 0.6)
+                -- ThePlayer.replica.stariliad_ocean_land_jump.shadow_fx.Transform:SetScale(0.6, 1.2, 0.6)
                 -- self.shadow_fx.AnimState:SetLayer(LAYER_BACKGROUND)
                 -- self.shadow_fx.AnimState:SetSortOrder(3)
 

@@ -63,4 +63,32 @@ function StarIliadMath.GetReflectionSpeed(target_pos, collide_pos, speed)
     return Vector3(vx - 2 * dot_product * nx, 0, vy - 2 * dot_product * ny)
 end
 
+function StarIliadMath.RotateVector3(dir_1, axis, angle_degrees)
+    -- 1. 将角度从度数转换为弧度
+    local angle_radians = angle_degrees * DEGREES
+
+    -- 2. 确保旋转轴是单位向量
+    local k = axis:GetNormalized()
+
+    -- 3. 计算 cos(theta) 和 sin(theta)
+    local cos_theta = math.cos(angle_radians)
+    local sin_theta = math.sin(angle_radians)
+
+    -- 4. 执行罗德里格斯旋转公式的各个部分
+    -- V * cos(theta)
+    local term1 = dir_1 * cos_theta
+
+    -- (k x V) * sin(theta)
+    -- Vector3 类型提供了 CrossProduct 方法
+    local term2 = k:Cross(dir_1) * sin_theta
+
+    -- k * (k . V) * (1 - cos(theta))
+    -- Vector3 类型提供了 Dot 方法
+    local k_dot_dir_1 = k:Dot(dir_1)
+    local term3 = k * k_dot_dir_1 * (1 - cos_theta)
+
+    -- 5. 将所有部分相加得到旋转后的向量
+    return term1 + term2 + term3
+end
+
 GLOBAL.StarIliadMath = StarIliadMath

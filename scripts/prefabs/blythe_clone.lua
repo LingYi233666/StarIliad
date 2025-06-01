@@ -57,6 +57,20 @@ local function CommonFn()
         inst.components.skinner:CopySkinsFromPlayer(owner)
     end
 
+    inst.FadeIn = function(inst, duration)
+        local r, g, b, a = inst.AnimState:GetMultColour()
+        local a_speed = (1 - a) / duration
+
+        inst.fade_in_task = inst:DoPeriodicTask(0, function()
+            a = math.min(1, a + a_speed * FRAMES)
+            inst.AnimState:SetMultColour(r, g, b, a)
+            if a >= 1 then
+                inst.fade_in_task:Cancel()
+                inst.fade_in_task = nil
+            end
+        end)
+    end
+
     inst.FadeOut = function(inst, duration)
         local r, g, b, a = inst.AnimState:GetMultColour()
         local a_speed = a / duration

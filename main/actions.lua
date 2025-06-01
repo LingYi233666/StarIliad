@@ -115,5 +115,15 @@ end))
 
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_OCEAN_LAND_JUMP, function(inst)
     inst:PerformPreviewBufferedAction()
-    return
 end))
+
+--------------------------------------------------------------
+
+AddAction("BLYTHE_PARRY", "BLYTHE_PARRY", function(act)
+    act.doer:PushEvent("blythe_parry_target_pos", { pos = act:GetActionPoint() })
+    return true
+end)
+
+AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.BLYTHE_PARRY, "blythe_parry"))
+
+AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.BLYTHE_PARRY, "blythe_parry"))

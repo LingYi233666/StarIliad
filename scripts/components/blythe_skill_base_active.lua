@@ -57,7 +57,7 @@ local BlytheSkillBase_Active = Class(function(self, inst)
     self.can_cast_while_frozen = false
     self.can_cast_while_no_interrupt = false
     self.can_cast_while_riding = false
-    self.can_cast_while_wearing_armor = false
+    self.can_cast_while_wearing_armor = true
 end)
 
 function BlytheSkillBase_Active:_IsDead()

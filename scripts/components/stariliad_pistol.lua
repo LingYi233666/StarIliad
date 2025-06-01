@@ -65,6 +65,15 @@ local function ApplyBeamStrengthen(inst, proj, attacker)
                 proj.components.stariliad_spdamage_force:AddBonus(attacker, TUNING.BLYTHE_BEAM_PLASMA_DAMAGE_BONUS,
                     "plasma_beam")
             end
+
+            if attacker.components.blythe_skiller:IsLearned("parry") and attacker.components.blythe_skill_parry and attacker:HasTag("blythe_can_counter") then
+                proj._is_counter:set(true)
+                proj.components.planardamage:AddBonus(attacker, TUNING.BLYTHE_BEAM_PARRY_COUNTER_DAMAGE_BONUS,
+                    "parry_counter")
+                proj.components.complexprojectile:SetHorizontalSpeed(TUNING.BLYTHE_BEAM_SPEED +
+                    TUNING.BLYTHE_BEAM_PARRY_COUNTER_SPEED_BONUS)
+                attacker.components.blythe_skill_parry:SetCanCounter(false)
+            end
         end
     end
 end

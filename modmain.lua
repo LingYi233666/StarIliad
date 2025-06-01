@@ -33,6 +33,16 @@ PrefabFiles = {
     "blythe_missile_tail",
 
     "stariliad_water_tail",
+
+    -- "blythe_missile_test",
+
+    "blythe_parry_target",
+    "blythe_parry_spark",
+
+    "blythe_beam_arrow",
+
+    "blythe_dodge_start_circle",
+    "blythe_parry_water_splash",
 }
 
 Assets = {
@@ -116,6 +126,7 @@ local import_list = {
     "math_utils",
     "weaponskill_utils",
     "usurper_utils",
+    "parry_reflect_utils",
     "spdamage",
     "rpc_defines",
     "skill_defines",
@@ -128,6 +139,7 @@ local import_list = {
     "stategraphs_client",
     "hud",
     "scripts", -- not a good name
+    "upvalue_utils",
     "debug",
 }
 

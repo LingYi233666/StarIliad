@@ -89,7 +89,8 @@ function BlytheSkillList:CreateOutBarAndTitle()
 
     -----------------------------------------------------------------------------
 
-    self.title = self:AddChild(Text(TITLEFONT, 34))
+    -- self.title = self:AddChild(Text(TITLEFONT, 34))
+    self.title = self:AddChild(Text(NUMBERFONT, 34))
     self.title:SetString(self.options.title)
     -- self.title:SetColour(0, 0, 0, 1)
 

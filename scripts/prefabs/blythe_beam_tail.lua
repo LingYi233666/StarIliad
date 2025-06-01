@@ -6,6 +6,7 @@ local ARROW_YELLOW_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_yellow_colourenvelop
 local ARROW_PURPLE_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_purple_colourenvelope"
 local ARROW_GREEN_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_green_colourenvelope"
 local ARROW_RED_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_red_colourenvelope"
+local ARROW_BLUE_COLOUR_ENVELOPE_NAME = "blythe_beam_tail_blue_colourenvelope"
 
 local ARROW_SCALE_ENVELOPE_NAME = "blythe_beam_tail_scaleenvelope"
 
@@ -68,6 +69,18 @@ local function InitEnvelope()
         }
     )
 
+    EnvelopeManager:AddColourEnvelope(
+        ARROW_BLUE_COLOUR_ENVELOPE_NAME,
+        {
+            { 0,    IntColour(10, 220, 220, 25) },
+            { .075, IntColour(10, 225, 225, 200) },
+            { .3,   IntColour(10, 230, 230, 255) },
+            { .6,   IntColour(10, 229, 232, 255) },
+            { .9,   IntColour(10, 229, 232, 230) },
+            { 1,    IntColour(10, 229, 232, 0) },
+        }
+    )
+
     local arrow_max_scale = 5
     EnvelopeManager:AddVector2Envelope(
         ARROW_SCALE_ENVELOPE_NAME,
@@ -101,117 +114,88 @@ local function emit_arrow_fn(effect, pos, vel)
 end
 
 
-local function common_fn()
-    local inst = CreateEntity()
 
-    inst.entity:AddTransform()
-    inst.entity:AddNetwork()
-    inst.entity:AddFollower()
+local function MakeTail(name, color_name, sphere_emitter, distance)
+    distance = distance or 1
+    local function fn()
+        local inst = CreateEntity()
 
-    inst:AddTag("FX")
+        inst.entity:AddTransform()
+        inst.entity:AddNetwork()
+        inst.entity:AddFollower()
 
-    inst.entity:SetPristine()
+        inst:AddTag("FX")
 
-    inst.persists = false
 
-    --Dedicated server does not need to spawn local particle fx
-    if TheNet:IsDedicated() then
-        return inst
-    elseif InitEnvelope ~= nil then
-        InitEnvelope()
-    end
+        -- inst._static_event = net_event(inst.GUID, "static_dirty")
 
-    local effect = inst.entity:AddVFXEffect()
-    effect:InitEmitters(1)
+        inst.entity:SetPristine()
 
-    --SPARKLE
-    effect:SetRenderResources(0, ARROW_TEXTURE, ADD_SHADER)
-    effect:SetMaxNumParticles(0, 25)
-    effect:SetScaleEnvelope(0, ARROW_SCALE_ENVELOPE_NAME)
-    effect:SetMaxLifetime(0, ARROW_MAX_LIFETIME)
-    effect:SetBlendMode(0, BLENDMODE.Additive)
-    effect:SetUVFrameSize(0, 0.25, 1)
-    effect:SetSortOrder(0, 0)
-    effect:SetSortOffset(0, 0)
-    effect:SetDragCoefficient(0, 0.1)
-    effect:SetRotateOnVelocity(0, true)
+        inst.persists = false
 
-    inst.last_pos = nil
-
-    local sphere_emitter = CreateSphereEmitter(.1)
-
-    EmitterManager:AddEmitter(inst, nil, function()
-        local parent = inst.entity:GetParent()
-
-        if not parent then
-            return
+        --Dedicated server does not need to spawn local particle fx
+        if TheNet:IsDedicated() then
+            return inst
+        elseif InitEnvelope ~= nil then
+            InitEnvelope()
         end
 
-        if inst.last_pos == nil or (parent:GetPosition() - inst.last_pos):Length() >= 1 then
-            local vel = StarIliadBasic.GetFaceVector(parent)
-            emit_arrow_fn(effect, Vector3(sphere_emitter()), vel * GetRandomMinMax(0.25, 0.33))
+        local effect = inst.entity:AddVFXEffect()
+        effect:InitEmitters(1)
 
-            inst.last_pos = parent:GetPosition()
-        end
-    end)
+        --SPARKLE
+        effect:SetRenderResources(0, ARROW_TEXTURE, ADD_SHADER)
+        effect:SetMaxNumParticles(0, 128)
+        effect:SetScaleEnvelope(0, ARROW_SCALE_ENVELOPE_NAME)
+        effect:SetColourEnvelope(0, color_name)
+        effect:SetMaxLifetime(0, ARROW_MAX_LIFETIME)
+        effect:SetBlendMode(0, BLENDMODE.Additive)
+        effect:SetUVFrameSize(0, 0.25, 1)
+        effect:SetSortOrder(0, 0)
+        effect:SetSortOffset(0, 0)
+        effect:SetDragCoefficient(0, 0.1)
+        effect:SetRotateOnVelocity(0, true)
 
-    return inst
-end
+        inst.last_pos = nil
 
-local function yellow_fn()
-    local inst = common_fn()
+        -- local sphere_emitter = CreateSphereEmitter(.1)
 
-    if TheNet:IsDedicated() then
+        inst.sphere_emitter = sphere_emitter
+
+        EmitterManager:AddEmitter(inst, nil, function()
+            local parent = inst.entity:GetParent()
+
+            if not parent then
+                return
+            end
+
+            if inst.last_pos == nil or (parent:GetPosition() - inst.last_pos):Length() >= distance then
+                local vel = StarIliadBasic.GetFaceVector(parent)
+                emit_arrow_fn(effect, Vector3(inst.sphere_emitter()), vel * GetRandomMinMax(0.25, 0.33))
+
+                inst.last_pos = parent:GetPosition()
+            end
+        end)
+
+        -- inst:ListenForEvent("static_dirty", function()
+        --     effect:SetDragCoefficient(0, 0.33)
+        -- end)
+
         return inst
     end
 
-    local effect = inst.VFXEffect
-    effect:SetColourEnvelope(0, ARROW_YELLOW_COLOUR_ENVELOPE_NAME)
-
-    return inst
-end
-
-local function purple_fn()
-    local inst = common_fn()
-
-    if TheNet:IsDedicated() then
-        return inst
-    end
-
-    local effect = inst.VFXEffect
-    effect:SetColourEnvelope(0, ARROW_PURPLE_COLOUR_ENVELOPE_NAME)
-
-    return inst
-end
-
-local function green_fn()
-    local inst = common_fn()
-
-    if TheNet:IsDedicated() then
-        return inst
-    end
-
-    local effect = inst.VFXEffect
-    effect:SetColourEnvelope(0, ARROW_GREEN_COLOUR_ENVELOPE_NAME)
-
-    return inst
-end
-
-local function red_fn()
-    local inst = common_fn()
-
-    if TheNet:IsDedicated() then
-        return inst
-    end
-
-    local effect = inst.VFXEffect
-    effect:SetColourEnvelope(0, ARROW_RED_COLOUR_ENVELOPE_NAME)
-
-    return inst
+    return Prefab(name, fn, assets)
 end
 
 
-return Prefab("blythe_beam_tail_yellow", yellow_fn, assets),
-    Prefab("blythe_beam_tail_purple", purple_fn, assets),
-    Prefab("blythe_beam_tail_green", green_fn, assets),
-    Prefab("blythe_beam_tail_red", red_fn, assets)
+
+return MakeTail("blythe_beam_tail_yellow", ARROW_YELLOW_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.1)),
+    MakeTail("blythe_beam_tail_purple", ARROW_PURPLE_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.1)),
+    MakeTail("blythe_beam_tail_green", ARROW_GREEN_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.1)),
+    MakeTail("blythe_beam_tail_red", ARROW_RED_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.1)),
+    MakeTail("blythe_beam_tail_large_yellow", ARROW_YELLOW_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
+    MakeTail("blythe_beam_tail_large_purple", ARROW_PURPLE_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
+    MakeTail("blythe_beam_tail_large_green", ARROW_GREEN_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
+    MakeTail("blythe_beam_tail_large_red", ARROW_RED_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
+    MakeTail("blythe_dodge_tail_blue", ARROW_BLUE_COLOUR_ENVELOPE_NAME,
+        StarIliadMath.CreateCylinderEmitter(0.1, 0.3, 0.3, 1.5), 0)

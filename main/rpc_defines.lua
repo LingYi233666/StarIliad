@@ -32,6 +32,12 @@ AddModRPCHandler("stariliad_rpc", "enable_skill", function(player, skill_name, e
     end
 end)
 
+-- AddModRPCHandler("stariliad_rpc", "remote_pause_control", function(player, num_frames)
+--     if player and player.components.playercontroller then
+--         player.components.playercontroller:RemotePausePrediction(num_frames)
+--     end
+-- end)
+
 AddModRPCHandler("stariliad_rpc", "switch_enable_skill", function(player, skill_name)
     if skill_name and player.components.blythe_skiller and player.components.blythe_skiller:IsLearned(skill_name) then
         local enabled = player.components.blythe_skiller:IsEnabled(skill_name)
@@ -71,7 +77,20 @@ AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
             STRINGS.STARILIAD_UI.SKILL_DETAIL[skill_names[1]:upper()].NAME
 
         TheFrontEnd:PushScreen(BlytheItemAcquired(ThePlayer, title, nil, sound, nil, skill_names))
-    end)
+    end
+)
+
+AddClientModRPCHandler("stariliad_rpc", "make_facing_dirty", function()
+    if ThePlayer and ThePlayer:IsValid() and ThePlayer.AnimState then
+        ThePlayer.AnimState:MakeFacingDirty()
+    end
+end)
+
+AddClientModRPCHandler("stariliad_rpc", "goto_parry_sg", function(x, y, z)
+    if ThePlayer and ThePlayer:IsValid() and ThePlayer.sg and ThePlayer.sg.sg and ThePlayer.sg.sg.name == "wilson_client" then
+        ThePlayer.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
+    end
+end)
 
 
 -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_usurper_shot_screen"],ThePlayer.userid,ThePlayer,c_findnext("dummytarget"))

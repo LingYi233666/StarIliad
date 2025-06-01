@@ -72,12 +72,13 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
             Vector3(0, 0),
             Vector3(100, 0),
             Vector3(190, -160),
+            -- Vector3(190, -175),
         },
 
         color = polylines_color,
 
         thickness = 3,
-    }, Vector3(-250, 228))
+    }, Vector3(-250, 228)) -- Vector3(-250, 243)
 
 
     self.polylines_2 = self:AddPolylines({
@@ -85,24 +86,27 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
             Vector3(0, 0),
             Vector3(90, 0),
             Vector3(140, 100),
+            -- Vector3(140, 68),
         },
 
         color = polylines_color,
 
         thickness = 3,
-    }, Vector3(-200, -62))
+    }, Vector3(-200, -62)) -- Vector3(-200, -30)
 
     self.polylines_3 = self:AddPolylines({
         points = {
             Vector3(0, 0),
             Vector3(-120, 0),
             Vector3(-240, -80),
+            -- Vector3(140, 100),
+            -- Vector3(-240, -95),
         },
 
         color = polylines_color,
 
         thickness = 3,
-    }, Vector3(248, 207))
+    }, Vector3(248, 207)) -- Vector3(248, 222)
 
 
     -- self.test_bar = self:AddChild(Image("images/global.xml", "square.tex"))
@@ -120,6 +124,9 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
     self.lists[BLYTHE_SKILL_TYPE.ENERGY]:SetPosition(-350, 100)
     self.lists[BLYTHE_SKILL_TYPE.KINETIC]:SetPosition(-325, -120)
     self.lists[BLYTHE_SKILL_TYPE.SUIT]:SetPosition(350, 150)
+    -- self.lists[BLYTHE_SKILL_TYPE.ENERGY]:SetPosition(-350, 115)
+    -- self.lists[BLYTHE_SKILL_TYPE.KINETIC]:SetPosition(-325, -105)
+    -- self.lists[BLYTHE_SKILL_TYPE.SUIT]:SetPosition(350, 165)
 
     self.skill_desc = self:AddChild(BlytheSkillDesc({
         width = 900,
@@ -163,13 +170,16 @@ function BlythePowersuitDisplay:CreateSkillList(dtype, widget_width, widget_heig
     end
 
     local SPACE_HEIGHT = 5
+    local PER_HEIGHT = 35
+    -- local PER_HEIGHT = 30
+
 
     if widget_width == nil then
         widget_width = 200
     end
 
     if widget_height == nil then
-        widget_height = #skills_data * 35 + SPACE_HEIGHT * 2
+        widget_height = #skills_data * PER_HEIGHT + SPACE_HEIGHT * 2
     end
 
 

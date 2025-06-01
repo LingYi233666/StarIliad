@@ -19,6 +19,17 @@ function StarIliadBasic.GetFaceVector(inst)
     return Vector3(sinangle, 0, cosangle)
 end
 
+function StarIliadBasic.GetFaceAngle(inst, target)
+    local myangle = inst:GetRotation()
+    local faceguyangle = inst:GetAngleToPoint(target:GetPosition():Get())
+    local deltaangle = math.abs(myangle - faceguyangle)
+    if deltaangle > 180 then
+        deltaangle = 360 - deltaangle
+    end
+
+    return deltaangle
+end
+
 function StarIliadBasic.GetSkillDefine(name)
     name = name:lower()
 
@@ -27,6 +38,11 @@ function StarIliadBasic.GetSkillDefine(name)
             return data
         end
     end
+end
+
+function StarIliadBasic.HasGravityControl(inst)
+    return (inst.components.blythe_skiller and inst.components.blythe_skiller:IsLearned("gravity_control"))
+        or (inst.replica.blythe_skiller and inst.replica.blythe_skiller:IsLearned("gravity_control"))
 end
 
 function StarIliadBasic.IsCastByButton(name)
@@ -89,6 +105,71 @@ function StarIliadBasic.PlayShootSound(inst, weapon)
     end
 
     inst.SoundEmitter:PlaySound(proj_data.sound, nil, nil, true)
+end
+
+function StarIliadBasic.DamageSum(...)
+    local total = 0
+
+    for _, v in pairs({ ... }) do
+        if v then
+            if type(v) == "number" then
+                total = total + v
+            elseif type(v) == "table" then
+                for _, v2 in pairs(v) do
+                    total = total + v2
+                end
+            end
+        end
+    end
+
+    return total
+end
+
+function StarIliadBasic.IsShieldState(target)
+    return target and target:IsValid() and target.sg and target.sg.currentstate.name == "shield"
+end
+
+function StarIliadBasic.TryBreakShieldState(target)
+    if not StarIliadBasic.IsShieldState(target) then
+        return
+    end
+
+    -- target:PushEvent("exitshield")
+
+    if not (target.brain and target.brain.bt and target.brain.bt.root) then
+        return
+    end
+
+    local use_shield_nodes = {}
+    local queue = { target.brain.bt.root }
+
+    while #queue > 0 do
+        local node = table.remove(queue, 1)
+        if node.name == "UseShield" then
+            table.insert(use_shield_nodes, node)
+        end
+
+        if node.children then
+            for _, v in pairs(node.children) do
+                table.insert(queue, v)
+            end
+        end
+    end
+
+    for _, node in pairs(use_shield_nodes) do
+        -- print("Process UseShield:", node)
+        node.scareendtime = 0
+        node.damagetaken = 0
+        node.timelastattacked = 0
+        node.status = SUCCESS
+        -- print(node:TimeToEmerge())
+    end
+
+    if target.sg.sg.events["exitshield"] then
+        target.sg:HandleEvent("exitshield")
+    else
+        target:PushEvent("exitshield")
+    end
 end
 
 GLOBAL.StarIliadBasic = StarIliadBasic

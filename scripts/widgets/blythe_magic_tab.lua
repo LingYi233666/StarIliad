@@ -44,7 +44,8 @@ local BlytheMagicTab = Class(Widget, function(self, owner)
         end
     end
 
-    self.title = self:AddChild(Text(TITLEFONT, 34))
+    -- self.title = self:AddChild(Text(TITLEFONT, 34))
+    self.title = self:AddChild(Text(NUMBERFONT, 34))
     self.title:SetPosition(342, 250)
     -- self.title:SetColour(UICOLOURS.GOLD)
 
