@@ -16,6 +16,14 @@ local StarIliadSkillSlot = Class(ImageButton, function(self, skill_name)
     self.icon:Hide()
     self.icon:SetScale(default_scale)
 
+    self.recharge = self:AddChild(UIAnim())
+    self.recharge:GetAnimState():SetBank("recharge_meter")
+    self.recharge:GetAnimState():SetBuild("recharge_meter")
+    self.recharge:GetAnimState():SetMultColour(1, 1, 1, 0.8)
+    -- local s = 0.93
+    -- self.recharge:SetScale(s, s, s)
+    self.recharge:Hide()
+
     self:SetNormalScale(default_scale)
     self:SetFocusScale(default_scale)
 
@@ -61,6 +69,39 @@ function StarIliadSkillSlot:EnableIcon(enable)
         self.icon:SetTint(0, 0, 0, 1)
     end
     self.image:SetTint(0.5, 0.5, 0.5, 0.25)
+end
+
+function StarIliadSkillSlot:EnableFlashing(enable, delay)
+    if self.flashing_task then
+        self.flashing_task:Cancel()
+        self.flashing_task = nil
+    end
+    if self.delay_flashing_task then
+        self.delay_flashing_task:Cancel()
+        self.delay_flashing_task = nil
+    end
+    self.recharge:Hide()
+
+    if enable then
+        self.recharge:Show()
+        self.recharge:GetAnimState():SetPercent("frame_pst", 0.49)
+        -- self.recharge:GetAnimState():PlayAnimation("frame_pst", true)
+        -- self.recharge:GetAnimState():SetDeltaTimeMultiplier(5)
+
+        self.flashing_task = self.inst:DoStaticPeriodicTask(FRAMES * 3, function()
+            if self.recharge.shown then
+                self.recharge:Hide()
+            else
+                self.recharge:Show()
+            end
+        end)
+
+        if delay and delay >= 0 then
+            self.delay_flashing_task = self.inst:DoStaticTaskInTime(delay, function()
+                self:EnableFlashing(false)
+            end)
+        end
+    end
 end
 
 return StarIliadSkillSlot

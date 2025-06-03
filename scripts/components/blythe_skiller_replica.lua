@@ -78,6 +78,19 @@ function BlytheSkiller:PrintInputHandler()
     end
 end
 
+-- function BlytheSkiller:SetRootInputHandler()
+--     for _, v in pairs(BLYTHE_SKILL_DEFINES) do
+--         if v.root
+--             and self:IsLearned(v.name)
+--             and StarIliadBasic.IsCastByButton(v.name)
+--             and v.default_key
+--             and not self:KeyHasBeenUsed(v.default_key)
+--             and not self:SkillHasBeenKeyed(v.name) then
+--             self:SetInputHandler(v.default_key, v.name, true)
+--         end
+--     end
+-- end
+
 function BlytheSkiller:SetInputHandler(key, name, save_to_file)
     if name ~= nil and not self:IsLearned(name) then
         return
@@ -113,6 +126,20 @@ function BlytheSkiller:RemoveInputHandler(name, save_to_file)
     if save_to_file then
         self:SaveToFile()
     end
+end
+
+function BlytheSkiller:KeyHasBeenUsed(key)
+    return self.input_handler[key] ~= nil
+end
+
+function BlytheSkiller:SkillHasBeenKeyed(name)
+    for k, v in pairs(self.input_handler) do
+        if v == name then
+            return true
+        end
+    end
+
+    return false
 end
 
 function BlytheSkiller:IsLearned(name)

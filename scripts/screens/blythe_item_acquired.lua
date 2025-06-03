@@ -8,6 +8,7 @@ local Grid = require "widgets/grid"
 local Text = require "widgets/text"
 local StarIliadMainMenu = require "screens/stariliad_main_menu"
 local BlytheSkillDesc = require "widgets/blythe_skill_desc"
+local ImageButton = require "widgets/imagebutton"
 
 local BlytheItemAcquired = Class(Screen,
     function(self, owner, title_str, description_str, sound, duration, skill_names, orphan_widgets)
@@ -28,10 +29,6 @@ local BlytheItemAcquired = Class(Screen,
 
         self.root = self:AddChild(TEMPLATES.ScreenRoot("BlytheItemAcquired"))
 
-        -- self.box  = self.root:AddChild(Image("images/global.xml", "square.tex"))
-        -- self.box:SetSize(530, 125)
-        -- self.box:SetTint(unpack(UICOLOURS.BLACK))
-
         self.box = self.root:AddChild(BlytheSkillDesc({
             width = 530,
             height = 125,
@@ -49,13 +46,22 @@ local BlytheItemAcquired = Class(Screen,
         self.description:SetString(description_str)
         -- self.description:SetColour(UICOLOURS.GOLD)
 
+        self.black = self:AddChild(ImageButton("images/global.xml", "square.tex"))
+        self.black.image:SetVRegPoint(ANCHOR_MIDDLE)
+        self.black.image:SetHRegPoint(ANCHOR_MIDDLE)
+        self.black.image:SetVAnchor(ANCHOR_MIDDLE)
+        self.black.image:SetHAnchor(ANCHOR_MIDDLE)
+        self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
+        self.black.image:SetTint(0, 0, 0, 0)
+        self.black:SetOnClick(function() TheFrontEnd:PopScreen(self) end)
+
         if title_str and description_str then
             self.title:SetPosition(0, 25)
             self.description:SetPosition(0, -25)
         end
 
         if sound then
-            TheFrontEnd:GetSound():PlaySound(sound)
+            TheFrontEnd:GetSound():PlaySound(sound, "blythe_item_acquired_music")
         end
 
         SetAutopaused(true)
@@ -69,7 +75,19 @@ local BlytheItemAcquired = Class(Screen,
 
 function BlytheItemAcquired:OnDestroy()
     SetAutopaused(false)
+    if TheFrontEnd:GetSound():PlayingSound("blythe_item_acquired_music") then
+        TheFrontEnd:GetSound():KillSound("blythe_item_acquired_music")
+    end
     BlytheItemAcquired._base.OnDestroy(self)
+end
+
+function BlytheItemAcquired:OnControl(control, down)
+    if BlytheItemAcquired._base.OnControl(self, control, down) then return true end
+
+    if not down and (control == CONTROL_CANCEL or control == CONTROL_ACCEPT or control == CONTROL_ACTION) then
+        TheFrontEnd:PopScreen(self)
+        return true
+    end
 end
 
 function BlytheItemAcquired:ScaleIn()
@@ -120,7 +138,7 @@ function BlytheItemAcquired:OnUpdate()
 
             if self.skill_names and #(self.skill_names) > 0 then
                 local main_menu = StarIliadMainMenu(self.owner)
-                main_menu.tab_screens.powersuit_display:MakeItemsGray(self.skill_names)
+                main_menu:MakeItemsGray(self.skill_names)
 
                 main_menu:SlideIn(1, function()
                     main_menu:PlayLearningAnim(self.skill_names)
@@ -131,34 +149,5 @@ function BlytheItemAcquired:OnUpdate()
         end
     end
 end
-
--- function BlytheItemAcquired:OnUpdate()
---     local time_elapse = math.min(GetStaticTime() - self.start_time, self.duration_close)
---     -- self.duration_close
-
---     local min_scale_x = 0.5
---     local max_scale_x = 1
---     local min_scale_y = 0.05
---     local max_scale_y = 1
-
---     local sx = easing.outCubic(time_elapse, min_scale_x, max_scale_x - min_scale_x, self.duration_close)
---     local sy = easing.outCubic(time_elapse, min_scale_y, max_scale_y - min_scale_y, self.duration_close)
-
---     self.box:SetScale(sx, sy)
-
---     if time_elapse >= self.duration_close then
---         -- if self.close_callback then
---         --     self.close_callback()
---         -- end
---         if self.skill_names and #(self.skill_names) > 0 then
---             local main_menu = StarIliadMainMenu(self.owner)
---             main_menu:SlideIn(1, function()
---                 main_menu:PlayLearningAnim(self.skill_names)
---             end)
---             TheFrontEnd:PushScreen(main_menu)
---         end
---         TheFrontEnd:PopScreen(self)
---     end
--- end
 
 return BlytheItemAcquired

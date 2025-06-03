@@ -37,6 +37,7 @@ local function OnHit(inst, attacker, target)
             if not IsEntityDeadOrGhost(v, true) and v.components.combat and v.components.combat:CanBeAttacked(attacker) then
                 -- StarIliadBasic.TryBreakShieldState(target)
                 attacker.components.combat:DoAttack(v, inst, inst, nil, nil, math.huge)
+                v:AddDebuff("stariliad_debuff_shield_break", "stariliad_debuff_shield_break")
             elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
                 v.components.workable:WorkedBy(attacker, inst.work_damage)
             end

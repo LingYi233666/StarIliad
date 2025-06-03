@@ -916,17 +916,10 @@ AddStategraphState("wilson", State {
     tags = { "busy", "nopredict", "nointerrupt" },
 
     onenter = function(inst, data)
-        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-
-        -- if equip then
-        --     inst.AnimState:PlayAnimation("atk_leap_lag")
-        -- else
-        --     inst.AnimState:PlayAnimation("blythe_speedrun_pre")
-        --     inst.AnimState:PushAnimation("blythe_speedrun_loop", true)
-        -- end
+        inst.AnimState:Hide("ARM_carry")
+        inst.AnimState:Show("ARM_normal")
         inst.AnimState:PlayAnimation("blythe_speedrun_pre")
         inst.AnimState:PushAnimation("blythe_speedrun_loop", true)
-
 
         inst.components.blythe_skill_dodge:OnDodgeStart(data.pos)
 
@@ -939,11 +932,11 @@ AddStategraphState("wilson", State {
     end,
 
     timeline = {
-        TimeEvent(0.15, function(inst)
-            if not inst.sg.statemem.dodge_stop then
-                inst.components.blythe_skill_dodge:ClearDodgeFX()
-            end
-        end),
+        -- TimeEvent(0.15, function(inst)
+        --     if not inst.sg.statemem.dodge_stop then
+        --         inst.components.blythe_skill_dodge:ClearDodgeFX()
+        --     end
+        -- end),
     },
 
     ontimeout = function(inst)
@@ -983,6 +976,12 @@ AddStategraphState("wilson", State {
             -- print("OnDodgeStop onexit")
             inst.components.blythe_skill_dodge:OnDodgeStop()
             inst.sg.statemem.dodge_stop = true
+        end
+
+        local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+        if equip then
+            inst.AnimState:Show("ARM_carry")
+            inst.AnimState:Hide("ARM_normal")
         end
     end
 })

@@ -58,24 +58,4 @@ function GLOBAL.si_allskills()
     end
 end
 
-AddComponentPostInit("dynamicmusic", function(self)
-    print("StarIliad hack:")
-    -- print(debug.getupvalue(self._ctor, 1))
-    print(self._ctor)
-
-    local function TestFn()
-        StarIliadUpvalue.GetUpvalue(self._ctor, "TRIGGERED_DANGER_MUSIC")
-    end
-
-    -- 使用 pcall 来“捕获”错误
-    local success, result_or_err = pcall(TestFn)
-
-    if success then
-        print("操作成功！结果是:", result_or_err)
-    else
-        print("操作失败！错误信息是:", result_or_err)
-        -- 可以在这里进行错误处理
-    end
-end)
-
 GLOBAL.StarIliadDebug = StarIliadDebug

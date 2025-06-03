@@ -151,8 +151,36 @@ local master_postinit = function(inst)
 	inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
 
 	inst:DoTaskInTime(1, function()
-		inst.components.blythe_skiller:LearnRootSkills()
+		local new_skills = inst.components.blythe_skiller:LearnRootSkills()
+
+		if #new_skills > 0 then
+			inst:DoTaskInTime(0.5, function()
+				for _, name in pairs(new_skills) do
+					local key = StarIliadBasic.GetSkillDefine(name).default_key
+					if key and StarIliadBasic.IsCastByButton(name) then
+						SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["set_skill_key"], inst.userid, key, name, true)
+					end
+				end
+			end)
+		end
 	end)
+
+	-- inst:DoTaskInTime(1.5, function()
+	-- 	SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["set_root_skill_key"], inst.userid)
+	-- end)
+
+	-- 	function BlytheSkiller:SetRootInputHandler()
+	--     for _, v in pairs(BLYTHE_SKILL_DEFINES) do
+	--         if v.root
+	--             and self:IsLearned(v.name)
+	--             and StarIliadBasic.IsCastByButton(v.name)
+	--             and v.default_key
+	--             and not self:KeyHasBeenUsed(v.default_key)
+	--             and not self:SkillHasBeenKeyed(v.name) then
+	--             self:SetInputHandler(v.default_key, v.name, true)
+	--         end
+	--     end
+	-- end
 end
 
 return MakePlayerCharacter("blythe", prefabs, assets, common_postinit, master_postinit, start_inv)

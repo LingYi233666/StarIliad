@@ -21,13 +21,17 @@ end, nil, {
 
 
 function BlytheSkiller:LearnRootSkills()
+	local new_skills = {}
 	for _, v in pairs(BLYTHE_SKILL_DEFINES) do
 		if v.root then
 			if not self:IsLearned(v.name) then
 				self:Learn(v.name)
+				table.insert(new_skills, v.name)
 			end
 		end
 	end
+
+	return new_skills
 end
 
 -- ThePlayer.components.blythe_skiller:Learn("PHANTOM_SWORD")

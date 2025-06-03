@@ -117,13 +117,57 @@ function StarIliadMainMenu:CancelSlideIn()
     self.bg:SetPosition(0, 0)
 end
 
+function StarIliadMainMenu:MakeItemsGray(skill_names)
+    local is_suit = false
+    local is_magic = false
+
+    for _, v in pairs(skill_names) do
+        local def = StarIliadBasic.GetSkillDefine(v)
+        if def.dtype == BLYTHE_SKILL_TYPE.MAGIC then
+            is_magic = true
+        else
+            is_suit = true
+        end
+    end
+
+    if is_suit and is_magic then
+        print("Can't make items gray !!!")
+    elseif is_suit then
+        self.headertab_screener:OnMenuButtonSelected("powersuit_display")
+        self.tab_screens.powersuit_display:MakeItemsGray(skill_names)
+    elseif is_magic then
+        self.headertab_screener:OnMenuButtonSelected("magic_tab")
+        self.tab_screens.magic_tab:MakeItemsGray(skill_names)
+    end
+end
+
 function StarIliadMainMenu:PlayLearningAnim(skill_names)
-    self.headertab_screener:OnMenuButtonSelected("powersuit_display")
-    self.tab_screens.powersuit_display:PlayLearningAnim(skill_names)
+    local is_suit = false
+    local is_magic = false
+
+    for _, v in pairs(skill_names) do
+        local def = StarIliadBasic.GetSkillDefine(v)
+        if def.dtype == BLYTHE_SKILL_TYPE.MAGIC then
+            is_magic = true
+        else
+            is_suit = true
+        end
+    end
+
+    if is_suit and is_magic then
+        print("Can't play learning anim !!!")
+    elseif is_suit then
+        self.headertab_screener:OnMenuButtonSelected("powersuit_display")
+        self.tab_screens.powersuit_display:PlayLearningAnim(skill_names)
+    elseif is_magic then
+        self.headertab_screener:OnMenuButtonSelected("magic_tab")
+        self.tab_screens.magic_tab:PlayLearningAnim(skill_names)
+    end
 end
 
 function StarIliadMainMenu:InterruptLearningAnim()
     self.tab_screens.powersuit_display:InterruptLearningAnim()
+    self.tab_screens.magic_tab:InterruptLearningAnim()
 end
 
 function StarIliadMainMenu:OnControl(control, down)

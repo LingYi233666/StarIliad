@@ -35,6 +35,7 @@ STARILIAD_PROJECTILE_DEFINES = {
             end
         end,
         repeat_cast = true,
+        swap_build = "swap_blythe_blaster2",
     },
 
     {
@@ -70,6 +71,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         attack_sg = "blythe_shoot_missile",
         castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
+        swap_build = "swap_blythe_blaster2",
     },
 
     {
@@ -79,8 +81,12 @@ STARILIAD_PROJECTILE_DEFINES = {
         attack_sg = "blythe_shoot_missile",
         castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
+        swap_build = "swap_blythe_blaster2",
     },
 }
 
+-- for _, v in pairs(STARILIAD_PROJECTILE_DEFINES) do
+--     v.swap_build = v.swap_build or "swap_blythe_blaster"
+-- end
 
 GLOBAL.STARILIAD_PROJECTILE_DEFINES = STARILIAD_PROJECTILE_DEFINES

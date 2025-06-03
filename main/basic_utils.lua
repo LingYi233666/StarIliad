@@ -86,6 +86,10 @@ function StarIliadBasic.MakeCollidableProjectilePhysics(inst, mass, rad)
 end
 
 function StarIliadBasic.GetProjectileDefine(prefab)
+    if prefab == nil then
+        return
+    end
+
     for _, v in pairs(STARILIAD_PROJECTILE_DEFINES) do
         if v.prefab == prefab then
             return v

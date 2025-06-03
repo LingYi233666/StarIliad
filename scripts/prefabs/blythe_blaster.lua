@@ -9,8 +9,32 @@ local assets =
     Asset("ATLAS", "images/inventoryimages/blythe_blaster.xml"),
 }
 
+local function TryChangeSwapBuild(inst, owner)
+    local swap_build = "swap_blythe_blaster"
+    local proj_prefab = inst.components.stariliad_pistol.projectile_prefab
+    local def = StarIliadBasic.GetProjectileDefine(proj_prefab)
+    if def and def.swap_build then
+        swap_build = def.swap_build
+    end
+    inst.swap_build = swap_build
+
+    if owner and owner:IsValid() then
+        owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", inst.swap_build)
+    end
+end
+
+local function SetProjectilePrefabChange(inst, new_prefab, old_prefab)
+    local owner
+    if inst.components.equippable:IsEquipped() then
+        owner = inst.components.inventoryitem.owner
+    end
+    TryChangeSwapBuild(inst, owner)
+end
+
 local function OnEquip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", "swap_blythe_blaster")
+    -- owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", "swap_blythe_blaster")
+    TryChangeSwapBuild(inst, owner)
+
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
@@ -103,6 +127,7 @@ local function fn()
     inst.components.weapon:SetOnProjectileLaunch(OnProjectileLaunch)
 
     inst:AddComponent("stariliad_pistol")
+    inst.components.stariliad_pistol:SetProjectilePrefabChangeCallback(SetProjectilePrefabChange)
 
     inst:AddComponent("inspectable")
 

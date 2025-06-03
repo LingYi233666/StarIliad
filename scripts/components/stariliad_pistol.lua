@@ -8,6 +8,7 @@ local StarIliadPistol = Class(function(self, inst)
     self.inst = inst
 
     self.projectile_prefab = DEFAULT_BEAM_PREFAB
+    self.on_projectile_prefab_change = nil
 
     self:SetProjectilePrefab(self.projectile_prefab)
 
@@ -25,6 +26,8 @@ end, nil, {
 })
 
 function StarIliadPistol:SetProjectilePrefab(val)
+    local old_prefab = self.projectile_prefab
+
     local data = StarIliadBasic.GetProjectileDefine(val)
     if data then
         self.projectile_prefab = val
@@ -33,7 +36,15 @@ function StarIliadPistol:SetProjectilePrefab(val)
         else
             self.inst.components.weapon:SetRange(TUNING.BLYTHE_BLASTER_ATTACK_RANGE)
         end
+
+        if self.on_projectile_prefab_change then
+            self.on_projectile_prefab_change(self.inst, self.projectile_prefab, old_prefab)
+        end
     end
+end
+
+function StarIliadPistol:SetProjectilePrefabChangeCallback(fn)
+    self.on_projectile_prefab_change = fn
 end
 
 function StarIliadPistol:GetProjectileData()

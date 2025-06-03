@@ -115,8 +115,9 @@ end
 
 
 
-local function MakeTail(name, color_name, sphere_emitter, distance)
+local function MakeTail(name, color_name, sphere_emitter, distance, num)
     distance = distance or 1
+    num = num or 1
     local function fn()
         local inst = CreateEntity()
 
@@ -161,6 +162,7 @@ local function MakeTail(name, color_name, sphere_emitter, distance)
         -- local sphere_emitter = CreateSphereEmitter(.1)
 
         inst.sphere_emitter = sphere_emitter
+        inst.num_to_emit = 0
 
         EmitterManager:AddEmitter(inst, nil, function()
             local parent = inst.entity:GetParent()
@@ -170,8 +172,14 @@ local function MakeTail(name, color_name, sphere_emitter, distance)
             end
 
             if inst.last_pos == nil or (parent:GetPosition() - inst.last_pos):Length() >= distance then
-                local vel = StarIliadBasic.GetFaceVector(parent)
-                emit_arrow_fn(effect, Vector3(inst.sphere_emitter()), vel * GetRandomMinMax(0.25, 0.33))
+                inst.num_to_emit = inst.num_to_emit + num
+
+                while inst.num_to_emit > 0 do
+                    local vel = StarIliadBasic.GetFaceVector(parent)
+                    emit_arrow_fn(effect, Vector3(inst.sphere_emitter()), vel * GetRandomMinMax(0.25, 0.33))
+                    inst.num_to_emit = inst.num_to_emit - 1
+                end
+
 
                 inst.last_pos = parent:GetPosition()
             end
@@ -198,4 +206,4 @@ return MakeTail("blythe_beam_tail_yellow", ARROW_YELLOW_COLOUR_ENVELOPE_NAME, Cr
     MakeTail("blythe_beam_tail_large_green", ARROW_GREEN_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
     MakeTail("blythe_beam_tail_large_red", ARROW_RED_COLOUR_ENVELOPE_NAME, CreateSphereEmitter(.2), 0),
     MakeTail("blythe_dodge_tail_blue", ARROW_BLUE_COLOUR_ENVELOPE_NAME,
-        StarIliadMath.CreateCylinderEmitter(0.1, 0.3, 0.3, 1.5), 0)
+        StarIliadMath.CreateCylinderEmitter(0.1, 0.3, 0.3, 1.8), 0, 1.5)

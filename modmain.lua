@@ -43,6 +43,12 @@ PrefabFiles = {
 
     "blythe_dodge_start_circle",
     "blythe_parry_water_splash",
+
+    "blythe_dodge_flame",
+
+    "stariliad_debuffs",
+
+    "stariliad_shield_break_fx",
 }
 
 Assets = {

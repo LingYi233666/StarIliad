@@ -9,3 +9,28 @@ AddGlobalClassPostConstruct("entityscript", "EntityScript", function(self)
         return old_FacePoint(self, ...)
     end
 end)
+
+AddGlobalClassPostConstruct("behaviours/useshield", "UseShield", function(self)
+    local old_TimeToEmerge = self.TimeToEmerge
+    local old_ShouldShield = self.ShouldShield
+
+    self.TimeToEmerge = function(self, ...)
+        if self.inst
+            and self.inst:IsValid()
+            and self.inst.components.debuffable
+            and self.inst.components.debuffable:HasDebuff("stariliad_debuff_shield_break") then
+            return true
+        end
+        return old_TimeToEmerge(self, ...)
+    end
+
+    self.ShouldShield = function(self, ...)
+        if self.inst
+            and self.inst:IsValid()
+            and self.inst.components.debuffable
+            and self.inst.components.debuffable:HasDebuff("stariliad_debuff_shield_break") then
+            return false
+        end
+        return old_ShouldShield(self, ...)
+    end
+end)

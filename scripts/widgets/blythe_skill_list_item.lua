@@ -3,7 +3,6 @@ local Image = require "widgets/image"
 local Grid = require "widgets/grid"
 local Text = require "widgets/text"
 local TextButton = require "widgets/textbutton"
-local BlytheSkillActiveFX = require "widgets/blythe_skill_active_fx"
 local StarIliadShinningBlock = require "widgets/stariliad_shinning_block"
 
 local BlytheSkillListItem = Class(Widget, function(self, owner, options)
@@ -76,27 +75,5 @@ end
 function BlytheSkillListItem:SetOnClick(fn)
     self.text_button:SetOnClick(fn)
 end
-
--- function BlytheSkillListItem:PlayLearningAnim()
---     self.text_button:SetColour(unpack(UICOLOURS.GREY))
---     self.text_button:SetClickable(false)
---     self.block:SetTint(255 / 255, 70 / 255, 52 / 255, 1)
-
---     self.active_fx = self.block:AddChild(BlytheSkillActiveFX())
---     self.active_fx:SetPosition(0, 15)
---     self.active_fx.inst:ListenForEvent("animover", function()
---         self:EndLearningAnim()
---     end)
-
---     TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/skill_mastered")
--- end
-
--- function BlytheSkillListItem:EndLearningAnim(interrupt)
---     self:RefreshText()
---     if self.active_fx then
---         self.active_fx:Kill()
---         self.active_fx = nil
---     end
--- end
 
 return BlytheSkillListItem

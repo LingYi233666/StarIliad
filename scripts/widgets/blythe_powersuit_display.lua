@@ -153,8 +153,6 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
             end)
         end
     end
-
-    -- self.inst:SetStateGraph("SGblythe_powersuit_display")
 end)
 
 function BlythePowersuitDisplay:CreateSkillList(dtype, widget_width, widget_height)
@@ -249,7 +247,6 @@ end
 local function MakeActivateItem(item, spawn_fx, shinning)
     if spawn_fx then
         local active_fx = item.block:AddChild(BlytheSkillActiveFX())
-        active_fx:SetPosition(0, 15)
     end
 
     item:RefreshText()
@@ -261,9 +258,6 @@ end
 
 local SG_play_learning_anim = {
     onenter = function(self, mem)
-        for _, v in pairs(mem.items) do
-            MakeGrayItem(v)
-        end
         mem.index = 1
         mem.period_run = 0
 
@@ -280,31 +274,17 @@ local SG_play_learning_anim = {
         if mem.period_run <= 0 then
             MakeActivateItem(mem.items[mem.index], true, true)
 
-            TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/skill_mastered")
-
             mem.index = mem.index + 1
             mem.period_run = mem.period_run + mem.period
         end
     end,
 
     onexit = function(self, mem)
-        -- print("BlythePowersuitDisplay te exit")
-
-        if not mem.finished then
-            MakeActivateItem(mem.items[mem.index])
-        end
-
         self.te = nil
     end,
 
 
     timeline = {
-        -- TimeEvent(20 * FRAMES, function(self, mem)
-        --     MakeActivateItem(mem.item, true, true)
-
-        --     TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/skill_mastered")
-        -- end),
-
         TimeEvent(25 * FRAMES, function(self, mem)
             if mem.show_desc then
                 self:ShowSkillDescription(mem.items[1].skill_name, true)

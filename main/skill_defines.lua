@@ -92,8 +92,6 @@ BLYTHE_SKILL_DEFINES = {
         handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
-
-        root = true,
     },
 
     {
@@ -110,6 +108,8 @@ BLYTHE_SKILL_DEFINES = {
 
         root = true,
 
+        default_key = 1006, --"Mouse Button 5",
+
         on_pressed_client = function(inst)
             if inst.replica.blythe_powersuit_configure then
                 inst.replica.blythe_powersuit_configure:TryOpenWheel()
@@ -121,7 +121,9 @@ BLYTHE_SKILL_DEFINES = {
         name = "dodge",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 
-        root = true,
+        -- root = true,
+
+        -- default_key = 1002, --"Middle Mouse Button",
 
         on_pressed = CastSkillByComponentWrapper("blythe_skill_dodge")
     },
@@ -131,6 +133,8 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 
         root = true,
+
+        default_key = 1005, --"Mouse Button 4",
 
         -- on_pressed_client = function(inst, x, y, z)
         --     if not (inst.sg and inst.sg.sg and inst.sg.sg.name == "wilson_client") then

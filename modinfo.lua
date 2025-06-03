@@ -23,6 +23,6 @@ server_filter_tags = { --服务器标签
 
 --configuration_options = {} --mod设置
 
-function stringidsorter()
-    return 0
-end
+-- function stringidsorter()
+--     return 0
+-- end

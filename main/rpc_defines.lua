@@ -58,6 +58,7 @@ AddClientModRPCHandler("stariliad_rpc", "show_usurper_shot_screen", function(tar
 end)
 
 -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","missile")
+-- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","dodge")
 AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
     function(sound, skill_name1, skill_name2, skill_name3)
         local BlytheItemAcquired = require("screens/blythe_item_acquired")
@@ -76,19 +77,34 @@ AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
         local title = STRINGS.STARILIAD_UI.ITEM_ACQUIRED.FOUND ..
             STRINGS.STARILIAD_UI.SKILL_DETAIL[skill_names[1]:upper()].NAME
 
+        if ThePlayer.HUD.controls.StarIliadMainMenu then
+            TheFrontEnd:PopScreen(ThePlayer.HUD.controls.StarIliadMainMenu)
+        end
         TheFrontEnd:PushScreen(BlytheItemAcquired(ThePlayer, title, nil, sound, nil, skill_names))
     end
 )
 
-AddClientModRPCHandler("stariliad_rpc", "make_facing_dirty", function()
-    if ThePlayer and ThePlayer:IsValid() and ThePlayer.AnimState then
-        ThePlayer.AnimState:MakeFacingDirty()
-    end
-end)
+-- AddClientModRPCHandler("stariliad_rpc", "make_facing_dirty", function()
+--     if ThePlayer and ThePlayer:IsValid() and ThePlayer.AnimState then
+--         ThePlayer.AnimState:MakeFacingDirty()
+--     end
+-- end)
 
 AddClientModRPCHandler("stariliad_rpc", "goto_parry_sg", function(x, y, z)
     if ThePlayer and ThePlayer:IsValid() and ThePlayer.sg and ThePlayer.sg.sg and ThePlayer.sg.sg.name == "wilson_client" then
         ThePlayer.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
+    end
+end)
+
+-- AddClientModRPCHandler("stariliad_rpc", "set_root_skill_key", function()
+--     if ThePlayer and ThePlayer:IsValid() and ThePlayer.replica.blythe_skiller then
+--         ThePlayer.replica.blythe_skiller:SetRootInputHandler()
+--     end
+-- end)
+
+AddClientModRPCHandler("stariliad_rpc", "set_skill_key", function(key, name, save_to_file)
+    if ThePlayer and ThePlayer:IsValid() and ThePlayer.replica.blythe_skiller then
+        ThePlayer.replica.blythe_skiller:SetInputHandler(key, name, save_to_file)
     end
 end)
 

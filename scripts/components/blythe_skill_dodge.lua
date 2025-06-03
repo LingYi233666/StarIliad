@@ -10,8 +10,9 @@ local BlytheSkillDodge = Class(BlytheSkillBase_Active, function(self, inst)
     self.can_cast_while_busy = true
 
     self.dodge_speed = 40
-    self.dodge_charge = 2
     self.max_dodge_charge = 2
+    self.dodge_charge = self.max_dodge_charge
+    self.resume_delay = 0.1
 end)
 
 function BlytheSkillDodge:CanCast(x, y, z, target)
@@ -54,13 +55,23 @@ function BlytheSkillDodge:OnDodgeStart(target_pos)
     self.inst.components.health:SetInvincible(true)
 
     -- self.inst.AnimState:SetMultColour(1, 1, 1, 0.3)
-    -- self.inst.AnimState:SetAddColour(0 / 255, 229 / 255, 232 / 255, 1)
-    self.inst.AnimState:SetMultColour(10 / 255, 240 / 255, 200 / 255, 0.3)
+    self.inst.AnimState:SetAddColour(50 / 255, 229 / 255, 232 / 255, 1)
+    -- self.inst.AnimState:SetMultColour(10 / 255, 240 / 255, 200 / 255, 0.3)
     self.inst.AnimState:SetHaunted(true)
 
+    SpawnAt("blythe_dodge_start_circle", self.inst)
+
     local fx1 = self.inst:SpawnChild("blythe_dodge_tail_blue")
-    local fx2 = SpawnAt("blythe_dodge_start_circle", self.inst)
-    self.dodge_fx = { fx1 }
+    fx1:DoTaskInTime(0.15, fx1.Remove)
+
+    local fx2 = self.inst:SpawnChild("blythe_dodge_flame")
+    fx2.entity:AddFollower()
+    fx2.Follower:FollowSymbol(self.inst.GUID, "torso", 0, -50, 0)
+
+    self.dodge_fx = {
+        -- fx1,
+        fx2
+    }
 
     self:SpawnClone()
 
@@ -68,7 +79,7 @@ function BlytheSkillDodge:OnDodgeStart(target_pos)
     if self.dodge_charge_resume_task then
         self.dodge_charge_resume_task:Cancel()
     end
-    self.dodge_charge_resume_task = self.inst:DoTaskInTime(3, function()
+    self.dodge_charge_resume_task = self.inst:DoTaskInTime(self.resume_delay, function()
         self.dodge_charge = self.max_dodge_charge
         self.dodge_charge_resume_task = nil
     end)
