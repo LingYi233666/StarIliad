@@ -140,6 +140,8 @@ local master_postinit = function(inst)
 
 	inst:AddComponent("blythe_skill_parry")
 
+	inst:AddComponent("blythe_skill_scan")
+
 	--最喜欢的食物
 	-- inst.components.foodaffinity:AddPrefabAffinity("baconeggs", TUNING.AFFINITY_15_CALORIES_HUGE)
 

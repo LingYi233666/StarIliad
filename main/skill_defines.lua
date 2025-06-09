@@ -166,6 +166,13 @@ BLYTHE_SKILL_DEFINES = {
 
         on_pressed = CastSkillByComponentWrapper("blythe_skill_parry")
     },
+
+    {
+        name = "scan",
+        dtype = BLYTHE_SKILL_TYPE.MAGIC,
+
+        on_pressed = CastSkillByComponentWrapper("blythe_skill_scan")
+    },
 }
 
 -- Test

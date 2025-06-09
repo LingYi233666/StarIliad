@@ -58,4 +58,16 @@ function GLOBAL.si_allskills()
     end
 end
 
+function GLOBAL.si_missile(count)
+    if ThePlayer.components.blythe_missile_counter then
+        ThePlayer.components.blythe_missile_counter:SetNumMissiles(count)
+    end
+end
+
+function GLOBAL.si_super_missile(count)
+    if ThePlayer.components.blythe_missile_counter then
+        ThePlayer.components.blythe_missile_counter:SetNumSuperMissiles(count)
+    end
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

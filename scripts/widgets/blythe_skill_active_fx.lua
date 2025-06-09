@@ -6,7 +6,7 @@ local skilltreedefs = require "prefabs/skilltree_defs"
 local UIAnim = require "widgets/uianim"
 
 
-local BlytheSkillActiveFX = Class(Widget, function(self)
+local BlytheSkillActiveFX = Class(Widget, function(self, sound)
     Widget._ctor(self, "BlytheSkillActiveFX")
 
     self.anim = self:AddChild(UIAnim())
@@ -21,7 +21,10 @@ local BlytheSkillActiveFX = Class(Widget, function(self)
         self:Kill()
     end, self.anim.inst)
 
-    TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/skill_mastered")
+    sound = sound or "wilson_rework/ui/skill_mastered"
+    if sound then
+        TheFrontEnd:GetSound():PlaySound(sound)
+    end
 end)
 
 return BlytheSkillActiveFX

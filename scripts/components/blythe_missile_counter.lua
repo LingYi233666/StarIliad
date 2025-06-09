@@ -1,27 +1,29 @@
 local function onnum_missiles(self, val)
-    self.inst.replica.blythe_missile_counter:SetNumMissiles(val)
+    self.inst.replica.blythe_missile_counter:SetNumMissiles(math.floor(val))
 end
 
 local function onmax_num_missiles(self, val)
-    self.inst.replica.blythe_missile_counter:SetMaxNumMissiles(val)
+    self.inst.replica.blythe_missile_counter:SetMaxNumMissiles(math.floor(val))
 end
 
 local function onnum_super_missiles(self, val)
-    self.inst.replica.blythe_missile_counter:SetNumSuperMissiles(val)
+    self.inst.replica.blythe_missile_counter:SetNumSuperMissiles(math.floor(val))
 end
 
 local function onmax_num_super_missiles(self, val)
-    self.inst.replica.blythe_missile_counter:SetMaxNumSuperMissiles(val)
+    self.inst.replica.blythe_missile_counter:SetMaxNumSuperMissiles(math.floor(val))
 end
 
 local BlytheMissileCounter = Class(function(self, inst)
     self.inst = inst
 
-    self.num_missiles = 0
-    self.max_num_missiles = 0
+    self.max_num_missiles = 10
+    self.num_missiles = self.max_num_missiles
 
-    self.num_super_missiles = 0
-    self.max_num_super_missiles = 0
+    self.max_num_super_missiles = 5
+    self.num_super_missiles = self.max_num_super_missiles
+
+    self.inst:StartUpdatingComponent(self)
 end, nil, {
     num_missiles = onnum_missiles,
     max_num_missiles = onmax_num_missiles,
@@ -98,6 +100,11 @@ function BlytheMissileCounter:OnLoad(data)
             self:SetNumSuperMissiles(data.num_super_missiles, true)
         end
     end
+end
+
+function BlytheMissileCounter:OnUpdate(dt)
+    self:DoDeltaNumMissiles(dt / 10)
+    self:DoDeltaNumSuperMissiles(dt / 15)
 end
 
 return BlytheMissileCounter

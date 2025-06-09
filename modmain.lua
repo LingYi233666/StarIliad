@@ -49,6 +49,11 @@ PrefabFiles = {
     "stariliad_debuffs",
 
     "stariliad_shield_break_fx",
+
+    "blythe_scan_mark",
+
+    "blythe_supply_ball",
+    "blythe_supply_ball_tails",
 }
 
 Assets = {
@@ -79,6 +84,9 @@ Assets = {
     Asset("IMAGE", "images/ui/blythe_down_view.tex"),
     Asset("ATLAS", "images/ui/blythe_down_view.xml"),
 
+    Asset("IMAGE", "images/ui/blythe_down_view_with_gun.tex"),
+    Asset("ATLAS", "images/ui/blythe_down_view_with_gun.xml"),
+
     Asset("IMAGE", "images/ui/stariliad_hexagon.tex"),
     Asset("ATLAS", "images/ui/stariliad_hexagon.xml"),
 
@@ -99,6 +107,12 @@ Assets = {
 
     Asset("IMAGE", "images/ui/skill_slot/unknown.tex"),
     Asset("ATLAS", "images/ui/skill_slot/unknown.xml"),
+
+    Asset("IMAGE", "images/ui/missile_status/missile.tex"),
+    Asset("ATLAS", "images/ui/missile_status/missile.xml"),
+
+    Asset("IMAGE", "images/ui/missile_status/super_missile.tex"),
+    Asset("ATLAS", "images/ui/missile_status/super_missile.xml"),
 
     -- swap beam ui shader
     Asset("SHADER", "shaders/8star.ksh"),

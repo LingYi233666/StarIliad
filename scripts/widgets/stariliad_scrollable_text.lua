@@ -58,7 +58,7 @@ end
 function StarIliadScrollableText:SetTextScissor(start_y, height)
     local w, h = self.text:GetRegionSize()
 
-    self.text:SetScissor(-w / 2, start_y, w, height)
+    self.text:SetScissor(-w / 2 - 1, start_y, w + 1, height)
 end
 
 function StarIliadScrollableText:GetLineHeight()

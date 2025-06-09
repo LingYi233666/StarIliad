@@ -46,6 +46,8 @@ local function CollisionCallback(inst, other)
     end
 end
 
+
+
 local function DoAttackDamage(inst, attacker, target)
     if attacker
         and attacker:IsValid()
@@ -53,6 +55,21 @@ local function DoAttackDamage(inst, attacker, target)
         and attacker.components.combat:CanTarget(target) then
         attacker.components.combat:DoAttack(target, inst, inst, nil, nil, math.huge)
 
+        -- if StarIliadBasic.IsWorthyEnemy(attacker, target) then
+        --     local count = (inst._is_counter:value() and not inst:HasTag("blythe_beam_side")) and 1 or 0
+
+        --     if IsEntityDeadOrGhost(target, true) then
+        --         if inst._is_counter:value() then
+        --             count = count + 3
+        --         else
+        --             count = count + 1
+        --         end
+        --     end
+
+        --     for i = 1, count do
+        --         StarIliadBasic.SpawnSupplyBalls(attacker, target:GetPosition() + Vector3(0, GetRandomMinMax(0.8, 2), 0))
+        --     end
+        -- end
 
         inst.victims[target] = true
 

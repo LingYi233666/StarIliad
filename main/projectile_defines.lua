@@ -72,6 +72,26 @@ STARILIAD_PROJECTILE_DEFINES = {
         castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
+
+        costs = {
+            {
+                can_cost = function(inst)
+                    if inst.components.blythe_missile_counter then
+                        return inst.components.blythe_missile_counter:GetNumMissiles() >= 1
+                    end
+
+                    if inst.replica.blythe_missile_counter then
+                        return inst.replica.blythe_missile_counter:GetNumMissiles() >= 1
+                    end
+                end,
+
+                apply_cost = function(inst)
+                    if inst.components.blythe_missile_counter then
+                        inst.components.blythe_missile_counter:DoDeltaNumMissiles(-1)
+                    end
+                end,
+            },
+        },
     },
 
     {
@@ -82,6 +102,26 @@ STARILIAD_PROJECTILE_DEFINES = {
         castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
+
+        costs = {
+            {
+                can_cost = function(inst)
+                    if inst.components.blythe_missile_counter then
+                        return inst.components.blythe_missile_counter:GetNumSuperMissiles() >= 1
+                    end
+
+                    if inst.replica.blythe_missile_counter then
+                        return inst.replica.blythe_missile_counter:GetNumSuperMissiles() >= 1
+                    end
+                end,
+
+                apply_cost = function(inst)
+                    if inst.components.blythe_missile_counter then
+                        inst.components.blythe_missile_counter:DoDeltaNumSuperMissiles(-1)
+                    end
+                end,
+            },
+        },
     },
 }
 

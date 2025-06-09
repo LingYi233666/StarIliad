@@ -99,6 +99,18 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
         return
     end
 
+    if proj_data.costs then
+        if not StarIliadBasic.CanCostProjectile(attacker, proj_data) then
+            return
+        end
+
+        for name, cost_data in pairs(proj_data.costs) do
+            if cost_data.apply_cost then
+                cost_data.apply_cost(attacker)
+            end
+        end
+    end
+
     local proj = SpawnAt(proj_data.prefab, attacker)
     if proj == nil then
         return

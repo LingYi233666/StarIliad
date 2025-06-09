@@ -50,7 +50,7 @@ local BlytheSkillBase_Active = Class(function(self, inst)
     }
 
     self.cooldown = 0
-    self.last_cast_time = 0
+    self.last_cast_time = -99999
 
     self.can_cast_while_dead = false
     self.can_cast_while_busy = false

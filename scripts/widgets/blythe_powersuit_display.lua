@@ -7,7 +7,7 @@ local StarIliadHUDTimelineExecuter = require "widgets/stariliad_hud_timeline_exe
 local BlytheGridBG = require "widgets/blythe_grid_bg"
 local StarIliadPolyLines = require "widgets/stariliad_polylines"
 
--- ThePlayer.HUD.controls.StarIliadMainMenu.tab_screens.powersuit_display.character:SetPosition(0,0)
+-- ThePlayer.HUD.controls.StarIliadMainMenu.tab_screens.powersuit_display.character:SetPosition(0,50)
 -- ThePlayer.HUD.controls.StarIliadMainMenu.tab_screens.powersuit_display.character_bg:SetSize(200, 400)
 -- ThePlayer.HUD.controls.StarIliadMainMenu.tab_screens.powersuit_display.character:SetTint(0.3,0.3,0.3,1)
 -- ThePlayer.HUD.controls.StarIliadMainMenu.tab_screens.powersuit_display.polylines_1:SetPosition(-100,100)
@@ -56,42 +56,60 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
     self.character_bg:SetPosition(0, 50)
     self.character_bg:SetScale(0.55)
 
-    self.character = self:AddChild(Image("images/ui/blythe_down_view.xml", "blythe_down_view.tex"))
-    self.character:SetScale(0.27)
-    self.character:SetPosition(0, 50)
+    -- self.character_old = self:AddChild(Image("images/ui/blythe_down_view.xml", "blythe_down_view.tex"))
+    -- self.character_old:SetScale(0.27)
+    -- self.character_old:SetPosition(0, 50)
+
+    self.character = self:AddChild(Image("images/ui/blythe_down_view_with_gun.xml", "blythe_down_view_with_gun.tex"))
+    self.character:SetScale(0.93828)
+    self.character:SetPosition(-12, 50)
+
+    -- self.character:Hide()
     -- self.character:SetTint(0.1, 0.7, 0.5, 1)
-    self.character:SetTint(0.1, 0.1, 0.1, 1)
+    -- self.character:SetTint(0.1, 0.1, 0.1, 1)
     -- self.character:SetTint(0.7, 0.7, 0.7, 1)
     -- self.character:SetTint(0.9, 0.1, 0.1, 1)
 
     -- local polylines_color = RGB(200, 170, 80)
     local polylines_color = RGB(167, 144, 88)
+    -- local polylines_color = RGB(50, 200, 50)
+    local polylines_thickness = 3
 
     self.polylines_1 = self:AddPolylines({
         points = {
             Vector3(0, 0),
             Vector3(100, 0),
-            Vector3(190, -160),
-            -- Vector3(190, -175),
+            -- Vector3(190, -160),
+            Vector3(170, -180),
+
+            -- Vector3(0, 0),
+            -- Vector3(90, 0),
+            -- Vector3(90, -180),
+            -- Vector3(170, -180),
         },
 
         color = polylines_color,
 
-        thickness = 3,
+        thickness = polylines_thickness,
     }, Vector3(-250, 228)) -- Vector3(-250, 243)
 
 
     self.polylines_2 = self:AddPolylines({
         points = {
             Vector3(0, 0),
-            Vector3(90, 0),
-            Vector3(140, 100),
-            -- Vector3(140, 68),
+            Vector3(50, 0),
+            -- Vector3(140, 100),
+            Vector3(110, 95),
+
+            -- Vector3(0, 0),
+            -- Vector3(60, 0),
+            -- Vector3(60, 90),
+            -- Vector3(110, 90),
         },
 
         color = polylines_color,
 
-        thickness = 3,
+        thickness = polylines_thickness,
     }, Vector3(-200, -62)) -- Vector3(-200, -30)
 
     self.polylines_3 = self:AddPolylines({
@@ -105,9 +123,12 @@ local BlythePowersuitDisplay = Class(Widget, function(self, owner)
 
         color = polylines_color,
 
-        thickness = 3,
+        thickness = polylines_thickness,
     }, Vector3(248, 207)) -- Vector3(248, 222)
 
+    -- self.polylines_1:Hide()
+    -- self.polylines_2:Hide()
+    -- self.polylines_3:Hide()
 
     -- self.test_bar = self:AddChild(Image("images/global.xml", "square.tex"))
     -- self.test_bar:SetTint(unpack(UICOLOURS.BROWN_MEDIUM))

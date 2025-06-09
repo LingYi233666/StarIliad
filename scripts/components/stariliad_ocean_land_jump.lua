@@ -189,7 +189,7 @@ function StarIliadOceanLandJump:OnUpdate(dt)
     -- end
 
     if self:IsSwimming() and self.inst.components.moisture and self.inst.components.moisture:GetMoisturePercent() < 0.5 then
-        self.inst.components.moisture:AddRateBonus(self.inst, 0.25, "stariliad_swimming")
+        self.inst.components.moisture:AddRateBonus(self.inst, 1, "stariliad_swimming")
     else
         self.inst.components.moisture:RemoveRateBonus(self.inst, "stariliad_swimming")
     end

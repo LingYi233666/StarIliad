@@ -3,6 +3,7 @@ local Text = require "widgets/text"
 local ImageButton = require "widgets/imagebutton"
 local TEMPLATES = require "widgets/redux/templates"
 local StarIliadMainMenu = require "screens/stariliad_main_menu"
+local BlytheMissileStatus = require "widgets/blythe_missile_status"
 
 AddClassPostConstruct("widgets/controls", function(self)
     if self.owner:HasTag("blythe") then
@@ -25,4 +26,28 @@ AddClassPostConstruct("widgets/controls", function(self)
 
         self.StarIliadMenuCaller:SetPosition(75, 28)
     end
+end)
+
+AddClassPostConstruct("widgets/secondarystatusdisplays", function(self)
+    if self.owner:HasTag("blythe") then
+        self.blythe_missile_status = self:AddChild(BlytheMissileStatus(self.owner))
+        self.blythe_missile_status:SetPosition(60, -80)
+        self.blythe_missile_status:MoveToFront()
+    end
+end)
+
+AddPrefabPostInit("player_classified", function(inst)
+    inst:ListenForEvent("isghostmodedirty", function(inst, data)
+        if inst._parent
+            and inst._parent.HUD
+            and inst._parent.HUD.controls
+            and inst._parent.HUD.controls.secondary_status
+            and inst._parent.HUD.controls.secondary_status.blythe_missile_status then
+            if inst.isghostmode:value() then
+                inst._parent.HUD.controls.secondary_status.blythe_missile_status:Hide()
+            else
+                inst._parent.HUD.controls.secondary_status.blythe_missile_status:Show()
+            end
+        end
+    end)
 end)

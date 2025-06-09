@@ -83,6 +83,11 @@ STRINGS.STARILIAD_UI.BLYTHE_SKILL_TYPE_NAME = {
     MAGIC = "魔法",
 }
 
+STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS = {
+    MISSILE = "导弹数量",
+    SUPER_MISSILE = "超级导弹数量",
+}
+
 STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     BASIC_BEAM = {
         NAME = "光束",
@@ -151,7 +156,12 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     PARRY = {
         NAME = "拨挡攻击",
-        DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用星际游侠爆能枪的光束发动一次强力反击。",
+        DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用星际游侠爆能枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹和超级导弹补给。",
+    },
+
+    SCAN = {
+        NAME = "脉冲雷达",
+        DESC = "消耗些许饥饿值，使用脉冲雷达扫描周围的地形，周期性揭示半径60码内的地图，持续10秒。\n*脉冲可以迫使隐形的生物显形。",
     },
 
     UNKNOWN = {

@@ -92,6 +92,8 @@ local function MakeReticule(name, anim, scale, mult_colour)
             inst.AnimState:SetMultColour(unpack(mult_colour))
         end
 
+        inst.Transform:SetInterpolateRotation(true)
+
         inst:AddTag("FX")
 
         inst.entity:SetPristine()

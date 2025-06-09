@@ -133,12 +133,14 @@ end
 -- end
 
 function BlytheSkillParry:OnAttackedWhileParrying(data)
-    print("OnAttackedWhileParrying, state name:", self.inst.sg.currentstate.name)
+    -- print("OnAttackedWhileParrying, state name:", self.inst.sg.currentstate.name)
+
     self.inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/trails/hide_pre", nil, 0.5)
     self.inst:SpawnChild("blythe_parry_spark").Transform:SetPosition(0.5, 0, 0)
 
     -- self.counter_timer = GetTime()
 
+    -- Add blythe_can_counter, which increases next beam's shot speed and damage
     self:SetCanCounter(true, 3)
 
     local attacker = data.attacker
@@ -169,6 +171,10 @@ function BlytheSkillParry:OnAttackedWhileParrying(data)
             attacker.components.combat:GetAttacked(self.inst, damage, nil, "electric", spdamage)
 
             SpawnAt("electrichitsparks", attacker):AlignToTarget(attacker, self.inst, true)
+        end
+
+        if StarIliadBasic.IsWorthyEnemy(self.inst, attacker) then
+            attacker:AddDebuff("stariliad_debuff_be_parried", "stariliad_debuff_be_parried", { owner = self.inst })
         end
     end
 end

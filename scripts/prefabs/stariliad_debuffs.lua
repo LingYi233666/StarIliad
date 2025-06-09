@@ -29,6 +29,54 @@ local debuffs_data = {
                 inst.components.debuff:Stop()
             end)
         end,
+    },
+
+    stariliad_debuff_be_parried = {
+        on_attached = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = 2
+            inst.owner = data and data.owner
+
+            inst.detach_task = inst:DoTaskInTime(5, function()
+                inst.components.debuff:Stop()
+            end)
+
+            inst._callback = function(_, data2)
+                local attacker = data2.attacker
+                if attacker == inst.owner then
+                    local count = 1
+
+                    if IsEntityDeadOrGhost(target, true) then
+                        count = count + 3
+                    end
+
+                    for i = 1, count do
+                        StarIliadBasic.SpawnSupplyBalls(attacker,
+                            target:GetPosition() + Vector3(0, GetRandomMinMax(0.8, 2), 0))
+                    end
+
+                    inst.stacks = inst.stacks - 1
+                    if inst.stacks <= 0 then
+                        inst.components.debuff:Stop()
+                    end
+                end
+            end
+
+            inst:ListenForEvent("attacked", inst._callback, target)
+        end,
+
+        on_detached = function(inst, target)
+            inst:RemoveEventCallback("attacked", inst._callback, target)
+        end,
+
+        on_extended = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = 2
+            if inst.detach_task then
+                inst.detach_task:Cancel()
+            end
+            inst.detach_task = inst:DoTaskInTime(5, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
     }
 }
 

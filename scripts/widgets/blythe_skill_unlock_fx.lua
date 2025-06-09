@@ -6,7 +6,7 @@ local UIAnim = require "widgets/uianim"
 
 
 
-local BlytheSkillUnlockFX = Class(Widget, function(self)
+local BlytheSkillUnlockFX = Class(Widget, function(self, sound)
     Widget._ctor(self, "BlytheSkillUnlockFX")
 
     self.anim = self:AddChild(UIAnim())
@@ -19,7 +19,11 @@ local BlytheSkillUnlockFX = Class(Widget, function(self)
         self:Kill()
     end, self.anim.inst)
 
-    TheFrontEnd:GetSound():PlaySound("wilson_rework/ui/unlock_gatedskill")
+
+    sound = sound or "wilson_rework/ui/unlock_gatedskill"
+    if sound then
+        TheFrontEnd:GetSound():PlaySound(sound)
+    end
 end)
 
 return BlytheSkillUnlockFX

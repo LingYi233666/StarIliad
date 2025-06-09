@@ -59,6 +59,7 @@ end)
 
 -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","missile")
 -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","dodge")
+-- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_zero","missile")
 AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
     function(sound, skill_name1, skill_name2, skill_name3)
         local BlytheItemAcquired = require("screens/blythe_item_acquired")
@@ -110,3 +111,17 @@ end)
 
 
 -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_usurper_shot_screen"],ThePlayer.userid,ThePlayer,c_findnext("dummytarget"))
+
+-- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["missile_status_spawn_fx"],ThePlayer.userid,true)
+AddClientModRPCHandler("stariliad_rpc", "missile_status_spawn_fx",
+    function(is_super)
+        if ThePlayer
+            and ThePlayer:IsValid()
+            and ThePlayer.HUD
+            and ThePlayer.HUD.controls
+            and ThePlayer.HUD.controls.secondary_status
+            and ThePlayer.HUD.controls.secondary_status.blythe_missile_status then
+            ThePlayer.HUD.controls.secondary_status.blythe_missile_status:SpawnFX(is_super)
+        end
+    end
+)
