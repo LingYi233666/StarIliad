@@ -142,6 +142,14 @@ function BlytheSkiller:SkillHasBeenKeyed(name)
     return false
 end
 
+function BlytheSkiller:GetSkillKey(name)
+    for k, v in pairs(self.input_handler) do
+        if v == name then
+            return k
+        end
+    end
+end
+
 function BlytheSkiller:IsLearned(name)
     return name and self.learned_skill[name] == true
 end

@@ -130,6 +130,8 @@ local master_postinit = function(inst)
 
 	inst:AddComponent("stariliad_spdamage_force")
 
+	inst:AddComponent("blythe_stealth_handler")
+
 	inst:AddComponent("blythe_skiller")
 
 	inst:AddComponent("blythe_powersuit_configure")
@@ -142,6 +144,9 @@ local master_postinit = function(inst)
 
 	inst:AddComponent("blythe_skill_scan")
 
+	inst:AddComponent("blythe_skill_stealth")
+
+
 	--最喜欢的食物
 	-- inst.components.foodaffinity:AddPrefabAffinity("baconeggs", TUNING.AFFINITY_15_CALORIES_HUGE)
 
@@ -150,7 +155,7 @@ local master_postinit = function(inst)
 	inst.components.hunger:SetMax(TUNING.BLYTHE_HUNGER)
 	inst.components.sanity:SetMax(TUNING.BLYTHE_SANITY)
 
-	inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
+	-- inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
 
 	inst:DoTaskInTime(1, function()
 		local new_skills = inst.components.blythe_skiller:LearnRootSkills()

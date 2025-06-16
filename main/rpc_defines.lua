@@ -45,9 +45,26 @@ AddModRPCHandler("stariliad_rpc", "switch_enable_skill", function(player, skill_
     end
 end)
 
-AddModRPCHandler("stariliad_rpc", "set_ice_fog_aoe_action_pos", function(player, x, y, z)
-    if player and player.sg and player.sg.currentstate and player.sg.currentstate.name == "blythe_release_ice_fog_castaoe2" and player.sg.statemem.action then
-        player.sg.statemem.action.pos = DynamicPosition(Vector3(x, y, z))
+AddModRPCHandler("stariliad_rpc", "set_shoot_action_data", function(player, x, y, z, target)
+    if player and player.sg.statemem.action then
+        if x and y and z then
+            player.sg.statemem.action:SetActionPoint(Vector3(x, y, z))
+        else
+            player.sg.statemem.action.pos = nil
+        end
+        player.sg.statemem.action.target = target
+    end
+end)
+
+-- AddModRPCHandler("stariliad_rpc", "set_ice_fog_aoe_action_pos", function(player, x, y, z)
+--     if player and player.sg and player.sg.currentstate and player.sg.currentstate.name == "blythe_release_ice_fog_castaoe2" and player.sg.statemem.action then
+--         player.sg.statemem.action.pos = DynamicPosition(Vector3(x, y, z))
+--     end
+-- end)
+
+AddModRPCHandler("stariliad_rpc", "goto_parry_sg", function(player, x, y, z)
+    if player and player:IsValid() and player.components.blythe_skill_parry and player.components.blythe_skill_parry:CanCast(x, y, z) then
+        player.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
     end
 end)
 
@@ -57,31 +74,18 @@ AddClientModRPCHandler("stariliad_rpc", "show_usurper_shot_screen", function(tar
     TheFrontEnd:PushScreen(StarIliadUsurperShotScreen(target1, target2))
 end)
 
--- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","missile")
--- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_dread","dodge")
--- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"],ThePlayer.userid, "stariliad_sfx/hud/item_acquired_zero","missile")
+
+
 AddClientModRPCHandler("stariliad_rpc", "play_skill_learning_anim",
-    function(sound, skill_name1, skill_name2, skill_name3)
-        local BlytheItemAcquired = require("screens/blythe_item_acquired")
-
-        local skill_names = {}
-        for _, v in pairs({ skill_name1, skill_name2, skill_name3 }) do
-            if v ~= nil then
-                table.insert(skill_names, v)
-            end
-        end
-
-        if #skill_names <= 0 then
-            return
-        end
-
-        local title = STRINGS.STARILIAD_UI.ITEM_ACQUIRED.FOUND ..
-            STRINGS.STARILIAD_UI.SKILL_DETAIL[skill_names[1]:upper()].NAME
+    function(title, desc, sound, duration, ...)
+        local skill_names = { ... }
 
         if ThePlayer.HUD.controls.StarIliadMainMenu then
             TheFrontEnd:PopScreen(ThePlayer.HUD.controls.StarIliadMainMenu)
         end
-        TheFrontEnd:PushScreen(BlytheItemAcquired(ThePlayer, title, nil, sound, nil, skill_names))
+
+        local BlytheItemAcquired = require("screens/blythe_item_acquired")
+        TheFrontEnd:PushScreen(BlytheItemAcquired(ThePlayer, title, desc, sound, duration, skill_names))
     end
 )
 

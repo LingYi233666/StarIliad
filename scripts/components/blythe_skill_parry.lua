@@ -4,8 +4,8 @@ local BlytheSkillBase_Active = require "components/blythe_skill_base_active"
 local BlytheSkillParry = Class(BlytheSkillBase_Active, function(self, inst)
     BlytheSkillBase_Active._ctor(self, inst)
 
-    self.cooldown = 20 * FRAMES
-    self.costs.hunger = 1
+    -- self.cooldown = 20 * FRAMES
+    -- self.costs.hunger = 1
 
     self.parry_degree = 150
     self.parry_target = inst:SpawnChild("blythe_parry_target")
@@ -31,26 +31,49 @@ function BlytheSkillParry:CanCast(x, y, z, target)
         return false, "NO_WEAPON"
     end
 
-    if self:IsParrying() then
-        return false, "ALREADY_PARRYING"
+    -- if self:IsParrying() then
+    --     return false, "ALREADY_PARRYING"
+    -- end
+
+    if self:IsInMyCooldown() then
+        return false, "IN_MY_COOLDOWN"
     end
 
     return true
 end
 
-function BlytheSkillParry:Cast(x, y, z, target)
-    BlytheSkillBase_Active.Cast(self, x, y, z, target)
+-- function BlytheSkillParry:Cast(x, y, z, target)
+--     BlytheSkillBase_Active.Cast(self, x, y, z, target)
 
-    self.inst.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
-    -- self.inst.AnimState:MakeFacingDirty()
-    -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["make_facing_dirty"], self.inst.userid)
-    -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["force_face_point"], self.inst.userid, x, y, z)
-    SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["goto_parry_sg"], self.inst.userid, x, y, z)
+--     self.inst.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
+--     -- self.inst.AnimState:MakeFacingDirty()
+--     -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["make_facing_dirty"], self.inst.userid)
+--     -- SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["force_face_point"], self.inst.userid, x, y, z)
+--     SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["goto_parry_sg"], self.inst.userid, x, y, z)
 
-    -- local bufferedaction = BufferedAction(self.inst, nil, ACTIONS.BLYTHE_PARRY, nil, Vector3(x, y, z))
-    -- bufferedaction.options.no_predict_fastforward = true
-    -- self.inst:ClearBufferedAction()
-    -- self.inst:PushBufferedAction(bufferedaction)
+--     -- local bufferedaction = BufferedAction(self.inst, nil, ACTIONS.BLYTHE_PARRY, nil, Vector3(x, y, z))
+--     -- bufferedaction.options.no_predict_fastforward = true
+--     -- self.inst:ClearBufferedAction()
+--     -- self.inst:PushBufferedAction(bufferedaction)
+-- end
+
+function BlytheSkillParry:SetMyCooldown(val, delay)
+    self.inst.replica.blythe_skill_parry:SetMyCooldown(val)
+
+    if self.reset_my_cooldown_task then
+        self.reset_my_cooldown_task:Cancel()
+        self.reset_my_cooldown_task = nil
+    end
+
+    if val then
+        self.reset_my_cooldown_task = self.inst:DoTaskInTime(delay or (20 * FRAMES), function()
+            self:SetMyCooldown(false)
+        end)
+    end
+end
+
+function BlytheSkillParry:IsInMyCooldown()
+    return self.inst.replica.blythe_skill_parry:IsInMyCooldown()
 end
 
 function BlytheSkillParry:TrySpawnWaterSplash()
@@ -72,9 +95,11 @@ function BlytheSkillParry:IsParrying()
 end
 
 function BlytheSkillParry:OnStartParry()
+    self:SetMyCooldown(true, 20 * FRAMES)
+
     self.is_parrying = true
-    self.inst.components.combat.redirectdamagefn = function(inst, attacker, damage, weapon, stimuli)
-        return self:CanParryDamage(attacker, damage, weapon, stimuli)
+    self.inst.components.combat.redirectdamagefn = function(inst, attacker, damage, weapon, stimuli, spdamage)
+        return self:CanParryDamage(attacker, damage, weapon, stimuli, spdamage)
     end
 end
 
@@ -84,7 +109,7 @@ function BlytheSkillParry:OnStopParry()
     self.inst.components.combat.redirectdamagefn = nil
 end
 
-function BlytheSkillParry:CanParryDamage(attacker, damage, weapon, stimuli)
+function BlytheSkillParry:CanParryDamage(attacker, damage, weapon, stimuli, spdamage)
     if not attacker then
         return
     end

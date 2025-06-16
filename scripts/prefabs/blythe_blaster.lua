@@ -103,15 +103,15 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
 
-    inst:AddTag("stariliad_chain_castaoe")
+    -- inst:AddTag("stariliad_chain_castaoe")
 
-    StarIliadWeaponSkill.AddAoetargetingClient(inst, "line", nil, 100)
-    inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
-    -- inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
-    inst.components.aoetargeting.reticule.pingprefab = "stariliad_fake_reticule"
-    -- inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFnLine
-    inst.components.aoetargeting:SetShouldRepeatCastFn(CanRepeatCastFn)
-    inst.components.aoetargeting:SetAlwaysValid(true)
+    -- StarIliadWeaponSkill.AddAoetargetingClient(inst, "line", nil, 100)
+    -- inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
+    -- -- inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
+    -- inst.components.aoetargeting.reticule.pingprefab = "stariliad_fake_reticule"
+    -- -- inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFnLine
+    -- inst.components.aoetargeting:SetShouldRepeatCastFn(CanRepeatCastFn)
+    -- inst.components.aoetargeting:SetAlwaysValid(true)
 
     inst.entity:SetPristine()
 
@@ -142,7 +142,7 @@ local function fn()
 
     MakeHauntableLaunch(inst)
 
-    StarIliadWeaponSkill.AddAoetargetingServer(inst, CastWeaponSkill)
+    -- StarIliadWeaponSkill.AddAoetargetingServer(inst, CastWeaponSkill)
 
     return inst
 end

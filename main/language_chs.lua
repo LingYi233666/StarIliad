@@ -18,6 +18,13 @@ STRINGS.NAMES.BLYTHE_BLASTER = "星际游侠爆能枪"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER = "这东西已经超出我所认知的科学的范畴了。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER = "这是我最信赖的小手枪，能发射不同种类的弹药！"
 
+STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM = "神秘球体"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM = "科学告诉我这东西对我没用。"
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM = "它迫不及待地想要和我融合。"
+
+STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "上古球体"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "科学告诉我这东西不仅复杂，而且对我没用。"
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "一定有某种方法能解析它。"
 
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "射击"
 -- STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = "跳"
@@ -28,7 +35,15 @@ STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = {
 
 STRINGS.ACTIONS.CASTAOE.BLYTHE_BLASTER = "射击"
 
+-- STRINGS.ACTIONS.BLYTHE_UNLOCK_SKILL = {
+--     LEARNED = "我已经知晓这个技能了。"
+-- }
 
+STRINGS.ACTIONS.BLYTHE_UNLOCK_SKILL = "解析"
+
+STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BLYTHE_UNLOCK_SKILL = {
+    LEARNED = "我已经知晓这个技能了。"
+}
 
 --------------------- HUD ------------------------
 STRINGS.STARILIAD_UI = {}
@@ -56,8 +71,14 @@ STRINGS.STARILIAD_UI.KEY_CONFIG_DIALOG = {
 }
 
 STRINGS.STARILIAD_UI.ITEM_ACQUIRED = {
-    FOUND = "获得了",
-    END = "。",
+    FOUND = "获得了%s",
+    ENCRYPTED = {
+        TITLE = "不明装备",
+        DESC = "分析无结果，此装备不适用于当前装甲。",
+    },
+    CHALLENGE = {
+        TITLE = "获得了战神赐福",
+    },
 }
 
 STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL = {
@@ -99,46 +120,61 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         DESC = "能够使用星际游侠爆能枪连续喷出低温气体，冻结敌人。",
     },
 
+    -- 猪王树林群系 "Speak to the king"
     WIDE_BEAM = {
         NAME = "宽光束",
-        DESC = "你的光束攻击能额外射出两条子光束（此功能可在配置页面开关），子光束的攻击力为主光束的25%。",
+        DESC = "你的光束攻击能额外射出两条子光束（此功能可在调整轮盘页面里进行开关），每根子光束的攻击力均为主光束的25%。",
     },
 
+    -- 苔藓地群系 "LichenLand"
     WAVE_BEAM = {
         NAME = "波动光束",
-        DESC = "为你的光束攻击附加纯粹的异界能量，使其能穿透障碍物（此功能可在配置页面开关）。并且，光束的位面攻击力永久提升17点。",
+        DESC = "为你的光束攻击附加纯粹的异界能量，使其能穿透障碍物（此功能可在调整轮盘页面里进行开关）。并且，光束的位面攻击力永久提升17点。",
     },
 
+    -- 远古档案馆群系 "ArchiveMaze"
+    -- 需要额外挑战解码
     PLASMA_BEAM = {
         NAME = "等离子光束",
-        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在配置页面开关）。并且，光束的力场攻击力永久提升17点。",
+        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，光束的力场攻击力永久提升17点。",
     },
 
+    -- 海象森林群系 "Forest hunters"
+    -- or
+    -- 曼德拉草森林群系 "For a nice walk"
     USURPER_SHOT = {
         NAME = "夺位射击",
         DESC = "能够使用星际游侠爆能枪进行夺位射击。夺位射击能射出两种特殊的非杀伤性光束，其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
     },
 
+    -- 混合地群系 "Dig that rock"
     MISSILE = {
         NAME = "导弹",
         DESC = "能够使用星际游侠爆能枪发射一枚导弹，造成小范围100力场伤害。导弹的上限可以通过搜集导弹匣来提升。",
     },
 
+    -- 石虾地群系 "RockyLand"
+    -- or
+    -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     SUPER_MISSILE = {
         NAME = "超级导弹",
         DESC = "能够使用星际游侠爆能枪发射一枚超级导弹，造成中范围300力场伤害。超级导弹的上限可以通过搜集超级导弹匣来提升。",
     },
 
-    BIG_FUCKING_MISSILE = {
-        NAME = "B.F.M.",
-        DESC = "能够使用星际游侠爆能枪发射一枚毁灭飞矢，造成大范围3000力场伤害。每隔5天才能发射一发。",
-    },
+    -- Deprecated
+    -- BIG_FUCKING_MISSILE = {
+    --     NAME = "B.F.M.",
+    --     DESC = "能够使用星际游侠爆能枪发射一枚毁灭飞矢，造成大范围3000力场伤害。每隔5天才能发射一发。",
+    -- },
 
+    -- 击败远古守护者获得
     SPEED_BURST = {
         NAME = "速度推进器",
-        DESC = "沿着同一方向连续奔跑3秒后进入加速状态，对撞上的生物和物体造成大量破坏。速度推进器的功能可在配置页面开关。",
+        DESC = "沿着同一方向连续奔跑3秒后进入加速状态，对撞上的生物和物体造成大量破坏。速度推进器的功能可在调整轮盘页面里进行开关。",
     },
 
+    -- 红蘑菇森林群系 "RedForest"
+    -- 需要额外挑战解码
     GRAVITY_CONTROL = {
         NAME = "重力控制器",
         DESC = "通过引力平衡你受到的阻力。可以在水中行动自如。",
@@ -149,16 +185,24 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         DESC = "打开一个设置轮盘，在轮盘中，你可以切换爆能枪使用的弹药，或是开关某些特殊能力。",
     },
 
-    DODGE = {
-        NAME = "闪光转移",
-        DESC = "瞬间向鼠标所指方向高速移动一段距离。",
-    },
-
     PARRY = {
         NAME = "拨挡攻击",
         DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用星际游侠爆能枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹和超级导弹补给。",
     },
 
+    -- 月岛浴场群系 "MoonIsland_Baths"
+    STEALTH = {
+        NAME = "幻影斗篷",
+        DESC = "进入隐形状态，躲避敌人，在使用期间会持续消耗饥饿值。如果在隐形时发动攻击或是进行其他工作，角色会短暂暴露，并额外消耗一些饥饿值。",
+    },
+
+    -- 大沼泽群系 "Squeltch"
+    DODGE = {
+        NAME = "闪光转移",
+        DESC = "瞬间向鼠标所指方向高速移动一段距离。可以连续使用两次。",
+    },
+
+    -- 泥泞光照区群系 "MudLights"
     SCAN = {
         NAME = "脉冲雷达",
         DESC = "消耗些许饥饿值，使用脉冲雷达扫描周围的地形，周期性揭示半径60码内的地图，持续10秒。\n*脉冲可以迫使隐形的生物显形。",

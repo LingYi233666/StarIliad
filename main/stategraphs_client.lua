@@ -388,21 +388,21 @@ AddStategraphState("wilson_client",
         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
 )
 
-AddStategraphState("wilson_client",
-    CreateShootCastAoeState("blythe_shoot_beam_castaoe",
-        TUNING.BLYTHE_BEAM_ENTER_BONUS,
-        TUNING.BLYTHE_BEAM_SHOOT_TIME,
-        TUNING.BLYTHE_BEAM_FREE_TIME,
-        TUNING.BLYTHE_BEAM_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson_client",
+--     CreateShootCastAoeState("blythe_shoot_beam_castaoe",
+--         TUNING.BLYTHE_BEAM_ENTER_BONUS,
+--         TUNING.BLYTHE_BEAM_SHOOT_TIME,
+--         TUNING.BLYTHE_BEAM_FREE_TIME,
+--         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
+-- )
 
-AddStategraphState("wilson_client",
-    CreateShootAtState("blythe_shoot_beam_shoot_at",
-        TUNING.BLYTHE_BEAM_ENTER_BONUS,
-        TUNING.BLYTHE_BEAM_SHOOT_TIME,
-        TUNING.BLYTHE_BEAM_FREE_TIME,
-        TUNING.BLYTHE_BEAM_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson_client",
+--     CreateShootAtState("blythe_shoot_beam_shoot_at",
+--         TUNING.BLYTHE_BEAM_ENTER_BONUS,
+--         TUNING.BLYTHE_BEAM_SHOOT_TIME,
+--         TUNING.BLYTHE_BEAM_FREE_TIME,
+--         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
+-- )
 
 
 AddStategraphState("wilson_client",
@@ -413,19 +413,19 @@ AddStategraphState("wilson_client",
         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
 )
 
-AddStategraphState("wilson_client",
-    CreateShootCastAoeState("blythe_shoot_missile_castaoe",
-        TUNING.BLYTHE_MISSILE_ENTER_BONUS,
-        TUNING.BLYTHE_MISSILE_SHOOT_TIME,
-        TUNING.BLYTHE_MISSILE_FREE_TIME,
-        TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson_client",
+--     CreateShootCastAoeState("blythe_shoot_missile_castaoe",
+--         TUNING.BLYTHE_MISSILE_ENTER_BONUS,
+--         TUNING.BLYTHE_MISSILE_SHOOT_TIME,
+--         TUNING.BLYTHE_MISSILE_FREE_TIME,
+--         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
+-- )
 
 
 AddStategraphState("wilson_client",
     State {
         name = "blythe_release_ice_fog2",
-        tags = { "attack", "notalking", "abouttoattack" },
+        tags = { "attack", "notalking", "abouttoattack", "canrotate" },
         server_states = { "blythe_release_ice_fog2" },
 
         onenter = function(inst)
@@ -685,6 +685,12 @@ AddStategraphState("wilson_client",
         --         --     inst.sg:GoToState("idle", true)
         --     end
         -- end,
+
+        timeline = {
+            TimeEvent(10 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
 
         ontimeout = function(inst)
             -- inst:ClearBufferedAction()

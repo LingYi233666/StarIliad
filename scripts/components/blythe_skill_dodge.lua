@@ -12,7 +12,8 @@ local BlytheSkillDodge = Class(BlytheSkillBase_Active, function(self, inst)
     self.dodge_speed = 40
     self.max_dodge_charge = 2
     self.dodge_charge = self.max_dodge_charge
-    self.resume_delay = 0.1
+    -- self.resume_delay = 0.1
+    self.resume_delay = 3
 end)
 
 function BlytheSkillDodge:CanCast(x, y, z, target)

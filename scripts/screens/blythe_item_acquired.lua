@@ -11,7 +11,7 @@ local BlytheSkillDesc = require "widgets/blythe_skill_desc"
 local ImageButton = require "widgets/imagebutton"
 
 local BlytheItemAcquired = Class(Screen,
-    function(self, owner, title_str, description_str, sound, duration, skill_names, orphan_widgets)
+    function(self, owner, title_str, description_str, sound, duration, skill_names)
         Screen._ctor(self, "BlytheItemAcquired")
 
         -- self.grid = self:AddChild(Grid())

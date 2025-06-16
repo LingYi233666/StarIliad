@@ -70,4 +70,45 @@ function GLOBAL.si_super_missile(count)
     end
 end
 
+-- si_rightclick()
+function GLOBAL.si_rightclick(delay)
+    delay = delay or 1
+
+    ThePlayer:DoTaskInTime(delay, function()
+        local act = ThePlayer.components.playercontroller:GetRightMouseAction()
+        print("act is:", act)
+
+        local position = TheInput:GetWorldPosition()
+        local mouseover = TheInput:GetWorldEntityUnderMouse()
+
+        local controlmods = ThePlayer.components.playercontroller:EncodeControlMods()
+        local platform, pos_x, pos_z = ThePlayer.components.playercontroller:GetPlatformRelativePosition(position.x,
+            position.z)
+
+        SendRPCToServer(RPC.RightClick,
+            act.action.code,
+            pos_x,
+            pos_z,
+            mouseover,
+            act.rotation ~= 0 and act.rotation or nil,
+            nil,
+            controlmods,
+            act.action.canforce,
+            act.action.mod_name,
+            platform,
+            platform ~= nil)
+    end)
+end
+
+-- si_right_actions(Vector3(-530,0,94))
+function GLOBAL.si_right_actions(pos)
+    local actions = {}
+    local useitem = ThePlayer.components.combat:GetWeapon()
+    useitem:CollectActions("POINT", ThePlayer, pos, actions, true)
+
+    for _, v in pairs(actions) do
+        print(v, v.code, v.mod_name)
+    end
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

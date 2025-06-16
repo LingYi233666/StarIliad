@@ -202,7 +202,7 @@ end
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
     local state = State {
         name = name,
-        tags = { "attack", "notalking", "abouttoattack", "autopredict" },
+        tags = { "attack", "abouttoattack", "notalking", "autopredict" },
 
         onenter = function(inst)
             if inst.components.combat:InCooldown() then
@@ -215,8 +215,12 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             local buffaction = inst:GetBufferedAction()
             local target = buffaction ~= nil and buffaction.target or nil
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-            inst.components.combat:SetTarget(target)
-            inst.components.combat:StartAttack()
+
+            if buffaction and buffaction.action == ACTIONS.ATTACK then
+                inst.components.combat:SetTarget(target)
+                inst.components.combat:StartAttack()
+            end
+
             inst.components.locomotor:Stop()
 
             inst.AnimState:PlayAnimation("hand_shoot")
@@ -240,6 +244,7 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             end
 
             inst.sg.statemem.weapon = equip
+            inst.sg.statemem.action = buffaction
 
             SpawnAimReticule(inst, equip, buffaction)
         end,
@@ -247,6 +252,7 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
         ontimeout = function(inst)
             inst.sg:RemoveStateTag("attack")
             inst.sg:RemoveStateTag("busy")
+            inst.sg:RemoveStateTag("shoot_at")
             inst.sg:AddStateTag("idle")
         end,
 
@@ -255,7 +261,9 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             TimeEvent(shoot_time - enter_bonus - chain_bonus, function(inst)
                 if inst.sg.statemem.chained then
                     StarIliadBasic.PlayShootSound(inst, inst.sg.statemem.weapon)
+                    -- print("inst.bufferedaction = ", inst.bufferedaction)
 
+                    inst.bufferedaction = inst.sg.statemem.action
                     inst:PerformBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end
@@ -265,6 +273,9 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
                 if not inst.sg.statemem.chained then
                     StarIliadBasic.PlayShootSound(inst, inst.sg.statemem.weapon)
 
+                    -- print("inst.bufferedaction = ", inst.bufferedaction)
+
+                    inst.bufferedaction = inst.sg.statemem.action
                     inst:PerformBufferedAction()
                     inst.sg:RemoveStateTag("abouttoattack")
                 end
@@ -442,21 +453,30 @@ AddStategraphState("wilson",
         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
 )
 
-AddStategraphState("wilson",
-    CreateShootCastAoeState("blythe_shoot_beam_castaoe",
-        TUNING.BLYTHE_BEAM_ENTER_BONUS,
-        TUNING.BLYTHE_BEAM_SHOOT_TIME,
-        TUNING.BLYTHE_BEAM_FREE_TIME,
-        TUNING.BLYTHE_BEAM_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson",
+--     CreateShootAttackState("blythe_shoot_beam2",
+--         { "shoot_at", "notalking", "autopredict" },
+--         TUNING.BLYTHE_BEAM_ENTER_BONUS,
+--         TUNING.BLYTHE_BEAM_SHOOT_TIME,
+--         TUNING.BLYTHE_BEAM_FREE_TIME,
+--         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
+-- )
 
-AddStategraphState("wilson",
-    CreateShootAtState("blythe_shoot_beam_shoot_at",
-        TUNING.BLYTHE_BEAM_ENTER_BONUS,
-        TUNING.BLYTHE_BEAM_SHOOT_TIME,
-        TUNING.BLYTHE_BEAM_FREE_TIME,
-        TUNING.BLYTHE_BEAM_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson",
+--     CreateShootCastAoeState("blythe_shoot_beam_castaoe",
+--         TUNING.BLYTHE_BEAM_ENTER_BONUS,
+--         TUNING.BLYTHE_BEAM_SHOOT_TIME,
+--         TUNING.BLYTHE_BEAM_FREE_TIME,
+--         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
+-- )
+
+-- AddStategraphState("wilson",
+--     CreateShootAtState("blythe_shoot_beam_shoot_at",
+--         TUNING.BLYTHE_BEAM_ENTER_BONUS,
+--         TUNING.BLYTHE_BEAM_SHOOT_TIME,
+--         TUNING.BLYTHE_BEAM_FREE_TIME,
+--         TUNING.BLYTHE_BEAM_CHAIN_BONUS)
+-- )
 
 ------------------------------------------------------
 
@@ -468,20 +488,29 @@ AddStategraphState("wilson",
         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
 )
 
-AddStategraphState("wilson",
-    CreateShootCastAoeState("blythe_shoot_missile_castaoe",
-        TUNING.BLYTHE_MISSILE_ENTER_BONUS,
-        TUNING.BLYTHE_MISSILE_SHOOT_TIME,
-        TUNING.BLYTHE_MISSILE_FREE_TIME,
-        TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
-)
+-- AddStategraphState("wilson",
+--     CreateShootAttackState("blythe_shoot_missile2",
+--         { "shoot_at", "notalking", "autopredict" },
+--         TUNING.BLYTHE_MISSILE_ENTER_BONUS,
+--         TUNING.BLYTHE_MISSILE_SHOOT_TIME,
+--         TUNING.BLYTHE_MISSILE_FREE_TIME,
+--         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
+-- )
+
+-- AddStategraphState("wilson",
+--     CreateShootCastAoeState("blythe_shoot_missile_castaoe",
+--         TUNING.BLYTHE_MISSILE_ENTER_BONUS,
+--         TUNING.BLYTHE_MISSILE_SHOOT_TIME,
+--         TUNING.BLYTHE_MISSILE_FREE_TIME,
+--         TUNING.BLYTHE_MISSILE_CHAIN_BONUS)
+-- )
 -------------------------------------------------------
 
 
 
 AddStategraphState("wilson", State {
     name = "blythe_release_ice_fog2",
-    tags = { "attack", "notalking", "abouttoattack", "autopredict" },
+    tags = { "attack", "notalking", "abouttoattack", "autopredict", "canrotate" },
 
     onenter = function(inst)
         if inst.components.combat:InCooldown() then
@@ -517,9 +546,9 @@ AddStategraphState("wilson", State {
 
         if equip
             and equip:IsValid()
-            and inst.components.combat:CanTarget(target)
+            and (target == nil or inst.components.combat:CanTarget(target))
             and inst.components.playercontroller
-            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY, CONTROL_ATTACK)
+            and inst.components.playercontroller:IsAnyOfControlsPressed(CONTROL_PRIMARY, CONTROL_SECONDARY, CONTROL_ATTACK)
             and not inst.sg.statemem.target_miss
             and cur_proj == "blythe_ice_fog" then
             -- local anim_time = inst.AnimState:GetCurrentAnimationTime()
@@ -913,7 +942,7 @@ AddStategraphState("wilson",
 
 AddStategraphState("wilson", State {
     name = "blythe_dodge",
-    tags = { "busy", "nopredict", "nointerrupt" },
+    tags = { "busy", "nopredict", "nointerrupt", "blythe_dodge" },
 
     onenter = function(inst, data)
         inst.AnimState:Hide("ARM_carry")
@@ -1047,6 +1076,9 @@ AddStategraphState("wilson",
                 inst.components.blythe_skill_parry:TrySpawnWaterSplash()
             end),
 
+            -- TimeEvent(10 * FRAMES, function(inst)
+            --     inst.sg:RemoveStateTag("busy")
+            -- end),
         },
 
         events =

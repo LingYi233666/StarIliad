@@ -231,4 +231,10 @@ function StarIliadBasic.SpawnSupplyBalls(attacker, pos)
     end
 end
 
+function StarIliadBasic.GetCurrentStateName(inst)
+    if inst and inst:IsValid() and inst.sg and inst.sg.currentstate then
+        return inst.sg.currentstate.name
+    end
+end
+
 GLOBAL.StarIliadBasic = StarIliadBasic

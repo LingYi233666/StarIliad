@@ -3,6 +3,8 @@ AddReplicableComponent("blythe_skiller")
 AddReplicableComponent("blythe_powersuit_configure")
 AddReplicableComponent("blythe_missile_counter")
 AddReplicableComponent("stariliad_ocean_land_jump")
+AddReplicableComponent("blythe_skill_parry")
+AddReplicableComponent("blythe_skill_stealth")
 
 AddComponentPostInit("playercontroller", function(self)
     local old_OnUpdate = self.OnUpdate
@@ -11,12 +13,33 @@ AddComponentPostInit("playercontroller", function(self)
 
         local isenabled, ishudblocking = self:IsEnabled()
         if isenabled and not ishudblocking then
-            if self:IsControlPressed(CONTROL_PRIMARY) and self:IsAOETargeting() then
+            -- if self:IsControlPressed(CONTROL_PRIMARY) and self:IsAOETargeting() then
+            --     local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
+            --     if item and item:HasTag("stariliad_chain_castaoe") then
+            --         self:OnLeftClick(true)
+            --     end
+            -- end
+
+            if self:IsControlPressed(CONTROL_SECONDARY) then
                 local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
-                if item and item:HasTag("stariliad_chain_castaoe") then
-                    self:OnLeftClick(true)
+                if item and item.prefab == "blythe_blaster" then
+                    -- local data = item.replica.stariliad_pistol:GetProjectileData()
+
+                    -- if data and data.prefab == "blythe_ice_fog" then
+                    --     self:OnRightClick(true)
+                    -- else
+                    --     local attack_tag = self.remote_authority and self.remote_predicting and "abouttoattack" or
+                    --         "attack"
+
+                    --     if not (self.inst.sg and self.inst.sg:HasStateTag(attack_tag)) then
+                    --         self:OnRightClick(true)
+                    --     end
+                    -- end
+
+                    self:OnRightClick(true)
                 end
             end
+
 
             -- if self:IsControlPressed(CONTROL_ATTACK) then
             --     local item = self.inst.replica.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)

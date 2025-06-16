@@ -63,6 +63,7 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "plasma_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
+        encrypted = true,
     },
 
     {
@@ -99,6 +100,7 @@ BLYTHE_SKILL_DEFINES = {
         -- handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
+        encrypted = true,
     },
 
     -- MAGIC
@@ -118,6 +120,30 @@ BLYTHE_SKILL_DEFINES = {
     },
 
     {
+        name = "parry",
+        dtype = BLYTHE_SKILL_TYPE.MAGIC,
+
+        root = true,
+
+        default_key = 1005, --"Mouse Button 4",
+
+        on_pressed_client = function(inst, x, y, z)
+            if inst.replica.blythe_skill_parry and inst.replica.blythe_skill_parry:CanCast(x, y, z) then
+                inst.replica.blythe_skill_parry:Cast(x, y, z)
+            end
+        end,
+
+        -- on_pressed = CastSkillByComponentWrapper("blythe_skill_parry")
+    },
+
+    {
+        name = "stealth",
+        dtype = BLYTHE_SKILL_TYPE.MAGIC,
+
+        on_pressed = CastSkillByComponentWrapper("blythe_skill_stealth")
+    },
+
+    {
         name = "dodge",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 
@@ -126,45 +152,6 @@ BLYTHE_SKILL_DEFINES = {
         -- default_key = 1002, --"Middle Mouse Button",
 
         on_pressed = CastSkillByComponentWrapper("blythe_skill_dodge")
-    },
-
-    {
-        name = "parry",
-        dtype = BLYTHE_SKILL_TYPE.MAGIC,
-
-        root = true,
-
-        default_key = 1005, --"Mouse Button 4",
-
-        -- on_pressed_client = function(inst, x, y, z)
-        --     if not (inst.sg and inst.sg.sg and inst.sg.sg.name == "wilson_client") then
-        --         return
-        --     end
-
-        --     if inst:HasTag("nopredict") or inst:HasTag("pausepredict") then
-        --         return
-        --     end
-
-        --     if IsEntityDeadOrGhost(inst, true) then
-        --         return
-        --     end
-
-        --     if inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("nointerrupt") then
-        --         return
-        --     end
-
-        --     if inst.replica.rider and inst.replica.rider:IsRiding() then
-        --         return
-        --     end
-
-        --     if not (inst.replica.hunger and inst.replica.hunger:GetCurrent() >= 1) then
-        --         return
-        --     end
-
-        --     inst.sg:GoToState("blythe_parry", { pos = Vector3(x, y, z) })
-        -- end,
-
-        on_pressed = CastSkillByComponentWrapper("blythe_skill_parry")
     },
 
     {

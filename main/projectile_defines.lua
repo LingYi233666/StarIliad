@@ -5,7 +5,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- sound = "stariliad_sfx/prefabs/blaster/beam_shoot_samus",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_beam",
-        castaoe_sg = "blythe_shoot_beam_castaoe",
+        -- shoot_at_sg = "blythe_shoot_beam2",
+        -- castaoe_sg = "blythe_shoot_beam_castaoe",
         repeat_cast = true,
     },
 
@@ -13,7 +14,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         prefab = "blythe_ice_fog",
         range = 8,
         attack_sg = "blythe_release_ice_fog2",
-        castaoe_sg = "blythe_release_ice_fog_castaoe2",
+        -- castaoe_sg = "blythe_release_ice_fog_castaoe2",
         aoe_reject_fn = function(inst, action)
             if not TheNet:IsDedicated() and TheInput then
                 local mouse_pos = TheInput:GetWorldPosition()
@@ -44,8 +45,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         fx = "stariliad_pistol_shoot_cloud",
         aim_reticule = "blythe_aim_reticule_purple",
         attack_sg = "blythe_shoot_beam",
-        castaoe_sg = "blythe_shoot_beam_castaoe",
-        shoot_at_sg = "blythe_shoot_beam_shoot_at",
+        -- castaoe_sg = "blythe_shoot_beam_castaoe",
+        -- shoot_at_sg = "blythe_shoot_beam_shoot_at",
         repeat_cast = true,
         enable_shoot_at = true, -- enable shoot at certain target, not attack
     },
@@ -58,8 +59,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         range = 10,
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_beam",
-        castaoe_sg = "blythe_shoot_beam_castaoe",
-        shoot_at_sg = "blythe_shoot_beam_shoot_at",
+        -- castaoe_sg = "blythe_shoot_beam_castaoe",
+        -- shoot_at_sg = "blythe_shoot_beam_shoot_at",
         repeat_cast = true,
         enable_shoot_at = true, -- enable shoot at certain target, not attack
     },
@@ -69,7 +70,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_missile",
-        castaoe_sg = "blythe_shoot_missile_castaoe",
+        -- shoot_at_sg = "blythe_shoot_missile2",
+        -- castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
@@ -99,7 +101,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_missile",
-        castaoe_sg = "blythe_shoot_missile_castaoe",
+        -- shoot_at_sg = "blythe_shoot_missile2",
+        -- castaoe_sg = "blythe_shoot_missile_castaoe",
         repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
