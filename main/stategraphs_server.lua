@@ -202,7 +202,7 @@ end
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
     local state = State {
         name = name,
-        tags = { "attack", "abouttoattack", "notalking", "autopredict" },
+        tags = { "attack", "abouttoattack", "notalking", "stariliad_shoot", "autopredict" },
 
         onenter = function(inst)
             if inst.components.combat:InCooldown() then
@@ -510,7 +510,7 @@ AddStategraphState("wilson",
 
 AddStategraphState("wilson", State {
     name = "blythe_release_ice_fog2",
-    tags = { "attack", "notalking", "abouttoattack", "autopredict", "canrotate" },
+    tags = { "attack", "notalking", "abouttoattack", "canrotate", "stariliad_shoot", "autopredict" },
 
     onenter = function(inst)
         if inst.components.combat:InCooldown() then

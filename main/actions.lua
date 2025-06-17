@@ -32,8 +32,7 @@ AddComponentAction("EQUIPPED", "stariliad_pistol", function(inst, doer, target, 
     if right
         and not (doer.replica.rider and doer.replica.rider:IsRiding())
         and target
-        and target ~= doer
-        and not target:HasOneOfTags("FX", "NOCLICK", "INLIMBO") then
+        and target ~= doer then
         table.insert(actions, ACTIONS.STARILIAD_SHOOT_AT)
     end
 end)
@@ -72,21 +71,21 @@ AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.STARILIAD_SHOOT_AT, f
         and not (inst.components.health and inst.components.health:IsDead()) then
         if equip.prefab == "blythe_blaster" then
             local proj_data = equip.components.stariliad_pistol:GetProjectileData()
-            local current_state_name = StarIliadBasic.GetCurrentStateName(inst)
+            -- local current_state_name = StarIliadBasic.GetCurrentStateName(inst)
             if not inst.sg:HasStateTag(attack_tag) then
                 -- print("Go to attack sg")
                 return proj_data.attack_sg
-            elseif current_state_name == proj_data.attack_sg then
-                -- Update position
-                if inst.sg.statemem.action then
-                    local pos = action:GetActionPoint()
-                    if pos then
-                        inst.sg.statemem.action:SetActionPoint(pos)
-                    else
-                        inst.sg.statemem.action.pos = nil
-                    end
-                    inst.sg.statemem.action.target = action.target
-                end
+                -- elseif current_state_name == proj_data.attack_sg then
+                --     -- Update position
+                --     if inst.sg.statemem.action then
+                --         local pos = action:GetActionPoint()
+                --         if pos then
+                --             inst.sg.statemem.action:SetActionPoint(pos)
+                --         else
+                --             inst.sg.statemem.action.pos = nil
+                --         end
+                --         inst.sg.statemem.action.target = action.target
+                --     end
             end
         end
     end
@@ -99,18 +98,18 @@ AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_SHOO
         and not IsEntityDead(inst, true) then
         if equip.prefab == "blythe_blaster" then
             local proj_data = equip.replica.stariliad_pistol:GetProjectileData()
-            local current_state_name = StarIliadBasic.GetCurrentStateName(inst)
+            -- local current_state_name = StarIliadBasic.GetCurrentStateName(inst)
 
             if not inst.sg:HasStateTag("attack") then
                 return proj_data.attack_sg
-            elseif current_state_name == proj_data.attack_sg then
-                -- Update position to server
-                local x, y, z
-                local action_pos = action:GetActionPoint()
-                if action_pos then
-                    x, y, z = action_pos:Get()
-                end
-                SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_shoot_action_data"], x, y, z, action.target)
+                -- elseif current_state_name == proj_data.attack_sg then
+                --     -- Update position to server
+                --     local x, y, z
+                --     local action_pos = action:GetActionPoint()
+                --     if action_pos then
+                --         x, y, z = action_pos:Get()
+                --     end
+                --     SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_shoot_action_data"], x, y, z, action.target)
             end
         end
     end

@@ -45,14 +45,20 @@ AddModRPCHandler("stariliad_rpc", "switch_enable_skill", function(player, skill_
     end
 end)
 
-AddModRPCHandler("stariliad_rpc", "set_shoot_action_data", function(player, x, y, z, target)
-    if player and player.sg.statemem.action then
-        if x and y and z then
-            player.sg.statemem.action:SetActionPoint(Vector3(x, y, z))
-        else
-            player.sg.statemem.action.pos = nil
-        end
-        player.sg.statemem.action.target = target
+-- AddModRPCHandler("stariliad_rpc", "set_shoot_action_data", function(player, x, y, z, target)
+--     if player and player.sg.statemem.action then
+--         if x and y and z then
+--             player.sg.statemem.action:SetActionPoint(Vector3(x, y, z))
+--         else
+--             player.sg.statemem.action.pos = nil
+--         end
+--         player.sg.statemem.action.target = target
+--     end
+-- end)
+
+AddModRPCHandler("stariliad_rpc", "rectify_shoot_buffaction", function(player, x, y, z, target)
+    if player and player:IsValid() and player.components.playercontroller then
+        player.components.playercontroller:OnRemoteRectifyStarIliadShootAction(x, y, z, target)
     end
 end)
 

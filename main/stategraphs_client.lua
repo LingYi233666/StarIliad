@@ -146,7 +146,7 @@ end
 local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, chain_bonus)
     local state = State {
         name = name,
-        tags = { "attack", "notalking", "abouttoattack" },
+        tags = { "attack", "notalking", "abouttoattack", "stariliad_shoot" },
 
         onenter = function(inst)
             local combat = inst.replica.combat
@@ -425,7 +425,7 @@ AddStategraphState("wilson_client",
 AddStategraphState("wilson_client",
     State {
         name = "blythe_release_ice_fog2",
-        tags = { "attack", "notalking", "abouttoattack", "canrotate" },
+        tags = { "attack", "notalking", "abouttoattack", "canrotate", "stariliad_shoot" },
         server_states = { "blythe_release_ice_fog2" },
 
         onenter = function(inst)
