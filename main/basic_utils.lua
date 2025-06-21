@@ -237,4 +237,12 @@ function StarIliadBasic.GetCurrentStateName(inst)
     end
 end
 
+function StarIliadBasic.RemoveOneItem(item)
+    if item.components.stackable then
+        item.components.stackable:Get():Remove()
+    else
+        item:Remove()
+    end
+end
+
 GLOBAL.StarIliadBasic = StarIliadBasic

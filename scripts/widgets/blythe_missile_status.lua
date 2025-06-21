@@ -54,6 +54,8 @@ function BlytheMissileStatus:SpawnFX(is_super)
         self.flash_task2 = nil
     end
 
+    local color_1 = { 0, 1, 0, 1 }
+
     self.label_1:SetColour({ 1, 1, 1, 1 })
     self.label_2:SetColour({ 1, 1, 1, 1 })
 
@@ -67,9 +69,9 @@ function BlytheMissileStatus:SpawnFX(is_super)
     local flag = true
     self.flash_task = self.inst:DoStaticPeriodicTask(FRAMES, function()
         if is_super then
-            self.label_2:SetColour(flag and { 1, 0, 0, 1 } or { 1, 1, 1, 1 })
+            self.label_2:SetColour(flag and color_1 or { 1, 1, 1, 1 })
         else
-            self.label_1:SetColour(flag and { 1, 0, 0, 1 } or { 1, 1, 1, 1 })
+            self.label_1:SetColour(flag and color_1 or { 1, 1, 1, 1 })
         end
         flag = not flag
     end)

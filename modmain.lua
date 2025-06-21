@@ -56,6 +56,8 @@ PrefabFiles = {
     "blythe_supply_ball_tails",
 
     "blythe_unlock_skill_item",
+
+    "blythe_aim_reticule2",
 }
 
 Assets = {

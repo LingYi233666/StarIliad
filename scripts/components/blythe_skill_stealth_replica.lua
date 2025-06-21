@@ -23,18 +23,22 @@ function BlytheSkillStealth:IsVisibleDirty()
     if self._is_visible:value() then
         if ThePlayer == self.inst then
             self.inst.AnimState:OverrideMultColour(10 / 255, 240 / 255, 230 / 255, 0.4)
-            self.inst.AnimState:SetHaunted(true)
         else
-            self.inst:Hide()
+            -- self.inst:Hide()
+            self.inst.AnimState:OverrideMultColour(0, 0, 0, 0)
         end
+        self.inst.AnimState:SetHaunted(true)
     else
-        if ThePlayer == self.inst then
-            -- nil means clear OverrideMultColour
-            self.inst.AnimState:OverrideMultColour()
-            self.inst.AnimState:SetHaunted(false)
-        else
-            self.inst:Show()
-        end
+        -- if ThePlayer == self.inst then
+        --     -- nil means clear OverrideMultColour
+        --     self.inst.AnimState:OverrideMultColour()
+        --     self.inst.AnimState:SetHaunted(false)
+        -- else
+        --     self.inst:Show()
+        -- end
+
+        self.inst.AnimState:OverrideMultColour()
+        self.inst.AnimState:SetHaunted(false)
     end
 end
 

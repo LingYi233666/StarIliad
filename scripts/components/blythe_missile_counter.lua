@@ -17,10 +17,10 @@ end
 local BlytheMissileCounter = Class(function(self, inst)
     self.inst = inst
 
-    self.max_num_missiles = 10
+    self.max_num_missiles = TUNING.BLYTHE_MISSILE_COUNT_INIT
     self.num_missiles = self.max_num_missiles
 
-    self.max_num_super_missiles = 5
+    self.max_num_super_missiles = TUNING.BLYTHE_SUPER_MISSILE_COUNT_INIT
     self.num_super_missiles = self.max_num_super_missiles
 
     self.inst:StartUpdatingComponent(self)
@@ -87,14 +87,15 @@ end
 function BlytheMissileCounter:OnLoad(data)
     if data ~= nil then
         if data.max_num_missiles ~= nil then
-            self:SetMaxNumMissiles(data.max_num_missiles, true)
+            self:SetMaxNumMissiles(math.min(data.max_num_missiles, TUNING.BLYTHE_MISSILE_COUNT_THRESHOLD), true)
         end
         if data.num_missiles ~= nil then
             self:SetNumMissiles(data.num_missiles, true)
         end
 
         if data.max_num_super_missiles ~= nil then
-            self:SetMaxNumSuperMissiles(data.max_num_super_missiles, true)
+            self:SetMaxNumSuperMissiles(
+                math.min(data.max_num_super_missiles, TUNING.BLYTHE_SUPER_MISSILE_COUNT_THRESHOLD), true)
         end
         if data.num_super_missiles ~= nil then
             self:SetNumSuperMissiles(data.num_super_missiles, true)

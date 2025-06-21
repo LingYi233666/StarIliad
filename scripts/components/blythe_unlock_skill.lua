@@ -5,8 +5,10 @@ local BlytheUnlockSkill = Class(function(self, inst)
     self.skill_name = nil
     self.encrypted  = false
 
+    -- self.already_learn_callback = nil
 
-    self.already_learn_callback = nil
+
+    self.teach_override = nil
 end)
 
 function BlytheUnlockSkill:SetSkillName(name)
@@ -15,6 +17,16 @@ end
 
 function BlytheUnlockSkill:SetEncrypted(val)
     self.encrypted = val
+end
+
+function BlytheUnlockSkill:SetTeachOverrideFn(fn)
+    self.teach_override = fn
+end
+
+function BlytheUnlockSkill:IsLearnedMySkill(player)
+    return self.skill_name
+        and player.components.blythe_skiller
+        and player.components.blythe_skiller:IsLearned(self.skill_name)
 end
 
 function BlytheUnlockSkill:Teach(player)
@@ -35,26 +47,31 @@ function BlytheUnlockSkill:Teach(player)
         return true
     end
 
-    if player.components.blythe_skiller:IsLearned(self.skill_name) then
-        if self.already_learn_callback then
-            return self.already_learn_callback(self.inst, player)
+    if self.teach_override then
+        local success, reason = self.teach_override(self.inst, player)
+
+        -- nil means continue to default handling
+        if success ~= nil then
+            return success, reason
         end
+    end
+
+    if self:IsLearnedMySkill(player) then
         return false, "LEARNED"
     end
 
     player.components.blythe_skiller:Learn(self.skill_name)
 
+    player.sg:GoToState("emote", { anim = "emote_swoon" })
+
     if player:IsNearDanger() then
         print("Danger nearby, skip learned anim")
     else
+        player.AnimState:SetTime(1)
         self:TriggerLearnedAnim(player)
     end
 
-    if self.inst.components.stackable then
-        self.inst.components.stackable:Get():Remove()
-    else
-        self.inst:Remove()
-    end
+    StarIliadBasic.RemoveOneItem(self.inst)
 
     return true
 end

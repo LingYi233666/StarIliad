@@ -8,7 +8,7 @@ local function AddColdnessToTarget(inst, attacker, target)
         local effective = false
         local factor = target:GetIsWet() and 2 or 1
         if target.components.freezable then
-            -- target.components.freezable:AddColdness(0.3 * factor)
+            target.components.freezable:AddColdness(0.3 * factor)
             effective = true
         end
 

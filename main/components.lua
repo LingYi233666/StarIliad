@@ -69,9 +69,10 @@ AddComponentPostInit("playercontroller", function(self)
                     else
                         self:RemoteRectifyStarIliadShootAction(x, y, z, act.target)
                     end
+                    self:OnRightClick(true)
                 end
+                self.stariliad_shoot_buffer = nil
             end
-            self.stariliad_shoot_buffer = nil
 
 
             -- if self:IsControlPressed(CONTROL_PRIMARY) and self:IsAOETargeting() then

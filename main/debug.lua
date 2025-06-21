@@ -111,4 +111,20 @@ function GLOBAL.si_right_actions(pos)
     end
 end
 
+-- si_circle_rocks()
+-- si_circle_rocks(10, 5)
+function GLOBAL.si_circle_rocks(radius, step, pos)
+    radius = radius or 10
+    step = step or 5
+    pos = pos or ThePlayer:GetPosition()
+
+    local num_steps = math.floor(360 / step)
+    for i = 1, num_steps do
+        local angle = (i * step) * DEGREES
+        local offset = Vector3FromTheta(angle, radius)
+
+        SpawnAt("rock1", pos, nil, offset)
+    end
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

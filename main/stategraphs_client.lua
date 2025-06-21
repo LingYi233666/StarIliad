@@ -13,42 +13,42 @@ AddStategraphPostInit("wilson_client", function(sg)
             end
         end
 
-        if old_rets == nil then
-            print("old_rets is", old_rets)
-        end
+        -- if old_rets == nil then
+        --     print("old_rets is", old_rets)
+        -- end
 
         return old_rets
     end
 end)
 
 -- castaoe
-AddStategraphPostInit("wilson_client", function(sg)
-    local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
-    sg.actionhandlers[ACTIONS.CASTAOE].deststate = function(inst, action)
-        local old_rets = old_CASTAOE(inst, action)
-        local weapon = inst.replica.combat:GetWeapon()
-        if old_rets ~= nil
-            and weapon ~= nil
-            and not (inst.replica.rider and inst.replica.rider:IsRiding()) then
-            if weapon.prefab == "blythe_blaster" then
-                local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
+-- AddStategraphPostInit("wilson_client", function(sg)
+--     local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
+--     sg.actionhandlers[ACTIONS.CASTAOE].deststate = function(inst, action)
+--         local old_rets = old_CASTAOE(inst, action)
+--         local weapon = inst.replica.combat:GetWeapon()
+--         if old_rets ~= nil
+--             and weapon ~= nil
+--             and not (inst.replica.rider and inst.replica.rider:IsRiding()) then
+--             if weapon.prefab == "blythe_blaster" then
+--                 local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
 
-                if inst.sg:HasStateTag("aoe") then
-                    if proj_data.aoe_reject_fn then
-                        proj_data.aoe_reject_fn(inst, action)
-                    end
-                    return
-                else
-                    return proj_data.castaoe_sg
-                end
-                -- local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
-                -- return proj_data.castaoe_sg
-            end
-        end
+--                 if inst.sg:HasStateTag("aoe") then
+--                     if proj_data.aoe_reject_fn then
+--                         proj_data.aoe_reject_fn(inst, action)
+--                     end
+--                     return
+--                 else
+--                     return proj_data.castaoe_sg
+--                 end
+--                 -- local proj_data = weapon.replica.stariliad_pistol:GetProjectileData()
+--                 -- return proj_data.castaoe_sg
+--             end
+--         end
 
-        return old_rets
-    end
-end)
+--         return old_rets
+--     end
+-- end)
 
 -- locomote
 AddStategraphPostInit("wilson_client", function(sg)
@@ -434,6 +434,13 @@ AddStategraphState("wilson_client",
                 inst.AnimState:PlayAnimation("hand_shoot")
             end
 
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction ~= nil and buffaction.target or nil
+            if target ~= nil and target:IsValid() then
+                inst:ForceFacePoint(target.Transform:GetWorldPosition())
+                inst.sg.statemem.attacktarget = target
+            end
+
             inst:PerformPreviewBufferedAction()
         end,
 
@@ -451,6 +458,11 @@ AddStategraphState("wilson_client",
             --     inst.sg:GoToState("idle", true)
             --     return
             -- end
+
+            local target = inst.sg.statemem.attacktarget
+            if target ~= nil and target:IsValid() then
+                inst:ForceFacePoint(target.Transform:GetWorldPosition())
+            end
 
             if not inst.sg.statemem.state_matched then
                 if inst.sg:ServerStateMatches() then

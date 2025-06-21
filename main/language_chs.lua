@@ -26,6 +26,14 @@ STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "上古球体"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "科学告诉我这东西不仅复杂，而且对我没用。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_ENCRYPTED = "一定有某种方法能解析它。"
 
+STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM_MISSILE = "导弹柜"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_MISSILE = "盒中信号弹？"
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_MISSILE = "太好了！是导弹柜！"
+
+STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "超级导弹柜"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "盒中大只信号弹？"
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "太好了！是超级导弹柜！"
+
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "射击"
 -- STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = "跳"
 STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = {
@@ -42,7 +50,9 @@ STRINGS.ACTIONS.CASTAOE.BLYTHE_BLASTER = "射击"
 STRINGS.ACTIONS.BLYTHE_UNLOCK_SKILL = "解析"
 
 STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BLYTHE_UNLOCK_SKILL = {
-    LEARNED = "我已经知晓这个技能了。"
+    LEARNED = "我已经知晓这个技能了。",
+    MISSILE_THRESHOLD = "导弹容量最大值已经达到上限，没法再提升了。",
+    SUPER_MISSILE_THRESHOLD = "超级导弹容量最大值已经达到上限，没法再提升了。",
 }
 
 --------------------- HUD ------------------------
@@ -150,7 +160,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 混合地群系 "Dig that rock"
     MISSILE = {
         NAME = "导弹",
-        DESC = "能够使用星际游侠爆能枪发射一枚导弹，造成小范围100力场伤害。导弹的上限可以通过搜集导弹匣来提升。",
+        DESC = "能够使用星际游侠爆能枪发射一枚导弹，造成小范围100力场伤害。导弹的上限可以通过搜集导弹柜来提升。",
     },
 
     -- 石虾地群系 "RockyLand"
@@ -158,7 +168,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     SUPER_MISSILE = {
         NAME = "超级导弹",
-        DESC = "能够使用星际游侠爆能枪发射一枚超级导弹，造成中范围300力场伤害。超级导弹的上限可以通过搜集超级导弹匣来提升。",
+        DESC = "能够使用星际游侠爆能枪发射一枚超级导弹，造成中范围300力场伤害。超级导弹的上限可以通过搜集超级导弹柜来提升。",
     },
 
     -- Deprecated

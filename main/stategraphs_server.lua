@@ -20,35 +20,35 @@ AddStategraphPostInit("wilson", function(sg)
 end)
 
 -- castaoe
-AddStategraphPostInit("wilson", function(sg)
-    local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
-    sg.actionhandlers[ACTIONS.CASTAOE].deststate = function(inst, action)
-        local old_rets = old_CASTAOE(inst, action)
-        local weapon = inst.components.combat:GetWeapon()
-        if old_rets ~= nil
-            and weapon ~= nil
-            and not (inst.components.rider and inst.components.rider:IsRiding()) then
-            if weapon.prefab == "blythe_blaster" then
-                -- StarIliadDebug.PrintStackTrace()
+-- AddStategraphPostInit("wilson", function(sg)
+--     local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
+--     sg.actionhandlers[ACTIONS.CASTAOE].deststate = function(inst, action)
+--         local old_rets = old_CASTAOE(inst, action)
+--         local weapon = inst.components.combat:GetWeapon()
+--         if old_rets ~= nil
+--             and weapon ~= nil
+--             and not (inst.components.rider and inst.components.rider:IsRiding()) then
+--             if weapon.prefab == "blythe_blaster" then
+--                 -- StarIliadDebug.PrintStackTrace()
 
-                local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
+--                 local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
 
-                if inst.sg:HasStateTag("aoe") then
-                    if proj_data.aoe_reject_fn then
-                        proj_data.aoe_reject_fn(inst, action)
-                    end
-                    return
-                else
-                    return proj_data.castaoe_sg
-                end
-                -- local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
-                -- return proj_data.castaoe_sg
-            end
-        end
+--                 if inst.sg:HasStateTag("aoe") then
+--                     if proj_data.aoe_reject_fn then
+--                         proj_data.aoe_reject_fn(inst, action)
+--                     end
+--                     return
+--                 else
+--                     return proj_data.castaoe_sg
+--                 end
+--                 -- local proj_data = weapon.components.stariliad_pistol:GetProjectileData()
+--                 -- return proj_data.castaoe_sg
+--             end
+--         end
 
-        return old_rets
-    end
-end)
+--         return old_rets
+--     end
+-- end)
 
 -- locomote
 AddStategraphPostInit("wilson", function(sg)
@@ -184,6 +184,7 @@ local function KillAimReticule(inst)
     if inst.sg.statemem.aim_reticule and inst.sg.statemem.aim_reticule:IsValid() then
         inst.sg.statemem.aim_reticule:KillFX()
     end
+    inst.sg.statemem.aim_reticule = nil
 end
 
 local function IsShootChained(inst)
@@ -254,6 +255,24 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             inst.sg:RemoveStateTag("busy")
             inst.sg:RemoveStateTag("shoot_at")
             inst.sg:AddStateTag("idle")
+        end,
+
+        onupdate = function(inst)
+            if inst.sg.statemem.aim_reticule_take then
+                return
+            end
+
+            if inst.sg.statemem.action
+                and inst.sg.statemem.action.target
+                and inst.sg.statemem.action.target:IsValid() then
+                if not (inst.sg.statemem.aim_reticule and inst.sg.statemem.aim_reticule:IsValid()) then
+                    SpawnAimReticule(inst, inst.sg.statemem.weapon, inst.sg.statemem.action)
+                else
+                    inst.sg.statemem.aim_reticule:AttachTarget(inst.sg.statemem.action.target)
+                end
+            else
+                KillAimReticule(inst)
+            end
         end,
 
         timeline =

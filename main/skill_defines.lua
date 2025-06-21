@@ -75,11 +75,67 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
+
+        -- Unlock item params
+        stack_size = TUNING.STACK_SIZE_LARGEITEM,
+        teach_override = function(inst, player)
+            if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
+                return
+            end
+
+            if not player.components.blythe_missile_counter then
+                return false
+            end
+
+            local max_num_missiles = player.components.blythe_missile_counter:GetMaxNumMissiles()
+
+            local increase_count = math.min(TUNING.BLYTHE_MISSILE_COUNT_THRESHOLD - max_num_missiles,
+                TUNING.BLYTHE_MISSILE_COUNT_UPGRADE)
+
+            if increase_count <= 0 then
+                return false, "MISSILE_THRESHOLD"
+            end
+
+            player.components.blythe_missile_counter:SetMaxNumMissiles(max_num_missiles + increase_count)
+            player.components.blythe_missile_counter:DoDeltaNumMissiles(TUNING.BLYTHE_MISSILE_COUNT_UPGRADE)
+
+            SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["missile_status_spawn_fx"], player.userid, false)
+
+            return true
+        end,
     },
 
     {
         name = "super_missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
+
+        -- Unlock item params
+        stack_size = TUNING.STACK_SIZE_LARGEITEM,
+        teach_override = function(inst, player)
+            if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
+                return
+            end
+
+            if not player.components.blythe_missile_counter then
+                return false
+            end
+
+            local max_num_super_missiles = player.components.blythe_missile_counter:GetMaxNumSuperMissiles()
+
+            local increase_count = math.min(TUNING.BLYTHE_SUPER_MISSILE_COUNT_THRESHOLD - max_num_super_missiles,
+                TUNING.BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
+
+            if increase_count <= 0 then
+                return false, "SUPER_MISSILE_THRESHOLD"
+            end
+
+            player.components.blythe_missile_counter:SetMaxNumSuperMissiles(max_num_super_missiles + increase_count)
+            player.components.blythe_missile_counter:DoDeltaNumSuperMissiles(TUNING.BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
+
+            SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["missile_status_spawn_fx"], player.userid, true)
+
+            return true
+        end,
     },
 
     -- {

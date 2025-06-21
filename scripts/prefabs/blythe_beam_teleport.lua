@@ -14,12 +14,12 @@ end
 
 local function RemoveAimReticule(inst)
     if inst.aim_reticule and inst.aim_reticule:IsValid() then
-        local parent = inst.aim_reticule.entity:GetParent()
-        if parent then
-            local x, y, z = parent.Transform:GetWorldPosition()
-            parent:RemoveChild(inst.aim_reticule)
-            inst.aim_reticule.Transform:SetPosition(x, y, z)
-        end
+        -- local parent = inst.aim_reticule.entity:GetParent()
+        -- if parent then
+        --     local x, y, z = parent.Transform:GetWorldPosition()
+        --     parent:RemoveChild(inst.aim_reticule)
+        --     inst.aim_reticule.Transform:SetPosition(x, y, z)
+        -- end
         inst.aim_reticule:KillFX()
     end
     inst.aim_reticule = nil
@@ -36,6 +36,8 @@ local function OnProjectileLaunch(inst, attacker, target_pos)
         and attacker.sg.statemem.aim_reticule
         and attacker.sg.statemem.aim_reticule:IsValid() then
         inst.aim_reticule = attacker.sg.statemem.aim_reticule
+
+        attacker.sg.statemem.aim_reticule_take = true
         attacker.sg.statemem.aim_reticule = nil
     end
 end
