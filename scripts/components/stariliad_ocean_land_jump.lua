@@ -147,6 +147,8 @@ function StarIliadOceanLandJump:ShouldUseSwimming()
         and y < 0.1
         and not self.inst.sg:HasStateTag("jumping")
         and not self.inst:HasTag("playerghost")
+        and not self.inst.sg:HasStateTag("drowning")
+        and not self.inst.sg:HasStateTag("floating")
     -- and not self.inst.sg:HasStateTag("aoe")
 end
 

@@ -6,6 +6,131 @@ AddReplicableComponent("stariliad_ocean_land_jump")
 AddReplicableComponent("blythe_skill_parry")
 AddReplicableComponent("blythe_skill_stealth")
 
+--------------------------------------------------------------------
+-- Damage number API
+
+if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
+    local SpDamageUtil = require("components/spdamageutil")
+    AddComponentPostInit("combat", function(self)
+        local function IsLunarWeapon(weapon)
+            return weapon
+                and weapon:IsValid()
+                and weapon.components.damagetypebonus
+                and weapon.components.damagetypebonus.tags
+                and weapon.components.damagetypebonus.tags.shadow_aligned ~= nil
+        end
+
+        local function IsShadowWeapon(weapon)
+            return weapon
+                and weapon:IsValid()
+                and weapon.components.damagetypebonus
+                and weapon.components.damagetypebonus.tags
+                and weapon.components.damagetypebonus.tags.lunar_aligned ~= nil
+        end
+
+        local function IsLunarCreature(attacker)
+            return attacker
+                and attacker:IsValid()
+                and (attacker:HasTag("lunar_aligned") or attacker:HasTag("player_lunar_aligned"))
+        end
+
+        local function IsShadowCreature(attacker)
+            return attacker
+                and attacker:IsValid()
+                and (attacker:HasTag("shadow_aligned") or attacker:HasTag("player_shadow_aligned"))
+        end
+
+        local function OnAttacked(inst, data)
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local players_nearby = FindPlayersInRange(x, y, z, 40)
+            if #players_nearby <= 0 then
+                return
+            end
+
+            local damage = data.damage
+            local spdamage = data.spdamage
+            local weapon = data.weapon
+            local attacker = data.attacker
+            local stimuli = data.stimuli
+
+            damage = damage - SpDamageUtil.CalcTotalDamage(spdamage)
+
+
+            -- if damage > 1e-6 then
+            --     table.insert(params, "GENERIC")
+            --     table.insert(params, FineTuneNumber(damage))
+            -- end
+
+            local damage_map = {}
+            for k, v in pairs(STARILIAD_DAMAGE_NUMBER_COLOURS) do
+                damage_map[k] = 0
+            end
+            -- damage_map.GENERIC = damage
+
+            if stimuli == "electric" then
+                damage_map.LIGHTNING = damage
+            else
+                damage_map.GENERIC = damage
+            end
+
+            for damage_type, value in pairs(spdamage or {}) do
+                if damage_type == "planar" then
+                    if IsLunarWeapon(weapon) then
+                        damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
+                    elseif IsShadowWeapon(weapon) then
+                        damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
+                    elseif IsLunarCreature(attacker) then
+                        damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
+                    elseif IsShadowCreature(attacker) then
+                        damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
+                    else
+                        damage_map.PLANAR_GENERIC = damage_map.PLANAR_GENERIC + value
+                    end
+                elseif damage_type == "stariliad_spdamage_force" then
+                    damage_map.FORCE = damage_map.FORCE + value
+                else
+                    damage_map.GENERIC = damage_map.GENERIC + value
+                end
+            end
+
+
+            local params_pre = {}
+            local params = {}
+            for k, v in pairs(damage_map) do
+                if v > 0.1 then
+                    -- table.insert(params, k)
+                    -- table.insert(params, v)
+                    table.insert(params_pre, { k, v })
+                end
+            end
+
+            params_pre = shuffleArray(params_pre)
+
+            for _, company in pairs(params_pre) do
+                table.insert(params, company[1])
+                table.insert(params, company[2])
+            end
+
+            for _, v in pairs(players_nearby) do
+                SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_damage_number"], v.userid, x, y, z,
+                    unpack(params))
+            end
+        end
+
+        self.inst:ListenForEvent("attacked", OnAttacked)
+
+        local old_OnRemoveFromEntity = self.OnRemoveFromEntity
+        self.OnRemoveFromEntity = function(self, ...)
+            self.inst:RemoveEventCallback("attacked", OnAttacked)
+
+            if old_OnRemoveFromEntity ~= nil then
+                return old_OnRemoveFromEntity(self, ...)
+            end
+        end
+    end)
+end
+--------------------------------------------------------------------
+
 AddComponentPostInit("playercontroller", function(self)
     self.stariliad_shoot_buffer = nil
 

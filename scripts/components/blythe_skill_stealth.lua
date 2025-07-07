@@ -11,7 +11,12 @@ local BlytheSkillStealth = Class(BlytheSkillBase_Active, function(self, inst)
     self.hunger_delta_bad_sg = -3
     self.speed_mult = 0.8
     self._on_state_change = function()
-        if self.inst.sg:HasStateTag("blythe_dodge") then
+        -- if self.inst.sg:HasStateTag("blythe_dodge") then
+        --     self:Stop()
+        --     return
+        -- end
+
+        if self.inst.sg.currentstate.name == "blythe_dodge" then
             self:Stop()
             return
         end

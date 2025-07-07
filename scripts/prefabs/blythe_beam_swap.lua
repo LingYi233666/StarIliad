@@ -52,6 +52,31 @@ local function EmitSegments(start_pos, end_pos)
     print("dist:", delta_pos:Length())
 end
 
+local function IsFinePhysics(target)
+    if not target.Physics then
+        return false
+    end
+
+    local collisions = {
+        COLLISION.ITEMS,
+        -- COLLISION.OBSTACLES,
+        COLLISION.CHARACTERS,
+        COLLISION.FLYERS,
+        COLLISION.SANITY,
+        -- COLLISION.SMALLOBSTACLES,
+        COLLISION.GIANTS,
+    }
+
+    for _, v in pairs(collisions) do
+        if checkbit(target.Physics:GetCollisionMask(), v) then
+            print(target, "collide with", v)
+            return true
+        end
+    end
+
+    return false
+end
+
 local function LaunchBeam(inst, target_pos, attacker)
     local my_pos     = attacker:GetPosition()
     local forward    = (target_pos - my_pos):GetNormalized()
@@ -72,9 +97,9 @@ local function LaunchBeam(inst, target_pos, attacker)
         local ents = TheSim:FindEntities(x, y, z, 3, nil, { "FX", "INLIMBO" })
 
         for _, v in pairs(ents) do
-            if v ~= attacker then
+            if v ~= attacker and (IsFinePhysics(v) or StarIliadUsurper.CanSwap(attacker, v)) then
                 local dist = (final_pos - v:GetPosition()):Length()
-                if dist < 0.5 + v:GetPhysicsRadius(0) and StarIliadUsurper.CanSwap(attacker, v) then
+                if dist < 0.5 + v:GetPhysicsRadius(0) then
                     victim = v
                     break
                 end
@@ -88,13 +113,15 @@ local function LaunchBeam(inst, target_pos, attacker)
 
     EmitSegments(my_pos, final_pos)
 
-
-
     if victim then
         SpawnAt("blythe_beam_swap_hit_fx", final_pos)
         ShakeAllCameras(CAMERASHAKE.FULL, .7, .02, .2, inst, 40)
 
-        StarIliadUsurper.SwapPositionPre(attacker, victim)
+        if StarIliadUsurper.CanSwap(attacker, victim) then
+            StarIliadUsurper.SwapPositionPre(attacker, victim)
+        else
+            print("Can't swap", victim)
+        end
     end
 
     inst:Remove()

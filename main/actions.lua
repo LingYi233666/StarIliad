@@ -188,16 +188,24 @@ end))
 --------------------------------------------------------------
 
 AddAction("BLYTHE_UNLOCK_SKILL", "BLYTHE_UNLOCK_SKILL", function(act)
+    local teacher = nil
     if act.invobject and act.invobject:IsValid() and act.invobject.components.blythe_unlock_skill then
-        local success, reason = act.invobject.components.blythe_unlock_skill:Teach(act.doer)
-        return success, reason
+        teacher = act.invobject
+    elseif act.target and act.target:IsValid() and act.target.components.blythe_unlock_skill then
+        teacher = act.target
     end
 
-    return false
+    if not teacher then
+        return false
+    end
+
+    local success, reason = teacher.components.blythe_unlock_skill:Teach(act.doer)
+
+    return success, reason
 end)
 
 AddComponentAction("INVENTORY", "blythe_unlock_skill", function(inst, doer, actions, right)
-    if doer:IsValid() and doer.replica.blythe_skiller then
+    if inst:IsValid() and inst.replica.inventoryitem and doer:IsValid() and doer.replica.blythe_skiller then
         table.insert(actions, ACTIONS.BLYTHE_UNLOCK_SKILL)
     end
 end)

@@ -52,39 +52,20 @@ local function OnProjectileLaunch(inst, attacker, target)
     inst.components.stariliad_pistol:LaunchProjectile(attacker, target)
 end
 
-local function CanRepeatCastFn(inst)
-    if inst.replica.stariliad_pistol then
-        local data = inst.replica.stariliad_pistol:GetProjectileData()
-        return data and data.repeat_cast
-    end
-end
-
-local function CastWeaponSkill(inst, doer, pos)
-    inst.components.stariliad_pistol:LaunchProjectile(doer, nil, pos)
-end
-
--- local function ReticuleMouseTargetFnLine(inst, mousepos)
---     if TheInput then
---         local ent = TheInput:GetWorldEntityUnderMouse()
-
---         if ent ~= nil and ent.Transform and not ent:HasOneOfTags("NOCLICK", "FX", "INLIMBO") then
---             if ent ~= ThePlayer then
---                 local x, _, z = ent.Transform:GetWorldPosition()
---                 return Vector3(x, 0, z)
---             end
---         end
+-- local function OnBroken(inst)
+--     if inst.components.equippable ~= nil then
+--         inst:RemoveComponent("equippable")
+--         inst:AddTag("broken")
 --     end
+-- end
 
---     if mousepos ~= nil then
---         local x, y, z = inst.Transform:GetWorldPosition()
---         local dx = mousepos.x - x
---         local dz = mousepos.z - z
---         local l = dx * dx + dz * dz
---         if l <= 0 then
---             return inst.components.reticule.targetpos
---         end
---         l = 6.5 / math.sqrt(l)
---         return Vector3(x + dx * l, 0, z + dz * l)
+-- local function OnRepaired(inst)
+--     if inst.components.equippable == nil then
+--         inst:AddComponent("equippable")
+--         inst.components.equippable:SetOnEquip(OnEquip)
+--         inst.components.equippable:SetOnUnequip(OnUnequip)
+
+--         inst:RemoveTag("broken")
 --     end
 -- end
 
@@ -103,15 +84,7 @@ local function fn()
 
     MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
 
-    -- inst:AddTag("stariliad_chain_castaoe")
-
-    -- StarIliadWeaponSkill.AddAoetargetingClient(inst, "line", nil, 100)
-    -- inst.components.aoetargeting.reticule.reticuleprefab = "reticulelong"
-    -- -- inst.components.aoetargeting.reticule.pingprefab = "reticulelongping"
-    -- inst.components.aoetargeting.reticule.pingprefab = "stariliad_fake_reticule"
-    -- -- inst.components.aoetargeting.reticule.mousetargetfn = ReticuleMouseTargetFnLine
-    -- inst.components.aoetargeting:SetShouldRepeatCastFn(CanRepeatCastFn)
-    -- inst.components.aoetargeting:SetAlwaysValid(true)
+    inst:AddTag("allow_action_on_impassable")
 
     inst.entity:SetPristine()
 
@@ -119,12 +92,16 @@ local function fn()
         return inst
     end
 
+    -- inst:AddComponent("finiteuses")
+    -- inst.components.finiteuses:SetMaxUses(TUNING.BLYTHE_BLASTER_USES)
+    -- inst.components.finiteuses:SetUses(TUNING.BLYTHE_BLASTER_USES)
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
     inst.components.weapon:SetRange(TUNING.BLYTHE_BLASTER_ATTACK_RANGE)
     inst.components.weapon:SetProjectile("stariliad_fake_projectile")
     inst.components.weapon:SetOnProjectileLaunch(OnProjectileLaunch)
+    inst.components.weapon.attackwear = 0 -- handled in stariliad_pistol
 
     inst:AddComponent("stariliad_pistol")
     inst.components.stariliad_pistol:SetProjectilePrefabChangeCallback(SetProjectilePrefabChange)
@@ -140,9 +117,9 @@ local function fn()
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
 
+    -- MakeForgeRepairable(inst, FORGEMATERIALS.LUNARPLANT, OnBroken, OnRepaired)
     MakeHauntableLaunch(inst)
 
-    -- StarIliadWeaponSkill.AddAoetargetingServer(inst, CastWeaponSkill)
 
     return inst
 end

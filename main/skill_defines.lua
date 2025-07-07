@@ -63,6 +63,8 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "plasma_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
+
+        -- Unlock item params
         encrypted = true,
     },
 
@@ -77,7 +79,10 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
 
         -- Unlock item params
-        stack_size = TUNING.STACK_SIZE_LARGEITEM,
+        bank = "blythe_missile_tank",
+        build = "blythe_missile_tank",
+        anim = "normal",
+        -- stack_size = TUNING.STACK_SIZE_LARGEITEM,
         teach_override = function(inst, player)
             if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
                 return
@@ -101,6 +106,8 @@ BLYTHE_SKILL_DEFINES = {
 
             SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["missile_status_spawn_fx"], player.userid, false)
 
+            StarIliadBasic.RemoveOneItem(inst)
+
             return true
         end,
     },
@@ -110,7 +117,10 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
 
         -- Unlock item params
-        stack_size = TUNING.STACK_SIZE_LARGEITEM,
+        bank = "blythe_missile_tank",
+        build = "blythe_missile_tank",
+        anim = "super",
+        -- stack_size = TUNING.STACK_SIZE_LARGEITEM,
         teach_override = function(inst, player)
             if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
                 return
@@ -130,9 +140,12 @@ BLYTHE_SKILL_DEFINES = {
             end
 
             player.components.blythe_missile_counter:SetMaxNumSuperMissiles(max_num_super_missiles + increase_count)
-            player.components.blythe_missile_counter:DoDeltaNumSuperMissiles(TUNING.BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
+            player.components.blythe_missile_counter:DoDeltaNumSuperMissiles(TUNING
+                .BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
 
             SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["missile_status_spawn_fx"], player.userid, true)
+
+            StarIliadBasic.RemoveOneItem(inst)
 
             return true
         end,
@@ -156,6 +169,8 @@ BLYTHE_SKILL_DEFINES = {
         -- handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
+
+        -- Unlock item params
         encrypted = true,
     },
 

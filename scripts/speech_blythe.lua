@@ -13,6 +13,8 @@ return {
 
 	},
 
+	ANNOUNCE_FLOATER_HELD = "真正的星际游侠绝不会沉水！",
+	ANNOUNCE_FLOATER_LETGO = "有东西抓住了我的...",
 
 	BATTLECRY =
 	{

@@ -133,9 +133,9 @@ AddStategraphPostInit("wilson", function(sg)
             return
         end
 
-        if inst.sg.currentstate.name == "blythe_dodge" and inst.components.health:IsInvincible() then
-            return
-        end
+        -- if inst.sg.currentstate.name == "blythe_dodge" and inst.components.health:IsInvincible() then
+        --     return
+        -- end
 
         return old_knockback(inst, data, ...)
     end
@@ -961,7 +961,7 @@ AddStategraphState("wilson",
 
 AddStategraphState("wilson", State {
     name = "blythe_dodge",
-    tags = { "busy", "nopredict", "nointerrupt", "blythe_dodge" },
+    tags = { "busy", "nopredict", "nointerrupt", "noattack", "iframeskeepaggro" },
 
     onenter = function(inst, data)
         inst.AnimState:Hide("ARM_carry")

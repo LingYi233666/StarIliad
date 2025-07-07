@@ -28,8 +28,8 @@ local BlytheMissileStatus = Class(Widget, function(self, owner)
     -- self.block_1:Hide()
 
     self.super_missile = self:AddChild(Image("images/ui/missile_status/super_missile.xml", "super_missile.tex"))
-    self.super_missile:SetScale(0.4, 0.4)
-    self.super_missile:SetPosition(-60, 0)
+    self.super_missile:SetScale(0.47, 0.47)
+    self.super_missile:SetPosition(-60, 3)
     self.super_missile:SetTooltip(STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS.SUPER_MISSILE)
     self.super_missile:Hide()
 

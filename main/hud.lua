@@ -35,19 +35,3 @@ AddClassPostConstruct("widgets/secondarystatusdisplays", function(self)
         self.blythe_missile_status:MoveToFront()
     end
 end)
-
-AddPrefabPostInit("player_classified", function(inst)
-    inst:ListenForEvent("isghostmodedirty", function(inst, data)
-        if inst._parent
-            and inst._parent.HUD
-            and inst._parent.HUD.controls
-            and inst._parent.HUD.controls.secondary_status
-            and inst._parent.HUD.controls.secondary_status.blythe_missile_status then
-            if inst.isghostmode:value() then
-                inst._parent.HUD.controls.secondary_status.blythe_missile_status:Hide()
-            else
-                inst._parent.HUD.controls.secondary_status.blythe_missile_status:Show()
-            end
-        end
-    end)
-end)

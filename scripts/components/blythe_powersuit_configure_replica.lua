@@ -75,13 +75,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_beam_basic")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_beam_basic")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -93,13 +91,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_ice_fog")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_ice_fog")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -111,13 +107,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_missile")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_missile")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -129,13 +123,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_super_missile")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_super_missile")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -147,13 +139,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_beam_teleport")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_beam_teleport")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -165,13 +155,11 @@ local items_candidate = {
             SendModRPCToServer(MOD_RPC["stariliad_rpc"]["set_projectile_prefab"], "blythe_beam_swap")
         end,
         postinit = MakeAutoCastToggle(ProjectilePrefabCheck("blythe_beam_swap")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -184,13 +172,11 @@ local items_candidate = {
             return true
         end,
         postinit = MakeAutoCastToggle(EnabledIsValidFn("wide_beam")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -203,13 +189,11 @@ local items_candidate = {
             return true
         end,
         postinit = MakeAutoCastToggle(EnabledIsValidFn("wave_beam")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -222,13 +206,11 @@ local items_candidate = {
             return true
         end,
         postinit = MakeAutoCastToggle(EnabledIsValidFn("plasma_beam")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },
@@ -241,13 +223,11 @@ local items_candidate = {
             return true
         end,
         postinit = MakeAutoCastToggle(EnabledIsValidFn("speed_burst")),
-        bank = "spell_icons_willow",
-        build = "spell_icons_willow",
+        bank = "spell_icons_blythe",
+        build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "fire_throw" },
-            focus = { anim = "fire_throw" },
-            down = { anim = "fire_throw_pressed" },
+            idle = { anim = "test_large" },
         },
         widget_scale = widget_scale,
     },

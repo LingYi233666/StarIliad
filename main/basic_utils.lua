@@ -97,14 +97,14 @@ function StarIliadBasic.GetProjectileDefine(prefab)
     end
 end
 
-function StarIliadBasic.CanCostProjectile(inst, proj_data)
+function StarIliadBasic.CanCostProjectile(inst, weapon, proj_data)
     if proj_data.costs == nil then
         return true
     end
 
     for name, cost_data in pairs(proj_data.costs) do
         if cost_data.can_cost then
-            local success, reason = cost_data.can_cost(inst)
+            local success, reason = cost_data.can_cost(inst, weapon)
             if not success then
                 return false, reason
             end
@@ -125,7 +125,7 @@ function StarIliadBasic.PlayShootSound(inst, weapon)
         return
     end
 
-    if StarIliadBasic.CanCostProjectile(inst, proj_data) then
+    if StarIliadBasic.CanCostProjectile(inst, weapon, proj_data) then
         inst.SoundEmitter:PlaySound(proj_data.sound, nil, nil, true)
     else
         inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/clip_empty", nil, nil, true)

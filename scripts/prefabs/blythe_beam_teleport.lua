@@ -84,15 +84,13 @@ local function ProjectileOnHit(inst, attacker, target)
 
             local dist = math.max(1.5, attacker:GetPhysicsRadius(0) + target:GetPhysicsRadius(0))
 
-            local pos = p1 + towards * dist
-            target.Transform:SetPosition(pos:Get())
-
-
             SpawnTeleportFX(target, p2)
 
-            if target.components.inventoryitem and attacker.components.inventory:GiveItem(target, nil, pos) then
+            if target.components.inventoryitem and attacker.components.inventory:GiveItem(target, nil, p2) then
                 -- Give to attacker, no need to spawn fx
             else
+                local pos = p1 + towards * dist
+                target.Transform:SetPosition(pos:Get())
                 SpawnTeleportFX(target, pos)
             end
         elseif attacker.components.combat and attacker.components.combat:CanTarget(target) then

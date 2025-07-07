@@ -100,14 +100,8 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
     end
 
     if proj_data.costs then
-        if not StarIliadBasic.CanCostProjectile(attacker, proj_data) then
+        if not StarIliadBasic.CanCostProjectile(attacker, self.inst, proj_data) then
             return
-        end
-
-        for name, cost_data in pairs(proj_data.costs) do
-            if cost_data.apply_cost then
-                cost_data.apply_cost(attacker)
-            end
         end
     end
 
@@ -135,6 +129,18 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
         print(string.format("%.2f FRAMES", (GetTime() - self.last_shoot_time) / FRAMES))
     end
     self.last_shoot_time = GetTime()
+
+    if proj_data.costs then
+        for name, cost_data in pairs(proj_data.costs) do
+            if cost_data.apply_cost then
+                cost_data.apply_cost(attacker, self.inst)
+            end
+        end
+    end
+
+    -- if proj_data.attackwear and proj_data.attackwear > 0 and self.inst.components.finiteuses then
+    --     self.inst.components.finiteuses:Use(proj_data.attackwear)
+    -- end
 end
 
 return StarIliadPistol

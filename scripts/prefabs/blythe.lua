@@ -71,6 +71,7 @@ end
 local function LeftClickPicker(inst, target, pos)
 	if not inst.components.playercontroller:IsEnabled()
 		or pos == nil
+		or target ~= nil
 		or TheWorld.Map:GetPlatformAtPoint(pos.x, pos.z) then
 		return {}, true
 	end

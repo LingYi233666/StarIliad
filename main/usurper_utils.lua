@@ -30,7 +30,8 @@ StarIliadUsurper.CanSwapBlackList = {
 }
 
 StarIliadUsurper.CanSwapWhiteList = {
-    "tumbleweed"
+    "tumbleweed",
+    "carnival_host",
 }
 
 
@@ -43,7 +44,9 @@ function StarIliadUsurper.CanSwap(caster, target)
         return false
     end
 
-    if target:HasTag("playerghost") or target:HasTag("blythe_beam_swap_ongoing") then
+    if target:HasTag("playerghost")
+        or target:HasTag("largecreature")
+        or target:HasTag("blythe_beam_swap_ongoing") then
         return false
     end
 

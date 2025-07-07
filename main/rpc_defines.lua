@@ -135,3 +135,81 @@ AddClientModRPCHandler("stariliad_rpc", "missile_status_spawn_fx",
         end
     end
 )
+
+-- x, y, z, damage_colour_1, damage_number_1,damage_colour_2, damage_number_2,...
+AddClientModRPCHandler("stariliad_rpc", "show_damage_number", function(x, y, z, ...)
+    -- local PopupNumber = require "widgets/popupnumber"
+    local StarIliadPopupNumber = require("widgets/stariliad_popupnumber")
+
+    local dmg_array = { ... }
+    local len_array = #dmg_array
+    if len_array <= 0 then
+        print("Empty damage array !")
+        return
+    end
+
+
+    if len_array % 2 ~= 0 then
+        print("Error damage array length:", len_array)
+        return
+    end
+
+    if not (ThePlayer and ThePlayer.HUD) then
+        return
+    end
+
+    local function FineTuneNumber(val)
+        if val >= 1 then
+            return tostring(math.floor(val))
+        end
+
+        return string.format("%.1f", val)
+    end
+
+    local half_len_array = len_array / 2
+    local angle_step = 360 / half_len_array
+    local angle_start = math.random() < 0.5 and 180 or 0
+
+    for i = 1, len_array - 1, 2 do
+        local colour_name = dmg_array[i]
+        local damage = dmg_array[i + 1]
+        local r, g, b = unpack(STARILIAD_DAMAGE_NUMBER_COLOURS[colour_name])
+
+        local height = math.random(30, 50)
+
+        -- ThePlayer.HUD:ShowPopupNumber(FineTuneNumber(damage), large and 48 or 32, Vector3(x, y, z), height,
+        --     { r, g, b, 1 },
+        --     large)
+
+        -- local popup_number = ThePlayer.HUD.popupstats_root:AddChild(
+        --     PopupNumber(ThePlayer,
+        --         FineTuneNumber(damage),
+        --         32,
+        --         Vector3(x, y, z),
+        --         height,
+        --         { r, g, b, 1 },
+        --         false)
+        -- )
+        -- popup_number.dir = cur_dir
+        -- popup_number.rise = GetRandomMinMax(8, 24)
+        -- popup_number.drop = GetRandomMinMax(12, 36)
+        -- popup_number.speed = GetRandomMinMax(34, 102)
+
+
+        local angle = (angle_start + angle_step * (i - 1) * 0.5 + GetRandomMinMax(-10, 10)) * DEGREES
+
+        local popup_number = ThePlayer.HUD.popupstats_root:AddChild(
+            StarIliadPopupNumber(ThePlayer,
+                FineTuneNumber(damage),
+                32,
+                Vector3(x, y, z),
+                Vector3(math.cos(angle), math.sin(angle), 0),
+                height,
+                { r, g, b, 1 },
+                false)
+        )
+        -- popup_number.rise = GetRandomMinMax(8, 24)
+        -- popup_number.drop = GetRandomMinMax(12, 36)
+        -- popup_number.speed = GetRandomMinMax(34, 102)
+    end
+end)

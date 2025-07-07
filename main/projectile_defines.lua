@@ -7,7 +7,8 @@ STARILIAD_PROJECTILE_DEFINES = {
         attack_sg = "blythe_shoot_beam",
         -- shoot_at_sg = "blythe_shoot_beam2",
         -- castaoe_sg = "blythe_shoot_beam_castaoe",
-        repeat_cast = true,
+        -- repeat_cast = true,
+        attackwear = 5,
     },
 
     {
@@ -37,6 +38,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- end,
         -- repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
+        attackwear = 1,
     },
 
     {
@@ -49,6 +51,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- shoot_at_sg = "blythe_shoot_beam_shoot_at",
         -- repeat_cast = true,
         -- enable_shoot_at = true, -- enable shoot at certain target, not attack
+        attackwear = 5,
     },
 
     {
@@ -63,6 +66,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- shoot_at_sg = "blythe_shoot_beam_shoot_at",
         -- repeat_cast = true,
         -- enable_shoot_at = true, -- enable shoot at certain target, not attack
+        attackwear = 5,
     },
 
     {
@@ -75,9 +79,10 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
+        attackwear = 5,
         costs = {
             {
-                can_cost = function(inst)
+                can_cost = function(inst, weapon)
                     if inst.components.blythe_missile_counter then
                         return inst.components.blythe_missile_counter:GetNumMissiles() >= 1
                     end
@@ -87,7 +92,7 @@ STARILIAD_PROJECTILE_DEFINES = {
                     end
                 end,
 
-                apply_cost = function(inst)
+                apply_cost = function(inst, weapon)
                     if inst.components.blythe_missile_counter then
                         inst.components.blythe_missile_counter:DoDeltaNumMissiles(-1)
                     end
@@ -106,9 +111,10 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
+        attackwear = 5,
         costs = {
             {
-                can_cost = function(inst)
+                can_cost = function(inst, weapon)
                     if inst.components.blythe_missile_counter then
                         return inst.components.blythe_missile_counter:GetNumSuperMissiles() >= 1
                     end
@@ -118,7 +124,7 @@ STARILIAD_PROJECTILE_DEFINES = {
                     end
                 end,
 
-                apply_cost = function(inst)
+                apply_cost = function(inst, weapon)
                     if inst.components.blythe_missile_counter then
                         inst.components.blythe_missile_counter:DoDeltaNumSuperMissiles(-1)
                     end
