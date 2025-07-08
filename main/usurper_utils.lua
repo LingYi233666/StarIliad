@@ -101,7 +101,7 @@ function StarIliadUsurper.TryStun(caster, target)
         and target.components.workable:CanBeWorked()
         and target.components.workable.action ~= ACTIONS.NET then
         table.insert(fns_candidate, function(v)
-            target.components.workable:WorkedBy(caster, math.random(30))
+            v.components.workable:WorkedBy(caster, math.random(30))
         end)
     end
 

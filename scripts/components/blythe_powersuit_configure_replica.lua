@@ -7,7 +7,7 @@ local BlythePowersuitConfigure = Class(function(self, inst)
         "BlythePowersuitConfigure._projectile_prefab")
 end)
 
-local widget_scale = 0.6
+local widget_scale = 0.75
 
 local function EnabledIsValidFn(skill_name)
     local function fn()
@@ -29,11 +29,14 @@ end
 
 local function AddCirclingRing(wheel_item, valid_fn, onupdatefn, toggle_on_sound, toggle_off_sound)
     wheel_item.ring = wheel_item:AddChild(UIAnim())
-    wheel_item.ring:GetAnimState():SetBank("spell_icons_woby")
-    wheel_item.ring:GetAnimState():SetBuild("spell_icons_woby")
-    wheel_item.ring:GetAnimState():OverrideSymbol("frame_woby", "stariliad_autocast_ring", "frame_woby")
-    wheel_item.ring:GetAnimState():PlayAnimation("autocast_ring", true)
-    -- wheel_item.ring:GetAnimState():Hide("frame_woby_0")
+    wheel_item.ring:GetAnimState():SetBank("stariliad_autocast_ring")
+    wheel_item.ring:GetAnimState():SetBuild("stariliad_autocast_ring")
+    -- wheel_item.ring:GetAnimState():OverrideSymbol("frame_woby", "stariliad_autocast_ring", "frame_woby")
+    -- wheel_item.ring:GetAnimState():PlayAnimation("test", true)
+    wheel_item.ring:GetAnimState():PlayAnimation("test2", true)
+    wheel_item.ring:GetAnimState():SetDeltaTimeMultiplier(2.454)
+    -- wheel_item.ring:SetScale(0.95)
+
     wheel_item.ring.OnUpdate = function(ring, dt)
         local is_valid = valid_fn()
         if is_valid then
@@ -79,7 +82,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "basic_beam" },
         },
         widget_scale = widget_scale,
     },
@@ -95,7 +98,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "ice_fog" },
         },
         widget_scale = widget_scale,
     },
@@ -111,7 +114,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "missile" },
         },
         widget_scale = widget_scale,
     },
@@ -127,7 +130,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "super_missile" },
         },
         widget_scale = widget_scale,
     },
@@ -143,7 +146,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "usurper_shot_pick" },
         },
         widget_scale = widget_scale,
     },
@@ -159,7 +162,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "usurper_shot_swap" },
         },
         widget_scale = widget_scale,
     },
@@ -176,7 +179,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "wide_beam" },
         },
         widget_scale = widget_scale,
     },
@@ -193,7 +196,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "wave_beam" },
         },
         widget_scale = widget_scale,
     },
@@ -210,7 +213,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "plasma_beam" },
         },
         widget_scale = widget_scale,
     },
@@ -227,7 +230,7 @@ local items_candidate = {
         build = "spell_icons_blythe",
         anims =
         {
-            idle = { anim = "test_large" },
+            idle = { anim = "speed_burst" },
         },
         widget_scale = widget_scale,
     },
@@ -282,7 +285,7 @@ function BlythePowersuitConfigure:TryOpenWheel()
             end
         end
         ThePlayer.HUD.controls.spellwheel:SetScale(TheFrontEnd:GetProportionalHUDScale()) --instead of GetHUDScale(), because parent already has SCALEMODE_PROPORTIONAL
-        ThePlayer.HUD.controls.spellwheel:SetItems(items_cpy, 140, 144)
+        ThePlayer.HUD.controls.spellwheel:SetItems(items_cpy, 144, 150)
         ThePlayer.HUD.controls.spellwheel:Open()
     end
 end
