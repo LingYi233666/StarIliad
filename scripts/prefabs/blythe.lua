@@ -155,6 +155,10 @@ local master_postinit = function(inst)
 	inst.components.health:SetMaxHealth(TUNING.BLYTHE_HEALTH)
 	inst.components.hunger:SetMax(TUNING.BLYTHE_HUNGER)
 	inst.components.sanity:SetMax(TUNING.BLYTHE_SANITY)
+  
+	-- 惧怕寒冷 
+	-- inst.components.temperature.inherentinsulation = -TUNING.INSULATION_TINY
+	-- inst.components.temperature.inherentsummerinsulation = -TUNING.INSULATION_TINY
 
 	-- inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
 
