@@ -36,6 +36,14 @@ BLYTHE_SKILL_TYPE = {
     MAGIC = "MAGIC",
 }
 
+STARILIAD_ALIEN_STATUE_TYPE = {
+    NORMAL_CHOZO = "NORMAL_CHOZO",
+    BROKEN_CHOZO = "BROKEN_CHOZO",
+    ALTAR = "ALTAR",
+    MERMAID = "MERMAID",
+    -- CUSTOM = "CUSTOM",
+}
+
 BLYTHE_SKILL_DEFINES = {
     -- ENERGY
     {
@@ -53,17 +61,19 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "wide_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
     {
         name = "wave_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
     {
         name = "plasma_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
-
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
         -- Unlock item params
         encrypted = true,
     },
@@ -71,12 +81,14 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "usurper_shot",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
     -- KINETIC
     {
         name = "missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.ALTAR,
 
         -- Unlock item params
         bank = "blythe_missile_tank",
@@ -115,6 +127,7 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "super_missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.ALTAR,
 
         -- Unlock item params
         bank = "blythe_missile_tank",
@@ -162,6 +175,7 @@ BLYTHE_SKILL_DEFINES = {
         handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
+        -- statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
     {
@@ -169,6 +183,8 @@ BLYTHE_SKILL_DEFINES = {
         -- handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
+
 
         -- Unlock item params
         encrypted = true,
