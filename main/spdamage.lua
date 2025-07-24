@@ -7,17 +7,20 @@ SpDamageUtil.DefineSpType("stariliad_spdamage_beam", {
             and ent.components.stariliad_spdamage_beam:GetDamage() or 0
     end,
     GetDefense = function(ent)
-        local epic_resist_beam = 0
-        if ent:HasTag("smallepic") then
-            epic_resist_beam = epic_resist_beam + 17
-        elseif ent:HasTag("epic") then
-            epic_resist_beam = epic_resist_beam + 27.2
-        elseif ent:HasTag("largecreature") then
-            epic_resist_beam = epic_resist_beam + 17
-        end
+        -- local epic_resist_beam = 0
+        -- if ent:HasTag("smallepic") then
+        --     epic_resist_beam = epic_resist_beam + 17
+        -- elseif ent:HasTag("epic") then
+        --     epic_resist_beam = epic_resist_beam + 27.2
+        -- elseif ent:HasTag("largecreature") then
+        --     epic_resist_beam = epic_resist_beam + 17
+        -- end
 
-        return (ent.components.stariliad_spdefense_beam ~= nil and
-            ent.components.stariliad_spdefense_beam:GetDefense() or 0) + epic_resist_beam
+        -- return (ent.components.stariliad_spdefense_beam ~= nil and
+        --     ent.components.stariliad_spdefense_beam:GetDefense() or 0) + epic_resist_beam
+
+        return ent.components.stariliad_spdefense_beam ~= nil and
+            ent.components.stariliad_spdefense_beam:GetDefense() or 0
     end,
 })
 

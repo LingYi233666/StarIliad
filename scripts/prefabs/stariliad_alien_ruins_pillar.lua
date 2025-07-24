@@ -40,7 +40,7 @@ local function fn()
     inst.AnimState:SetBank("fountain_pillar")
     inst.AnimState:PlayAnimation("pillar", true)
 
-    inst.MiniMapEntity:SetIcon("pig_ruins_pillar.tex")
+    -- inst.MiniMapEntity:SetIcon("pig_ruins_pillar.tex")
 
     inst.Transform:SetEightFaced()
 
@@ -69,7 +69,7 @@ local function fn()
 
     MakeHauntable(inst)
 
-    inst.LoadPostPass = OnLoadPostPass
+    inst.OnLoadPostPass = OnLoadPostPass
 
     return inst
 end

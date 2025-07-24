@@ -221,10 +221,12 @@ function StarIliadBasic.SpawnSupplyBalls(attacker, pos)
         candidates.blythe_supply_ball_missile = 1.0 - num_missiles / max_num_missiles
     end
     if learned_super_missile and num_super_missiles < max_num_super_missiles then
-        local weight = 1.0 - num_super_missiles / max_num_super_missiles
-        if weight > 0.9 then
-            candidates.blythe_supply_ball_super_missile = weight
-        end
+        -- local weight = 1.0 - num_super_missiles / max_num_super_missiles
+        -- if weight > 0.9 then
+        --     candidates.blythe_supply_ball_super_missile = weight
+        -- end
+
+        -- candidates.blythe_supply_ball_super_missile = 1.0 - num_super_missiles / max_num_super_missiles
     end
 
     local prefab = weighted_random_choice(candidates)

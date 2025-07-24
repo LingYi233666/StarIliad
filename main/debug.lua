@@ -127,4 +127,15 @@ function GLOBAL.si_circle_rocks(radius, step, pos)
     end
 end
 
+-- GetWorldTileMap()
+function GLOBAL.si_tile(tile, x, y, z)
+    if x == nil or y == nil or z == nil then
+        x, y, z = ConsoleWorldPosition():Get()
+    end
+
+    local tile_x, tile_y = TheWorld.Map:GetTileCoordsAtPoint(x, y, z)
+
+    TheWorld.Map:SetTile(tile_x, tile_y, tile)
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

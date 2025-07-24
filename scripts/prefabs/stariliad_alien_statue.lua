@@ -8,6 +8,8 @@ local assets =
     Asset("ANIM", "anim/lavaarena_portal.zip"),
     Asset("ANIM", "anim/lavaarena_keyhole.zip"),
     Asset("ANIM", "anim/lavaarena_portal_fx.zip"),
+
+    Asset("ANIM", "anim/atrium_floor.zip"),
 }
 
 
@@ -53,7 +55,7 @@ local function common_fn(bank, build, anim, radius, item_prefab, regenerate_time
 
     inst.AnimState:SetBank(bank)
     inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation(anim)
+    inst.AnimState:PlayAnimation(anim, true)
 
     inst:AddTag("structure")
     inst:AddTag("statue")
@@ -97,13 +99,20 @@ local function OnPickedNormalChozo(inst, picker)
 end
 
 local function OnRegenNormalChozo(inst)
-    inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", "yellowgem")
+    inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", "greengem")
+end
+
+local function MakeEmptyNormalChozo(inst)
+    inst.AnimState:ClearOverrideSymbol("swap_gem")
 end
 
 local function wrapper_normal_chozo(item_prefab)
     local function fn()
-        local inst = common_fn("statue_ruins", "statue_ruins", "idle_full", nil, item_prefab, TUNING.TOTAL_DAY_TIME,
+        local inst = common_fn("statue_ruins", "statue_ruins", "idle_full", nil, item_prefab, 10,
             "dontstarve/common/floating_statue_hum")
+
+        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", "greengem")
+
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
 
@@ -113,6 +122,7 @@ local function wrapper_normal_chozo(item_prefab)
 
         inst.components.pickable.onpickedfn = OnPickedNormalChozo
         inst.components.pickable.onregenfn = OnRegenNormalChozo
+        inst.components.pickable.makeemptyfn = MakeEmptyNormalChozo
 
         return inst
     end
@@ -128,14 +138,22 @@ local function OnPickedBrokenChozo(inst, picker)
 end
 
 local function OnRegenBrokenChozo(inst)
-    inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", "yellowgem")
+    inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", "greengem")
 end
+
+local function MakeEmptyBrokenChozo(inst)
+    inst.AnimState:ClearOverrideSymbol("swap_gem")
+end
+
 
 local function wrapper_broken_chozo(item_prefab)
     local function fn()
         local inst = common_fn("statue_ruins_small", "statue_ruins_small", "hit_med", nil, item_prefab,
-            TUNING.TOTAL_DAY_TIME,
+            10,
             "dontstarve/common/floating_statue_hum")
+
+        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_small_gem", "greengem")
+
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_broken_chozo")
 
@@ -145,6 +163,7 @@ local function wrapper_broken_chozo(item_prefab)
 
         inst.components.pickable.onpickedfn = OnPickedBrokenChozo
         inst.components.pickable.onregenfn = OnRegenBrokenChozo
+        inst.components.pickable.makeemptyfn = MakeEmptyBrokenChozo
 
         return inst
     end
@@ -169,7 +188,10 @@ end
 
 local function wrapper_altar(item_prefab)
     local function fn()
-        local inst = common_fn("lavaarena_portal", "lavaarena_portal", "idle")
+        local inst = common_fn("lavaarena_portal", "lavaarena_portal", "idle", -1, nil, nil, nil, false)
+        -- local inst = common_fn("atrium_floor", "atrium_floor", "idle_active")
+
+        -- RemovePhysicsColliders(inst)
 
         inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
         inst.AnimState:SetLayer(LAYER_BACKGROUND)
@@ -197,10 +219,10 @@ local function wrapper_altar(item_prefab)
             local item = SpawnAt(item_prefab, inst)
 
             local num_pillars = 8
-            local radius = 10
+            local radius = 12
 
             local angle_step = 360 / num_pillars
-            for i = 0, 7 do
+            for i = 0, num_pillars - 1 do
                 local theta = angle_step * i * DEGREES
                 local offset = Vector3FromTheta(theta, radius)
 

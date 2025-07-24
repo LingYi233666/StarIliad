@@ -552,8 +552,9 @@ local function fn()
     inst.components.stariliad_spdamage_beam:SetBaseDamage(TUNING.BLYTHE_BEAM_BASIC_DAMAGE)
 
     inst:AddComponent("damagetypebonus")
-    inst.components.damagetypebonus:AddBonus("largecreature", inst, TUNING.BLYTHE_BEAM_VS_LARGE_CREATURE_DAMAGE_MULT)
-    inst.components.damagetypebonus:AddBonus("epic", inst, TUNING.BLYTHE_BEAM_VS_EPIC_DAMAGE_MULT)
+    inst.components.damagetypebonus:AddBonus("largecreature", inst, TUNING.BLYTHE_BEAM_VS_LARGE_CREATURE_DAMAGE_MULT,
+        "largecreature_mult")
+    inst.components.damagetypebonus:AddBonus("epic", inst, TUNING.BLYTHE_BEAM_VS_EPIC_DAMAGE_MULT, "epic_mult")
 
     inst:AddComponent("complexprojectile")
     -- inst.components.complexprojectile:SetLaunchOffset(Vector3(0.5, 0, 0))

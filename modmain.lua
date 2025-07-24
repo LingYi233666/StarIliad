@@ -64,6 +64,7 @@ PrefabFiles = {
     "blythe_spaceship",
 
     "stariliad_alien_statue",
+    "stariliad_alien_ruins_pillar",
 }
 
 -- See stariliad_main_assets.lua

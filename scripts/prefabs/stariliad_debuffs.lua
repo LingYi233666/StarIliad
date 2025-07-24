@@ -33,7 +33,7 @@ local debuffs_data = {
 
     stariliad_debuff_be_parried = {
         on_attached = function(inst, target, followsymbol, followoffset, data, buffer)
-            inst.stacks = 2
+            inst.stacks = 1
             inst.owner = data and data.owner
 
             inst.detach_task = inst:DoTaskInTime(5, function()
@@ -69,7 +69,7 @@ local debuffs_data = {
         end,
 
         on_extended = function(inst, target, followsymbol, followoffset, data, buffer)
-            inst.stacks = 2
+            inst.stacks = 1
             if inst.detach_task then
                 inst.detach_task:Cancel()
             end

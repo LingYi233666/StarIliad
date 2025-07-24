@@ -19,6 +19,10 @@ local function AddRecipeWithManyIngredients(name, list_ingredients, tech, config
     end
 
     config.product = name
+    if config.atlas == nil and config.image == nil then
+        config.image = name .. ".tex"
+        config.atlas = "images/inventoryimages/" .. name .. ".xml"
+    end
 
     for k, ingredients in pairs(list_ingredients) do
         MyAddRecipe2(

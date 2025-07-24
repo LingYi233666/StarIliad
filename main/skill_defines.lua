@@ -96,6 +96,14 @@ BLYTHE_SKILL_DEFINES = {
         anim = "normal",
         -- stack_size = TUNING.STACK_SIZE_LARGEITEM,
         teach_override = function(inst, player)
+            local recipe_names = {
+                "blythe_unlock_skill_item_missile_plan1",
+                "blythe_unlock_skill_item_missile_plan2",
+                "blythe_unlock_skill_item_missile_plan3",
+                "blythe_unlock_skill_item_missile_plan4"
+            }
+            StarIliadBasic.TeachRecipes(player, recipe_names)
+
             if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
                 return
             end
@@ -109,13 +117,7 @@ BLYTHE_SKILL_DEFINES = {
             local increase_count = math.min(TUNING.BLYTHE_MISSILE_COUNT_THRESHOLD - max_num_missiles,
                 TUNING.BLYTHE_MISSILE_COUNT_UPGRADE)
 
-            local recipe_names = {
-                "blythe_unlock_skill_item_missile_plan1",
-                "blythe_unlock_skill_item_missile_plan2",
-                "blythe_unlock_skill_item_missile_plan3",
-                "blythe_unlock_skill_item_missile_plan4"
-            }
-            StarIliadBasic.TeachRecipes(player, recipe_names)
+
 
             if increase_count <= 0 then
                 return false, "MISSILE_THRESHOLD"
@@ -143,6 +145,15 @@ BLYTHE_SKILL_DEFINES = {
         anim = "super",
         -- stack_size = TUNING.STACK_SIZE_LARGEITEM,
         teach_override = function(inst, player)
+            local recipe_names = {
+                "blythe_unlock_skill_item_super_missile_plan1",
+                "blythe_unlock_skill_item_super_missile_plan2",
+                "blythe_unlock_skill_item_super_missile_plan3",
+                "blythe_unlock_skill_item_super_missile_plan4"
+            }
+            StarIliadBasic.TeachRecipes(player, recipe_names)
+
+
             if not inst.components.blythe_unlock_skill:IsLearnedMySkill(player) then
                 return
             end
@@ -156,13 +167,6 @@ BLYTHE_SKILL_DEFINES = {
             local increase_count = math.min(TUNING.BLYTHE_SUPER_MISSILE_COUNT_THRESHOLD - max_num_super_missiles,
                 TUNING.BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
 
-            local recipe_names = {
-                "blythe_unlock_skill_item_super_missile_plan1",
-                "blythe_unlock_skill_item_super_missile_plan2",
-                "blythe_unlock_skill_item_super_missile_plan3",
-                "blythe_unlock_skill_item_super_missile_plan4"
-            }
-            StarIliadBasic.TeachRecipes(player, recipe_names)
 
             if increase_count <= 0 then
                 return false, "SUPER_MISSILE_THRESHOLD"
@@ -277,3 +281,4 @@ BLYTHE_SKILL_DEFINES = {
 
 GLOBAL.BLYTHE_SKILL_TYPE = BLYTHE_SKILL_TYPE
 GLOBAL.BLYTHE_SKILL_DEFINES = BLYTHE_SKILL_DEFINES
+GLOBAL.STARILIAD_ALIEN_STATUE_TYPE = STARILIAD_ALIEN_STATUE_TYPE

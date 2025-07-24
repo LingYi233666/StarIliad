@@ -198,7 +198,7 @@ local function fn_missile()
         return inst
     end
 
-    inst.missile_recover = 2
+    inst.missile_recover = 1
 
     return inst
 end

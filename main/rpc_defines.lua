@@ -159,8 +159,15 @@ AddClientModRPCHandler("stariliad_rpc", "show_damage_number", function(x, y, z, 
     end
 
     local function FineTuneNumber(val)
-        if val >= 1 then
-            return tostring(math.floor(val))
+        -- if val >= 1 then
+        --     return tostring(math.floor(val + 0.5))
+        -- end
+
+        -- return string.format("%.1f", val)
+
+        local floor_val = math.floor(val)
+        if math.abs(floor_val - val) < 0.1 then
+            return tostring(floor_val)
         end
 
         return string.format("%.1f", val)
@@ -201,6 +208,7 @@ AddClientModRPCHandler("stariliad_rpc", "show_damage_number", function(x, y, z, 
         local popup_number = ThePlayer.HUD.popupstats_root:AddChild(
             StarIliadPopupNumber(ThePlayer,
                 FineTuneNumber(damage),
+                -- damage,
                 32,
                 Vector3(x, y, z),
                 Vector3(math.cos(angle), math.sin(angle), 0),
