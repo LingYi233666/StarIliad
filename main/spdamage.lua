@@ -1,14 +1,34 @@
 local SpDamageUtil = require("components/spdamageutil")
 
 
-SpDamageUtil.DefineSpType("stariliad_spdamage_force", {
+SpDamageUtil.DefineSpType("stariliad_spdamage_beam", {
     GetDamage = function(ent)
-        return ent.components.stariliad_spdamage_force ~= nil
-            and ent.components.stariliad_spdamage_force:GetDamage() or 0
+        return ent.components.stariliad_spdamage_beam ~= nil
+            and ent.components.stariliad_spdamage_beam:GetDamage() or 0
     end,
     GetDefense = function(ent)
-        return ent.components.stariliad_spdefense_force ~= nil and
-            ent.components.stariliad_spdefense_force:GetDefense() or 0
+        local epic_resist_beam = 0
+        if ent:HasTag("smallepic") then
+            epic_resist_beam = epic_resist_beam + 17
+        elseif ent:HasTag("epic") then
+            epic_resist_beam = epic_resist_beam + 27.2
+        elseif ent:HasTag("largecreature") then
+            epic_resist_beam = epic_resist_beam + 17
+        end
+
+        return (ent.components.stariliad_spdefense_beam ~= nil and
+            ent.components.stariliad_spdefense_beam:GetDefense() or 0) + epic_resist_beam
+    end,
+})
+
+SpDamageUtil.DefineSpType("stariliad_spdamage_missile", {
+    GetDamage = function(ent)
+        return ent.components.stariliad_spdamage_missile ~= nil
+            and ent.components.stariliad_spdamage_missile:GetDamage() or 0
+    end,
+    GetDefense = function(ent)
+        return ent.components.stariliad_spdefense_missile ~= nil and
+            ent.components.stariliad_spdefense_missile:GetDefense() or 0
     end,
 })
 

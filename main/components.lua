@@ -52,46 +52,42 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
             local weapon = data.weapon
             local attacker = data.attacker
             local stimuli = data.stimuli
+            local damage_map = {}
 
-            damage = damage - SpDamageUtil.CalcTotalDamage(spdamage)
+            damage_map.GENERIC = data.damageresolved
 
+            -- damage = damage - SpDamageUtil.CalcTotalDamage(spdamage)
 
-            -- if damage > 1e-6 then
-            --     table.insert(params, "GENERIC")
-            --     table.insert(params, FineTuneNumber(damage))
+            -- for k, v in pairs(STARILIAD_DAMAGE_NUMBER_COLOURS) do
+            --     damage_map[k] = 0
+            -- end
+            -- -- damage_map.GENERIC = damage
+
+            -- if stimuli == "electric" then
+            --     damage_map.LIGHTNING = damage
+            -- else
+            --     damage_map.GENERIC = damage
             -- end
 
-            local damage_map = {}
-            for k, v in pairs(STARILIAD_DAMAGE_NUMBER_COLOURS) do
-                damage_map[k] = 0
-            end
-            -- damage_map.GENERIC = damage
-
-            if stimuli == "electric" then
-                damage_map.LIGHTNING = damage
-            else
-                damage_map.GENERIC = damage
-            end
-
-            for damage_type, value in pairs(spdamage or {}) do
-                if damage_type == "planar" then
-                    if IsLunarWeapon(weapon) then
-                        damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
-                    elseif IsShadowWeapon(weapon) then
-                        damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
-                    elseif IsLunarCreature(attacker) then
-                        damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
-                    elseif IsShadowCreature(attacker) then
-                        damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
-                    else
-                        damage_map.PLANAR_GENERIC = damage_map.PLANAR_GENERIC + value
-                    end
-                elseif damage_type == "stariliad_spdamage_force" then
-                    damage_map.FORCE = damage_map.FORCE + value
-                else
-                    damage_map.GENERIC = damage_map.GENERIC + value
-                end
-            end
+            -- for damage_type, value in pairs(spdamage or {}) do
+            --     if damage_type == "planar" then
+            --         if IsLunarWeapon(weapon) then
+            --             damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
+            --         elseif IsShadowWeapon(weapon) then
+            --             damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
+            --         elseif IsLunarCreature(attacker) then
+            --             damage_map.PLANAR_LUNAR = damage_map.PLANAR_LUNAR + value
+            --         elseif IsShadowCreature(attacker) then
+            --             damage_map.PLANAR_SHADOW = damage_map.PLANAR_SHADOW + value
+            --         else
+            --             damage_map.PLANAR_GENERIC = damage_map.PLANAR_GENERIC + value
+            --         end
+            --     elseif damage_type == "stariliad_spdamage_beam" then
+            --         damage_map.FORCE = damage_map.FORCE + value
+            --     else
+            --         damage_map.GENERIC = damage_map.GENERIC + value
+            --     end
+            -- end
 
 
             local params_pre = {}

@@ -221,7 +221,10 @@ function StarIliadBasic.SpawnSupplyBalls(attacker, pos)
         candidates.blythe_supply_ball_missile = 1.0 - num_missiles / max_num_missiles
     end
     if learned_super_missile and num_super_missiles < max_num_super_missiles then
-        candidates.blythe_supply_ball_super_missile = 1.0 - num_super_missiles / max_num_super_missiles
+        local weight = 1.0 - num_super_missiles / max_num_super_missiles
+        if weight > 0.9 then
+            candidates.blythe_supply_ball_super_missile = weight
+        end
     end
 
     local prefab = weighted_random_choice(candidates)
@@ -242,6 +245,23 @@ function StarIliadBasic.RemoveOneItem(item)
         item.components.stackable:Get():Remove()
     else
         item:Remove()
+    end
+end
+
+function StarIliadBasic.TeachRecipes(target, recipe_names)
+    if target.components.builder == nil then
+        return
+    end
+
+    if type(recipe_names) == "string" then
+        recipe_names = { recipe_names }
+    end
+
+    for _, recipe_name in pairs(recipe_names) do
+        if not target.components.builder:KnowsRecipe(recipe_name, true)
+            and target.components.builder:CanLearn(recipe_name) then
+            target.components.builder:UnlockRecipe(recipe_name)
+        end
     end
 end
 

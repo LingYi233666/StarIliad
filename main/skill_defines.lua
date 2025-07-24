@@ -109,6 +109,14 @@ BLYTHE_SKILL_DEFINES = {
             local increase_count = math.min(TUNING.BLYTHE_MISSILE_COUNT_THRESHOLD - max_num_missiles,
                 TUNING.BLYTHE_MISSILE_COUNT_UPGRADE)
 
+            local recipe_names = {
+                "blythe_unlock_skill_item_missile_plan1",
+                "blythe_unlock_skill_item_missile_plan2",
+                "blythe_unlock_skill_item_missile_plan3",
+                "blythe_unlock_skill_item_missile_plan4"
+            }
+            StarIliadBasic.TeachRecipes(player, recipe_names)
+
             if increase_count <= 0 then
                 return false, "MISSILE_THRESHOLD"
             end
@@ -148,6 +156,14 @@ BLYTHE_SKILL_DEFINES = {
             local increase_count = math.min(TUNING.BLYTHE_SUPER_MISSILE_COUNT_THRESHOLD - max_num_super_missiles,
                 TUNING.BLYTHE_SUPER_MISSILE_COUNT_UPGRADE)
 
+            local recipe_names = {
+                "blythe_unlock_skill_item_super_missile_plan1",
+                "blythe_unlock_skill_item_super_missile_plan2",
+                "blythe_unlock_skill_item_super_missile_plan3",
+                "blythe_unlock_skill_item_super_missile_plan4"
+            }
+            StarIliadBasic.TeachRecipes(player, recipe_names)
+
             if increase_count <= 0 then
                 return false, "SUPER_MISSILE_THRESHOLD"
             end
@@ -176,6 +192,7 @@ BLYTHE_SKILL_DEFINES = {
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
         -- statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
+        -- Add unlock item to minotaur treasure
     },
 
     {

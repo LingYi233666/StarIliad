@@ -78,7 +78,7 @@ local function DoAttackDamage(inst, attacker, target)
             factor = factor * 0.95
         end
 
-        inst.components.stariliad_spdamage_force:AddMultiplier(attacker, math.max(0.1, factor),
+        inst.components.stariliad_spdamage_beam:AddMultiplier(attacker, math.max(0.1, factor),
             "plasma_beam_piercing_weaken")
     end
 
@@ -92,10 +92,10 @@ end
 
 local function CopyDamage(proj_side, proj_main)
     local sp_damage_planar = proj_main.components.planardamage:GetDamage()
-    local sp_damage_force = proj_main.components.stariliad_spdamage_force:GetDamage()
+    local sp_damage_force = proj_main.components.stariliad_spdamage_beam:GetDamage()
 
     proj_side.components.planardamage:SetBaseDamage(sp_damage_planar)
-    proj_side.components.stariliad_spdamage_force:SetBaseDamage(sp_damage_force)
+    proj_side.components.stariliad_spdamage_beam:SetBaseDamage(sp_damage_force)
 end
 
 local function SpawnSideBeam(inst, attacker)
@@ -137,7 +137,7 @@ local function SpawnSideBeam(inst, attacker)
         CopyDamage(proj_side, inst)
 
         proj_side.components.planardamage:AddMultiplier(attacker, TUNING.BLYTHE_BEAM_WIDE_PERCENT, "blythe_beam_side")
-        proj_side.components.stariliad_spdamage_force:AddMultiplier(attacker, TUNING.BLYTHE_BEAM_WIDE_PERCENT,
+        proj_side.components.stariliad_spdamage_beam:AddMultiplier(attacker, TUNING.BLYTHE_BEAM_WIDE_PERCENT,
             "blythe_beam_side")
 
         local forward_speed = inst.components.complexprojectile.horizontalSpeed
@@ -548,8 +548,12 @@ local function fn()
     inst:AddComponent("planardamage")
     inst.components.planardamage:SetBaseDamage(0)
 
-    inst:AddComponent("stariliad_spdamage_force")
-    inst.components.stariliad_spdamage_force:SetBaseDamage(TUNING.BLYTHE_BEAM_BASIC_DAMAGE)
+    inst:AddComponent("stariliad_spdamage_beam")
+    inst.components.stariliad_spdamage_beam:SetBaseDamage(TUNING.BLYTHE_BEAM_BASIC_DAMAGE)
+
+    inst:AddComponent("damagetypebonus")
+    inst.components.damagetypebonus:AddBonus("largecreature", inst, TUNING.BLYTHE_BEAM_VS_LARGE_CREATURE_DAMAGE_MULT)
+    inst.components.damagetypebonus:AddBonus("epic", inst, TUNING.BLYTHE_BEAM_VS_EPIC_DAMAGE_MULT)
 
     inst:AddComponent("complexprojectile")
     -- inst.components.complexprojectile:SetLaunchOffset(Vector3(0.5, 0, 0))

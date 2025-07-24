@@ -152,8 +152,8 @@ local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, exp
         inst:AddComponent("planardamage")
         inst.components.planardamage:SetBaseDamage(1)
 
-        inst:AddComponent("stariliad_spdamage_force")
-        inst.components.stariliad_spdamage_force:SetBaseDamage(damage)
+        inst:AddComponent("stariliad_spdamage_missile")
+        inst.components.stariliad_spdamage_missile:SetBaseDamage(damage)
 
         inst:AddComponent("complexprojectile")
         inst.components.complexprojectile:SetHorizontalSpeed(30)

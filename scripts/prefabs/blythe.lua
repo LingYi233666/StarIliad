@@ -95,6 +95,16 @@ local function PointSpecialActions(inst, pos, useitem, right)
 	return {}
 end
 
+local function WorkMultiplierFn(inst, action, target, tool, numworks, recoil)
+	local new_numworks = numworks
+
+	if (action == ACTIONS.CHOP or action == ACTIONS.MINE or action == ACTIONS.HAMMER)
+		and not (tool and tool:HasTag("blythe_tool")) then
+		new_numworks = new_numworks * TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER
+	end
+
+	return new_numworks
+end
 
 --这个函数将在服务器和客户端都会执行
 --一般用于添加小地图标签等动画文件或者需要主客机都执行的组件（少数）
@@ -129,7 +139,7 @@ local master_postinit = function(inst)
 
 	inst:AddComponent("blythe_missile_counter")
 
-	inst:AddComponent("stariliad_spdamage_force")
+	inst:AddComponent("stariliad_spdamage_beam")
 
 	inst:AddComponent("blythe_stealth_handler")
 
@@ -155,10 +165,20 @@ local master_postinit = function(inst)
 	inst.components.health:SetMaxHealth(TUNING.BLYTHE_HEALTH)
 	inst.components.hunger:SetMax(TUNING.BLYTHE_HUNGER)
 	inst.components.sanity:SetMax(TUNING.BLYTHE_SANITY)
-  
-	-- 惧怕寒冷 
+
+	-- 惧怕寒冷
 	-- inst.components.temperature.inherentinsulation = -TUNING.INSULATION_TINY
 	-- inst.components.temperature.inherentsummerinsulation = -TUNING.INSULATION_TINY
+
+	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.CHOP, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
+	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.MINE, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
+	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.HAMMER, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
+
+	inst.components.workmultiplier:SetSpecialMultiplierFn(WorkMultiplierFn)
+
+	-- 作为战斗角色，普通攻击伤害倍率为0.75？？？
+	-- 我觉得我的脑子一定是瓦特了
+	inst.components.combat.damagemultiplier = TUNING.BLYTHE_DAMAGE_MULT
 
 	-- inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
 

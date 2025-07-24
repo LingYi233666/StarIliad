@@ -153,10 +153,28 @@ local function wrapper_broken_chozo(item_prefab)
 end
 
 ------------------------------------------------------------------------------------
+
+local function OnSaveAltar(inst, data)
+    data.init_spawn = inst.init_spawn
+end
+
+local function OnLoadAltar(inst, data)
+    if data ~= nil then
+        if data.init_spawn ~= nil then
+            inst.init_spawn = data.init_spawn
+        end
+    end
+end
+
+
 local function wrapper_altar(item_prefab)
     local function fn()
-        local inst = common_fn("statue_ruins_small", "statue_ruins_small", "hit_med")
+        local inst = common_fn("lavaarena_portal", "lavaarena_portal", "idle")
 
+        inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+        inst.AnimState:SetLayer(LAYER_BACKGROUND)
+        inst.AnimState:SetSortOrder(1)
+        inst.AnimState:SetFinalOffset(2)
 
         inst:AddTag("NOCLICK")
 
@@ -164,7 +182,36 @@ local function wrapper_altar(item_prefab)
             return inst
         end
 
+        inst.init_spawn = false
 
+        inst.OnSave = OnSaveAltar
+        inst.OnLoad = OnLoadAltar
+
+        inst:DoTaskInTime(1, function()
+            print(inst, "Try run init spawn code.")
+            if inst.init_spawn then
+                print(inst, "Init spawn code already processed, so we don't run it again.")
+                return
+            end
+
+            local item = SpawnAt(item_prefab, inst)
+
+            local num_pillars = 8
+            local radius = 10
+
+            local angle_step = 360 / num_pillars
+            for i = 0, 7 do
+                local theta = angle_step * i * DEGREES
+                local offset = Vector3FromTheta(theta, radius)
+
+                local pillar = SpawnAt("stariliad_alien_ruins_pillar", inst, nil, offset)
+                pillar:ForceFacePoint(inst.Transform:GetWorldPosition())
+            end
+
+            inst.init_spawn = true
+
+            print(inst, "Init spawn code finish successful.")
+        end)
 
         return inst
     end
@@ -179,6 +226,11 @@ end
 -- Custom statues
 local custom_rets = {}
 
+-- TODO: Add custom statues
+
+
+------------------------------------------------------------------------------------
+
 local rets = {}
 for _, data in pairs(BLYTHE_SKILL_DEFINES) do
     if not data.root and data.statue_type then
@@ -191,7 +243,7 @@ for _, data in pairs(BLYTHE_SKILL_DEFINES) do
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO then
             table.insert(rets, Prefab(statue_prefab, wrapper_broken_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.ALTAR then
-            -- table.insert(rets, Prefab(statue_prefab, wrapper_altar(item_prefab), assets))
+            table.insert(rets, Prefab(statue_prefab, wrapper_altar(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.MERMAID then
             -- print("MERMAID not IMP !")
         end

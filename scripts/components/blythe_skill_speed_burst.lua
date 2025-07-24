@@ -178,7 +178,7 @@ function BlytheSkillSpeedBurst:OnPhysicsCollision(other)
         -- print("Do work to", other)
     elseif other.components.combat and self.inst.components.combat:CanTarget(other) then
         local spdamage = {
-            stariliad_spdamage_force = self.collide_damage,
+            stariliad_spdamage_beam = self.collide_damage,
         }
         other.components.combat:GetAttacked(self.inst, 0, nil, nil, spdamage)
         success_hit = true

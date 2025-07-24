@@ -1,7 +1,7 @@
 -- The character select screen lines  --人物选人界面的描述
 STRINGS.CHARACTER_TITLES.blythe = "星际游侠"
 STRINGS.CHARACTER_NAMES.blythe = "布莱丝"
-STRINGS.CHARACTER_DESCRIPTIONS.blythe = "*Perk 1\n*Perk 2\n*Perk 3"
+STRINGS.CHARACTER_DESCRIPTIONS.blythe = "*\n*擅长射击和魔法\n*讨厌粗糙的工具"
 STRINGS.CHARACTER_QUOTES.blythe = "\"真正的星际游侠会把《星辰史诗》 加入steam愿望单！\""
 
 -- Custom speech strings  ----人物语言文件  可以进去自定义
@@ -14,7 +14,7 @@ STRINGS.SKIN_NAMES.blythe_none = "布莱丝" --检查界面显示的名字
 --生存几率
 STRINGS.CHARACTER_SURVIVABILITY.blythe = "简单"
 
-STRINGS.NAMES.BLYTHE_BLASTER = "星际游侠爆能枪"
+STRINGS.NAMES.BLYTHE_BLASTER = "魔法枪"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER = "这东西已经超出我所认知的科学的范畴了。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER = "值得信赖的小手枪，能发射不同种类的弹药！"
 
@@ -131,12 +131,13 @@ STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS = {
 STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     BASIC_BEAM = {
         NAME = "光束",
-        DESC = "能够使用星际游侠爆能枪发射光束，造成34力场伤害。",
+        DESC = "能够使用魔法枪发射光束，造成34伤害。强大的生物对光束具有抗性。",
+        -- DESC = "能够使用魔法枪发射光束，造成34伤害。",
     },
 
     ICE_FOG = {
         NAME = "冰雾",
-        DESC = "能够使用星际游侠爆能枪连续喷出低温气体，冻结敌人。",
+        DESC = "能够使用魔法枪连续喷出低温气体，冻结敌人。",
     },
 
     -- 猪王树林群系 "Speak to the king"
@@ -155,7 +156,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 需要额外挑战解码
     PLASMA_BEAM = {
         NAME = "等离子光束",
-        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，光束的力场攻击力永久提升17点。",
+        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，光束的攻击力永久提升17点。",
     },
 
     -- 海象森林群系 "Forest hunters"
@@ -163,13 +164,13 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 曼德拉草森林群系 "For a nice walk"
     USURPER_SHOT = {
         NAME = "夺位射击",
-        DESC = "能够使用星际游侠爆能枪进行夺位射击。夺位射击能射出两种特殊的非杀伤性光束，其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
+        DESC = "能够使用魔法枪进行夺位射击。夺位射击能射出两种特殊的非杀伤性光束，其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
     },
 
     -- 混合地群系 "Dig that rock"
     MISSILE = {
         NAME = "导弹",
-        DESC = "能够使用星际游侠爆能枪发射一枚导弹，造成小范围100力场伤害。导弹的上限可以通过搜集导弹柜来提升。",
+        DESC = "能够使用魔法枪发射一枚导弹，造成小范围100伤害。导弹的上限可以通过搜集导弹柜来提升。",
     },
 
     -- 石虾地群系 "RockyLand"
@@ -177,13 +178,14 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     SUPER_MISSILE = {
         NAME = "超级导弹",
-        DESC = "能够使用星际游侠爆能枪发射一枚超级导弹，造成中范围300力场伤害。超级导弹的上限可以通过搜集超级导弹柜来提升。",
+        DESC = "能够使用魔法枪发射一枚超级导弹，造成中范围300伤害。超级导弹的上限可以通过搜集超级导弹柜来提升。",
     },
 
     -- Deprecated
+    -- 原本打算用这个致敬毁灭战士的B.F.G.的，但是UI里塞不下新的技能框了。
     -- BIG_FUCKING_MISSILE = {
     --     NAME = "B.F.M.",
-    --     DESC = "能够使用星际游侠爆能枪发射一枚毁灭飞矢，造成大范围3000力场伤害。每隔5天才能发射一发。",
+    --     DESC = "能够使用魔法枪发射一枚毁灭飞矢，造成大范围3000伤害。每隔5天才能发射一发。",
     -- },
 
     -- 击败远古守护者获得
@@ -201,12 +203,12 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     CONFIGURE_POWERSUIT = {
         NAME = "调整装备",
-        DESC = "打开一个设置轮盘，在轮盘中，你可以切换爆能枪使用的弹药，或是开关某些特殊能力。",
+        DESC = "打开一个设置轮盘，在轮盘中，你可以切换魔法枪使用的弹药，或是开关某些特殊能力。",
     },
 
     PARRY = {
         NAME = "拨挡攻击",
-        DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用星际游侠爆能枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹和超级导弹补给。",
+        DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用魔法枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹和超级导弹补给。",
     },
 
     -- 月岛浴场群系 "MoonIsland_Baths"

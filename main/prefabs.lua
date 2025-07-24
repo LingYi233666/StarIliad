@@ -65,3 +65,14 @@ AddPrefabPostInit("player_classified", function(inst)
         end
     end)
 end)
+
+AddPrefabPostInit("minotaur", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    if not inst.components.lootdropper then
+        inst:AddComponent("lootdropper")
+    end
+    inst.components.lootdropper:AddChanceLoot("blythe_unlock_skill_item_speed_burst", 1.0)
+end)

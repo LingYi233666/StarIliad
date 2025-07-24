@@ -73,7 +73,7 @@ local function ApplyBeamStrengthen(inst, proj, attacker)
             end
 
             if attacker.components.blythe_skiller:IsLearned("plasma_beam") then
-                proj.components.stariliad_spdamage_force:AddBonus(attacker, TUNING.BLYTHE_BEAM_PLASMA_DAMAGE_BONUS,
+                proj.components.stariliad_spdamage_beam:AddBonus(attacker, TUNING.BLYTHE_BEAM_PLASMA_DAMAGE_BONUS,
                     "plasma_beam")
             end
 
