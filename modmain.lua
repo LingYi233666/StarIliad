@@ -65,6 +65,8 @@ PrefabFiles = {
 
     "stariliad_alien_statue",
     "stariliad_alien_ruins_pillar",
+
+    "blythe_blaster_repair_kit",
 }
 
 -- See stariliad_main_assets.lua
@@ -82,6 +84,7 @@ AddMinimapAtlas("images/map_icons/blythe.xml") --增加小地图图标
 AddModCharacter("blythe", "FEMALE")
 
 local import_list = {
+    "constants",
     "tuning",
     "actions",
     "language_chs",

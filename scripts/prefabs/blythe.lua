@@ -176,7 +176,7 @@ local master_postinit = function(inst)
 
 	inst.components.workmultiplier:SetSpecialMultiplierFn(WorkMultiplierFn)
 
-	-- 作为战斗角色，普通攻击伤害倍率为0.75？？？
+	-- 作为战斗角色，普通攻击伤害倍率为0.6？？？
 	-- 我觉得我的脑子一定是瓦特了
 	inst.components.combat.damagemultiplier = TUNING.BLYTHE_DAMAGE_MULT
 

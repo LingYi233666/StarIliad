@@ -17,6 +17,7 @@ end
 
 AddTaskSetPreInit("default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
+	assert(taskset.required_prefabs ~= nil)
 
 	local tasks_must_contain = {
 		"Make a pick",
@@ -32,6 +33,7 @@ AddTaskSetPreInit("default", function(taskset)
 	}
 
 	-- taskset.set_pieces["static_layout_name"] = { count = 8, tasks = { "Dig that rock", } }
+	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 end)
 
 -- TODO: Add alien statue layouts to classic task set

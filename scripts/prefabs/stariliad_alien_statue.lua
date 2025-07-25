@@ -53,9 +53,12 @@ local function common_fn(bank, build, anim, radius, item_prefab, regenerate_time
         MakeObstaclePhysics(inst, radius)
     end
 
-    inst.AnimState:SetBank(bank)
-    inst.AnimState:SetBuild(build)
-    inst.AnimState:PlayAnimation(anim, true)
+    if bank and build and anim then
+        inst.AnimState:SetBank(bank)
+        inst.AnimState:SetBuild(build)
+        inst.AnimState:PlayAnimation(anim, true)
+    end
+
 
     inst:AddTag("structure")
     inst:AddTag("statue")
@@ -188,15 +191,16 @@ end
 
 local function wrapper_altar(item_prefab)
     local function fn()
-        local inst = common_fn("lavaarena_portal", "lavaarena_portal", "idle", -1, nil, nil, nil, false)
+        -- local inst = common_fn("lavaarena_portal", "lavaarena_portal", "idle", -1, nil, nil, nil, false)
         -- local inst = common_fn("atrium_floor", "atrium_floor", "idle_active")
+        local inst = common_fn(nil, nil, nil, -1, nil, nil, nil, false)
 
         -- RemovePhysicsColliders(inst)
 
-        inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
-        inst.AnimState:SetLayer(LAYER_BACKGROUND)
-        inst.AnimState:SetSortOrder(1)
-        inst.AnimState:SetFinalOffset(2)
+        -- inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+        -- inst.AnimState:SetLayer(LAYER_BACKGROUND)
+        -- inst.AnimState:SetSortOrder(1)
+        -- inst.AnimState:SetFinalOffset(2)
 
         inst:AddTag("NOCLICK")
 
@@ -267,7 +271,7 @@ for _, data in pairs(BLYTHE_SKILL_DEFINES) do
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.ALTAR then
             table.insert(rets, Prefab(statue_prefab, wrapper_altar(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.MERMAID then
-            -- print("MERMAID not IMP !")
+            print("MERMAID not IMP !")
         end
     end
 end

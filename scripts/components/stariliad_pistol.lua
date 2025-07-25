@@ -138,9 +138,9 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
         end
     end
 
-    -- if proj_data.attackwear and proj_data.attackwear > 0 and self.inst.components.finiteuses then
-    --     self.inst.components.finiteuses:Use(proj_data.attackwear)
-    -- end
+    if proj_data.attackwear and proj_data.attackwear > 0 and self.inst.components.finiteuses then
+        self.inst.components.finiteuses:Use(proj_data.attackwear)
+    end
 end
 
 return StarIliadPistol

@@ -18,6 +18,7 @@ return {
 
 	BATTLECRY =
 	{
+		GENERIC = "",
 		-- GENERIC = "Go for the eyes!",
 		-- PIG = "Here piggy piggy!",
 		-- PREY = "I will destroy you!",
@@ -27,7 +28,68 @@ return {
 
 	DESCRIBE =
 	{
+		AXE = "这种粗糙的工具不适合我。",
 
+		BUNNYMAN = "我在别的星球上见过长着鹿角的兔人。",
+
+		GOLDENAXE = "花里胡哨。",
+		GOLDENPICKAXE = "比鹤嘴锄实用，但还是不如导弹。",
+		GOLDENPITCHFORK = "很漂亮的草叉。",
+
+		HAMMER = "适合用来回收建筑，而不是用来搞破坏。",
+
+		PICKAXE = "相较于鹤嘴锄，我更喜欢导弹！",
+		PIGMAN =
+		{
+			DEAD = "死了。",
+			FOLLOWER = "我的土著向导朋友！",
+			GENERIC = "这颗星球上的土著！",
+			GUARD = "他抹着油彩，看起来像是一名战士。",
+			WEREPIG = "我听过一些关于狼人的传说...",
+		},
+		PITCHFORK = "尖头叉子。",
+
+		RABBIT =
+		{
+			GENERIC = "有触角的外星毛绒兔。",
+			HELD = "可以带回去研究一下。",
+		},
+		RABBITHOLE =
+		{
+			GENERIC = "连接着兔子帝国。",
+			SPRING = "洪水泛滥，帝国崩塌。",
+		},
+
+		SPEAR = "我更信赖我的魔法枪。",
+		SPEAR_WATHGRITHR = "在舞台剧里很常见。",
+		SPIDER =
+		{
+			DEAD = "死掉了。",
+			GENERIC = "异形大蜘蛛。",
+			SLEEPING = "它睡着了。",
+		},
+		SPIDERDEN = "小心周围的网！",
+		SPIDEREGGSACK = "可以用来孵化新的蜘蛛。",
+		SPIDERGLAND = "额，闻起来就像消毒液。",
+		SPIDERHAT = "散发着古怪的信息素。",
+		SPIDERQUEEN = "异形蜘蛛女王！",
+		SPIDER_DROPPER = "从天而降的死神。",
+		SPIDER_HEALER = "这些蜘蛛能为其他蜘蛛提供救援！",
+		SPIDER_HIDER = "一发导弹就能击溃它的防御。",
+		SPIDER_MOON =
+		{
+			GENERIC = "石头蜘蛛。",
+			SLEEPING = "它睡着了。",
+			DEAD = "死了吗？",
+		},
+		SPIDER_SPITTER = "我观察到它发达的唾液腺。",
+		SPIDER_WARRIOR =
+		{
+			DEAD = "死掉了。",
+			GENERIC = "它的腿比其他蜘蛛的更强壮。",
+			SLEEPING = "它放松警惕了。",
+		},
+		SPIDER_WATER = "海洋溜冰者。",
 	},
 
 	EAT_FOOD =

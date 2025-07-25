@@ -52,22 +52,23 @@ local function OnProjectileLaunch(inst, attacker, target)
     inst.components.stariliad_pistol:LaunchProjectile(attacker, target)
 end
 
--- local function OnBroken(inst)
---     if inst.components.equippable ~= nil then
---         inst:RemoveComponent("equippable")
---         inst:AddTag("broken")
---     end
--- end
+local function OnBroken(inst)
+    if inst.components.equippable ~= nil then
+        inst:RemoveComponent("equippable")
+    end
 
--- local function OnRepaired(inst)
---     if inst.components.equippable == nil then
---         inst:AddComponent("equippable")
---         inst.components.equippable:SetOnEquip(OnEquip)
---         inst.components.equippable:SetOnUnequip(OnUnequip)
+    inst:AddTag("broken")
+end
 
---         inst:RemoveTag("broken")
---     end
--- end
+local function OnRepaired(inst)
+    if inst.components.equippable == nil then
+        inst:AddComponent("equippable")
+    end
+    inst.components.equippable:SetOnEquip(OnEquip)
+    inst.components.equippable:SetOnUnequip(OnUnequip)
+
+    inst:RemoveTag("broken")
+end
 
 local function fn()
     local inst = CreateEntity()
@@ -92,9 +93,9 @@ local function fn()
         return inst
     end
 
-    -- inst:AddComponent("finiteuses")
-    -- inst.components.finiteuses:SetMaxUses(TUNING.BLYTHE_BLASTER_USES)
-    -- inst.components.finiteuses:SetUses(TUNING.BLYTHE_BLASTER_USES)
+    inst:AddComponent("finiteuses")
+    inst.components.finiteuses:SetMaxUses(TUNING.BLYTHE_BLASTER_USES)
+    inst.components.finiteuses:SetUses(TUNING.BLYTHE_BLASTER_USES)
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
@@ -117,7 +118,7 @@ local function fn()
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
 
-    -- MakeForgeRepairable(inst, FORGEMATERIALS.LUNARPLANT, OnBroken, OnRepaired)
+    MakeForgeRepairable(inst, FORGEMATERIALS.BLYTHE_BLASTER, OnBroken, OnRepaired)
     MakeHauntableLaunch(inst)
 
 
