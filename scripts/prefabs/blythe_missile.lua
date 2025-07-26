@@ -32,7 +32,7 @@ local function OnHit(inst, attacker, target)
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, inst.explode_range + 2, nil, { "INLIMBO", "FX" })
     for k, v in pairs(ents) do
-        if CanInteract(inst, v, inst.explode_range) then
+        if v:IsValid() and CanInteract(inst, v, inst.explode_range) then
             -- if attacker.components.combat and attacker.components.combat:CanTarget(v) then
             if not IsEntityDeadOrGhost(v, true) and v.components.combat and v.components.combat:CanBeAttacked(attacker) then
                 -- StarIliadBasic.TryBreakShieldState(target)

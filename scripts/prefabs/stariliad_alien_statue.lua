@@ -223,7 +223,7 @@ local function wrapper_altar(item_prefab)
             local item = SpawnAt(item_prefab, inst)
 
             local num_pillars = 8
-            local radius = 12
+            local radius = 10
 
             local angle_step = 360 / num_pillars
             for i = 0, num_pillars - 1 do

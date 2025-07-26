@@ -128,6 +128,7 @@ function GLOBAL.si_circle_rocks(radius, step, pos)
 end
 
 -- GetWorldTileMap()
+-- si_tile(WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB)
 function GLOBAL.si_tile(tile, x, y, z)
     if x == nil or y == nil or z == nil then
         x, y, z = ConsoleWorldPosition():Get()

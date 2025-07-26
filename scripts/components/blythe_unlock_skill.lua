@@ -88,6 +88,12 @@ end
 
 function BlytheUnlockSkill:TriggerLearnedAnim(player)
     local sound = "stariliad_sfx/hud/item_acquired_dread"
+
+    local data = StarIliadBasic.GetSkillDefine(self.skill_name)
+    if data.dtype == BLYTHE_SKILL_TYPE.MAGIC then
+        sound = "stariliad_sfx/hud/item_acquired_zero_remaster"
+    end
+
     local title = STRINGS.STARILIAD_UI.ITEM_ACQUIRED.FOUND:format(STRINGS.STARILIAD_UI.SKILL_DETAIL
         [self.skill_name:upper()].NAME)
     SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["play_skill_learning_anim"], player.userid, title, nil, sound, 6,

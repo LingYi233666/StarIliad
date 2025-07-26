@@ -10,10 +10,19 @@ local Tasks = require("map/tasks")
 local function MyAddStaticLayout(name, path)
 	Layouts[name] = StaticLayout.Get(path)
 
-	-- Layouts[name].ground_types[WORLD_TILES.ICEY2_JUNGLE] = WORLD_TILES.ICEY2_JUNGLE
+	Layouts[name].ground_types[WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 
 	return Layouts[name]
 end
+
+Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/stariliad_alien_ruin_circle_pillar", {
+	areas = {
+		middle_entity = function()
+			return { "stariliad_alien_statue_missile" }
+		end,
+	},
+})
+Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 
 AddTaskSetPreInit("default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
@@ -32,7 +41,8 @@ AddTaskSetPreInit("default", function(taskset)
 		"Lightning Bluff",
 	}
 
-	-- taskset.set_pieces["static_layout_name"] = { count = 8, tasks = { "Dig that rock", } }
+	-- taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
+
 	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 end)
 
@@ -54,5 +64,58 @@ end)
 -- 	-- taskset.set_pieces["static_layout_name"] = { count = 8, tasks = { "Dig that rock", } }
 -- end)
 
+-- AddRoom("stariliad_alien_ruin_missile_room", {
+-- 	colour = { r = .5, g = 0.6, b = .080, a = .10 },
+-- 	value = WORLD_TILES.FOREST,
+-- 	tags = { "ExitPiece", },
+-- 	required_prefabs = {
+-- 		"stariliad_alien_statue_missile",
+-- 	},
+-- 	contents = {
+-- 		countstaticlayouts = {
+-- 			stariliad_alien_ruin_missile = 1,
+-- 		},
+-- 		distributepercent = .3,
+-- 		distributeprefabs =
+-- 		{
+-- 			fireflies = 0.2,
+-- 			--evergreen = 6,
+-- 			rock1 = 0.05,
+-- 			grass = .05,
+-- 			sapling = .8,
+-- 			twiggytree = 0.8,
+-- 			ground_twigs = 0.06,
+-- 			--rabbithole=.05,
+-- 			berrybush = .03,
+-- 			berrybush_juicy = 0.015,
+-- 			red_mushroom = .03,
+-- 			green_mushroom = .02,
+-- 			trees = { weight = 6, prefabs = { "evergreen", "evergreen_sparse" } }
+-- 		},
+-- 	}
+-- })
 
--- MyAddStaticLayout("icey1_graveyard", "layouts/icey1_graveyard")
+AddRoom("stariliad_alien_ruin_missile_room", {
+	colour = { r = .5, g = 1, b = .8, a = .50 },
+	value = WORLD_TILES.GRASS,
+
+	required_prefabs = {
+		"stariliad_alien_statue_missile",
+	},
+	contents = {
+		countstaticlayouts = {
+			stariliad_alien_ruin_missile = 1,
+		},
+		distributepercent = .1,
+		distributeprefabs =
+		{
+			fireflies = 1,
+			flower = 4,
+			beehive = 1,
+		},
+	}
+})
+
+AddTaskPreInit("Dig that rock", function(task)
+	task.room_choices["stariliad_alien_ruin_missile_room"] = 1
+end)

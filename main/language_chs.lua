@@ -1,7 +1,7 @@
 -- The character select screen lines  --人物选人界面的描述
 STRINGS.CHARACTER_TITLES.blythe = "星际游侠"
 STRINGS.CHARACTER_NAMES.blythe = "布莱丝"
-STRINGS.CHARACTER_DESCRIPTIONS.blythe = "*擅长射击和魔法*\n热衷于研究外星遗物\n*讨厌粗糙的工具"
+STRINGS.CHARACTER_DESCRIPTIONS.blythe = "*擅长射击和魔法\n*热衷于研究外星遗物\n*讨厌粗糙的工具"
 STRINGS.CHARACTER_QUOTES.blythe = "\"真正的星际游侠会把《星辰史诗》 加入steam愿望单！\""
 
 -- Custom speech strings  ----人物语言文件  可以进去自定义

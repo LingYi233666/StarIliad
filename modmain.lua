@@ -67,6 +67,8 @@ PrefabFiles = {
     "stariliad_alien_ruins_pillar",
 
     "blythe_blaster_repair_kit",
+
+    "stariliad_walls",
 }
 
 -- See stariliad_main_assets.lua
