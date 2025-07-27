@@ -30,13 +30,22 @@ return {
 	{
 		AXE = "这种粗糙的工具不适合我。",
 
-		BUNNYMAN = "我在别的星球上见过长着鹿角的兔人。",
+
+		BUNNYMAN = "我以前还见过长着鹿角的兔人。",
+		BUZZARD = "你不会发射长矛吗？",
 
 		GOLDENAXE = "花里胡哨。",
 		GOLDENPICKAXE = "比鹤嘴锄实用，但还是不如导弹。",
 		GOLDENPITCHFORK = "很漂亮的草叉。",
 
 		HAMMER = "适合用来回收建筑，而不是用来搞破坏。",
+
+		MALBATROSS = "我曾听人提起过一个崇拜巨大鸟类的邪教。",
+		-- MALBATROSS_FEATHER = "Plucked from a fine feathered fiend.",
+		MALBATROSS_BEAK = "它让我有开腔的欲望。",
+		-- MAST_MALBATROSS_ITEM = "It's lighter than it looks.",
+		-- MAST_MALBATROSS = "Spread my wings and sail away!",
+		-- MALBATROSS_FEATHERED_WEAVE = "I'm making a quill-t!",
 
 		PICKAXE = "相较于鹤嘴锄，我更喜欢导弹！",
 		PIGMAN =
@@ -90,6 +99,30 @@ return {
 			SLEEPING = "它放松警惕了。",
 		},
 		SPIDER_WATER = "海洋溜冰者。",
+
+		TALLBIRD = "我曾经在一个洪水泛滥的星球看到过铁做的高脚鸟。",
+		-- TALLBIRDEGG = "Will it hatch?",
+		-- TALLBIRDEGG_COOKED = "Delicious and nutritious.",
+		-- TALLBIRDEGG_CRACKED =
+		-- {
+		-- 	COLD = "Is it shivering or am I?",
+		-- 	GENERIC = "Looks like it's hatching!",
+		-- 	HOT = "Are eggs supposed to sweat?",
+		-- 	LONG = "I have a feeling this is going to take a while...",
+		-- 	SHORT = "It should hatch any time now.",
+		-- },
+		-- TALLBIRDNEST =
+		-- {
+		-- 	GENERIC = "That's quite an egg!",
+		-- 	PICKED = "The nest is empty.",
+		-- },
+		-- TEENBIRD =
+		-- {
+		-- 	GENERIC = "Not a very tall bird.",
+		-- 	HUNGRY = "You need some food and quick, huh?",
+		-- 	STARVING = "It has a dangerous look in its eye.",
+		-- 	SLEEPING = "It's getting some shut-eye",
+		-- },
 	},
 
 	EAT_FOOD =
