@@ -156,7 +156,7 @@ local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, exp
         inst.components.stariliad_spdamage_missile:SetBaseDamage(damage)
 
         inst:AddComponent("complexprojectile")
-        inst.components.complexprojectile:SetHorizontalSpeed(30)
+        inst.components.complexprojectile:SetHorizontalSpeed(TUNING.BLYTHE_MISSILE_SPEED)
         inst.components.complexprojectile:SetOnHit(OnHit)
         inst.components.complexprojectile.onupdatefn = OnUpdate
 
@@ -213,9 +213,10 @@ end
 return
     MakeMissile("blythe_missile", "blythe_missile_anim_normal", "blythe_missile_tail",
         { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
-        TUNING.BLYTHE_MISSILE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE, TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
+        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE, TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
     MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_tail",
         "blythe_super_missile_explode_fx",
-        TUNING.BLYTHE_SUPER_MISSILE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE, TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE),
+        TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
+        TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE),
     MakeAnim("blythe_missile_anim_normal", "idle"),
     MakeAnim("blythe_missile_anim_super", "idle_super")

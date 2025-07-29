@@ -23,7 +23,7 @@ local function TryChangeSwapBuild(inst, owner)
     end
 end
 
-local function SetProjectilePrefabChange(inst, new_prefab, old_prefab)
+local function OnProjectilePrefabChange(inst, new_prefab, old_prefab)
     local owner
     if inst.components.equippable:IsEquipped() then
         owner = inst.components.inventoryitem.owner
@@ -53,6 +53,21 @@ local function OnProjectileLaunch(inst, attacker, target)
 end
 
 local function OnBroken(inst)
+    if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
+        local owner = inst.components.inventoryitem.owner
+        if owner ~= nil then
+            if owner.components.inventory ~= nil then
+                local item = owner.components.inventory:Unequip(inst.components.equippable.equipslot)
+                if item ~= nil then
+                    owner.components.inventory:GiveItem(item, nil, owner:GetPosition())
+                    owner:PushEvent("toolbroke", { tool = item })
+                end
+            else
+                owner:PushEvent("toolbroke", { tool = inst })
+            end
+        end
+    end
+
     if inst.components.equippable ~= nil then
         inst:RemoveComponent("equippable")
     end
@@ -96,6 +111,7 @@ local function fn()
     inst:AddComponent("finiteuses")
     inst.components.finiteuses:SetMaxUses(TUNING.BLYTHE_BLASTER_USES)
     inst.components.finiteuses:SetUses(TUNING.BLYTHE_BLASTER_USES)
+    inst.components.finiteuses:SetOnFinished(OnBroken)
 
     inst:AddComponent("weapon")
     inst.components.weapon:SetDamage(0)
@@ -105,7 +121,7 @@ local function fn()
     inst.components.weapon.attackwear = 0 -- handled in stariliad_pistol
 
     inst:AddComponent("stariliad_pistol")
-    inst.components.stariliad_pistol:SetProjectilePrefabChangeCallback(SetProjectilePrefabChange)
+    inst.components.stariliad_pistol:SetProjectilePrefabChangeCallback(OnProjectilePrefabChange)
 
     inst:AddComponent("inspectable")
 
@@ -117,8 +133,14 @@ local function fn()
     inst:AddComponent("equippable")
     inst.components.equippable:SetOnEquip(OnEquip)
     inst.components.equippable:SetOnUnequip(OnUnequip)
+    inst.components.equippable.restrictedtag = "blythe"
 
-    MakeForgeRepairable(inst, FORGEMATERIALS.BLYTHE_BLASTER, OnBroken, OnRepaired)
+    inst:AddComponent("forgerepairable")
+    inst.components.forgerepairable:SetRepairMaterial(FORGEMATERIALS.BLYTHE_BLASTER)
+    inst.components.forgerepairable:SetOnRepaired(OnRepaired)
+
+    -- To push toolbroken event, we need a more accurate procession
+    -- MakeForgeRepairable(inst, FORGEMATERIALS.BLYTHE_BLASTER, OnBroken, OnRepaired)
     MakeHauntableLaunch(inst)
 
 

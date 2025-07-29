@@ -106,6 +106,18 @@ local function WorkMultiplierFn(inst, action, target, tool, numworks, recoil)
 	return new_numworks
 end
 
+local function OnToolBroken(inst, data)
+	if data
+		and data.tool
+		and data.tool:IsValid()
+		and data.tool.prefab == "blythe_blaster"
+		and not IsEntityDeadOrGhost(inst, true)
+		and not inst.sg:HasStateTag("dead")
+		and inst.components.talker then
+		inst.components.talker:Say(GetString(inst, "ANNOUNCE_BLASTER_BROKEN"))
+	end
+end
+
 --这个函数将在服务器和客户端都会执行
 --一般用于添加小地图标签等动画文件或者需要主客机都执行的组件（少数）
 local common_postinit = function(inst)
@@ -170,17 +182,17 @@ local master_postinit = function(inst)
 	-- inst.components.temperature.inherentinsulation = -TUNING.INSULATION_TINY
 	-- inst.components.temperature.inherentsummerinsulation = -TUNING.INSULATION_TINY
 
+	-- Handled in WorkMultiplierFn()
 	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.CHOP, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
 	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.MINE, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
 	-- inst.components.workmultiplier:AddMultiplier(ACTIONS.HAMMER, TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER, inst)
 
 	inst.components.workmultiplier:SetSpecialMultiplierFn(WorkMultiplierFn)
 
-	-- 作为战斗角色，普通攻击伤害倍率为0.6？？？
-	-- 我觉得我的脑子一定是瓦特了
 	inst.components.combat.damagemultiplier = TUNING.BLYTHE_DAMAGE_MULT
 
 	-- inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
+	inst:ListenForEvent("toolbroke", OnToolBroken)
 
 	inst:DoTaskInTime(1, function()
 		local new_skills = inst.components.blythe_skiller:LearnRootSkills()

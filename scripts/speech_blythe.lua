@@ -13,6 +13,7 @@ return {
 
 	},
 
+	ANNOUNCE_BLASTER_BROKEN = "呀，我的枪坏掉了！我得做个魔法枪修补套件修好它。",
 	ANNOUNCE_FLOATER_HELD = "真正的星际游侠绝不会沉水！",
 	ANNOUNCE_FLOATER_LETGO = "有东西抓住了我的...",
 
