@@ -76,3 +76,11 @@ AddPrefabPostInit("minotaur", function(inst)
     end
     inst.components.lootdropper:AddChanceLoot("blythe_unlock_skill_item_speed_burst", 1.0)
 end)
+
+AddPrefabPostInit("forest", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst:AddComponent("stariliad_weather_lightning_storm")
+end)

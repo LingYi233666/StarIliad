@@ -139,4 +139,18 @@ function GLOBAL.si_tile(tile, x, y, z)
     TheWorld.Map:SetTile(tile_x, tile_y, tile)
 end
 
+function GLOBAL.si_lightning_storm(enable)
+    local cmp = TheWorld.components.stariliad_weather_lightning_storm
+    if not cmp then
+        print("No lightning storm component !")
+        return
+    end
+
+    if enable == true or enable == nil then
+        cmp:StartWeather()
+    elseif enable == false then
+        cmp:StopWeather()
+    end
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug
