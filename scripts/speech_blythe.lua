@@ -48,6 +48,8 @@ return {
 		-- MAST_MALBATROSS = "Spread my wings and sail away!",
 		-- MALBATROSS_FEATHERED_WEAVE = "I'm making a quill-t!",
 
+		ONEMANBAND = "啪嗒~啪嗒~啪嗒~砰~",
+
 		PICKAXE = "相较于鹤嘴锄，我更喜欢导弹！",
 		PIGMAN =
 		{

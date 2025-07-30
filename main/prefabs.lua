@@ -84,3 +84,11 @@ AddPrefabPostInit("forest", function(inst)
 
     inst:AddComponent("stariliad_weather_lightning_storm")
 end)
+
+AddPlayerPostInit(function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst:AddComponent("stariliad_rain_fx_bonus_watcher")
+end)

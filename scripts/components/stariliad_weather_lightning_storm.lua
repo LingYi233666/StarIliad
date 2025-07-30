@@ -8,12 +8,14 @@ local StarIliadWeatherLightningStorm = Class(function(self, inst)
 
     -- Config
     self.weather_minmax_duration = { 200, 300 }
-    self.lightning_strike_minmax_period = { 10, 15 }
+    self.lightning_strike_minmax_period = { 8, 14 }
     self.lightning_strike_minmax_speed = { 1, 3 }
-    self.rain_time_percent = { 0.4, 0.6 }
+    self.rain_time_percent = { 0.2, 0.3 }
+    -- self.rain_time_percent = { 0.05, 0.1 }
     self.check_minmax_cd = { TUNING.TOTAL_DAY_TIME * 0.4, TUNING.TOTAL_DAY_TIME * 0.6 }
     self.start_possibility_init = 0.4
     self.start_possibility_bonus = 0.1
+    self.rain_fx_minmax_bonus = { 50, 512 }
 
     -- State
     self.state = STATE.NONE
@@ -56,6 +58,16 @@ function StarIliadWeatherLightningStorm:GetLightningStrikeSpeed()
         math.sin(percent * PI) * (self.lightning_strike_minmax_speed[2] - self.lightning_strike_minmax_speed[1])
 end
 
+function StarIliadWeatherLightningStorm:GetRainFXBonus()
+    if self.state ~= STATE.RUNNING or not TheWorld.state.israining then
+        return 0
+    end
+
+    local percent = self.weather_time_elapse / self.weather_duration
+    return self.rain_fx_minmax_bonus[1] +
+        math.sin(percent * PI) * (self.rain_fx_minmax_bonus[2] - self.rain_fx_minmax_bonus[1])
+end
+
 function StarIliadWeatherLightningStorm:DoLightningStrike()
     local candidates = {}
     for _, v in pairs(AllPlayers) do
@@ -74,11 +86,32 @@ function StarIliadWeatherLightningStorm:DoLightningStrike()
     end
 
     local luck_guy = GetRandomItem(candidates)
-    local offset = Vector3FromTheta(math.random() * PI2, GetRandomMinMax(0, 12))
+    local offset = Vector3FromTheta(math.random() * PI2, GetRandomMinMax(0, 20))
 
     print("Lightning strike on", luck_guy, ", offset:", offset, ", radius:", offset:Length())
     TheWorld:PushEvent("ms_sendlightningstrike", luck_guy:GetPosition() + offset)
 end
+
+function StarIliadWeatherLightningStorm:GetLightningCandidate()
+    local percent = self.weather_time_elapse / self.weather_duration
+    local factor = math.sin(percent * PI)
+
+    local candidates = {
+        lightning = Remap(factor, 0, 1, 0.2, 0.4),
+        thunder_close = Remap(factor, 0, 1, 0.2, 0.1),
+        thunder_far = Remap(factor, 0, 1, 0.6, 0.5),
+    }
+
+    local selection = weighted_random_choice(candidates)
+
+    return selection
+end
+
+-- function StarIliadWeatherLightningStorm:SpawnThunderSound()
+--     local percent = self.weather_time_elapse / self.weather_duration
+--     local factor = math.sin(percent * PI)
+--     SpawnPrefab(factor * math.random() > .3 and "thunder_close" or "thunder_far")
+-- end
 
 function StarIliadWeatherLightningStorm:StartWeather()
     if self.state == STATE.RUNNING then
@@ -137,7 +170,8 @@ function StarIliadWeatherLightningStorm:OnUpdate(dt)
         self:StartWeather()
 
 
-        local season_remain_time = (1 - TheWorld.state.seasonprogress) * TheWorld.state.summerlength
+        local season_remain_time = (1 - TheWorld.state.seasonprogress) * TheWorld.state.summerlength *
+            TUNING.TOTAL_DAY_TIME
         print("Season remain time:", season_remain_time)
 
         -- Make sure don't start lightning storm again this summer
@@ -162,7 +196,12 @@ function StarIliadWeatherLightningStorm:OnUpdate(dt)
 
     self.lightning_strike_countdown = self.lightning_strike_countdown - dt * self:GetLightningStrikeSpeed()
     if self.lightning_strike_countdown <= 0 then
-        self:DoLightningStrike()
+        local selection = self:GetLightningCandidate()
+        if selection == "lightning" then
+            self:DoLightningStrike()
+        elseif selection == "thunder_close" or selection == "thunder_far" then
+            SpawnPrefab(selection)
+        end
 
         self.lightning_strike_countdown = GetRandomMinMax(unpack(self.lightning_strike_minmax_period))
     end
@@ -174,6 +213,9 @@ function StarIliadWeatherLightningStorm:OnUpdate(dt)
 
             self.rain_countdown = nil
         end
+    else
+        -- Keep raining
+        TheWorld:PushEvent("ms_deltamoisture", 10)
     end
 end
 
@@ -223,6 +265,7 @@ function StarIliadWeatherLightningStorm:OnLoad(data)
     end
 end
 
+-- print(TheWorld.components.stariliad_weather_lightning_storm:GetDebugString())
 function StarIliadWeatherLightningStorm:GetDebugString()
     -- local str = string.format("State: %s, spawned flag: %s", tostring(self.state), tostring(self.spawned_flag))
     local str = string.format("State: %s", tostring(self.state))
