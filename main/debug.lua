@@ -139,6 +139,7 @@ function GLOBAL.si_tile(tile, x, y, z)
     TheWorld.Map:SetTile(tile_x, tile_y, tile)
 end
 
+-- si_lightning_storm()
 function GLOBAL.si_lightning_storm(enable)
     local cmp = TheWorld.components.stariliad_weather_lightning_storm
     if not cmp then

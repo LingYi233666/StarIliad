@@ -42,16 +42,19 @@ function StarIliadRainFXBonusWatcher:OnUpdate(dt)
     -- self.rainfx.num_particles_to_emit = inst.particles_per_tick
     -- self.rainfx.num_splashes_to_emit = 0
 
+    -- local bonus = math.clamp(self._bonus:value(), 0, 1024)
     local bonus = self._bonus:value()
 
+
     self.rainfx.num_particles_to_emit = self.rainfx.num_particles_to_emit + bonus * dt
-    self.rainfx.num_splashes_to_emit = self.rainfx.num_splashes_to_emit + bonus * dt / 2
+    self.rainfx.num_splashes_to_emit = self.rainfx.num_splashes_to_emit + bonus * dt / 5
 
     if bonus > 0 then
         if not TheWorld.SoundEmitter:PlayingSound("stariliad_rain_bonus") then
-            TheWorld.SoundEmitter:PlaySound("dontstarve/AMB/rain", "stariliad_rain_bonus")
+            -- The DST rain sound can only be played one at same time, so I use my own rain amb
+            TheWorld.SoundEmitter:PlaySound("stariliad_music/amb/rain", "stariliad_rain_bonus")
         end
-        TheWorld.SoundEmitter:SetParameter("stariliad_rain_bonus", "intensity", math.clamp(bonus / 200, 0.1, 1))
+        TheWorld.SoundEmitter:SetParameter("stariliad_rain_bonus", "intensity", Remap(bonus, 0, 1024, 0, 1))
     elseif bonus <= 0 and TheWorld.SoundEmitter:PlayingSound("stariliad_rain_bonus") then
         TheWorld.SoundEmitter:KillSound("stariliad_rain_bonus")
     end

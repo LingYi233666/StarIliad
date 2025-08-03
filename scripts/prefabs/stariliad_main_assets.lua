@@ -14,6 +14,8 @@ local assets =
     -- pistol shoot anim
     Asset("ANIM", "anim/player_pistol.zip"),
 
+    Asset("ANIM", "anim/blythe_tv.zip"),
+
     -- swap beam ui
     Asset("IMAGE", "images/ui/stariliad_8star.tex"),
     Asset("ATLAS", "images/ui/stariliad_8star.xml"),
@@ -73,6 +75,7 @@ local assets =
 
     Asset("SOUNDPACKAGE", "sound/stariliad_music.fev"),
     Asset("SOUND", "sound/stariliad_music.fsb"),
+    Asset("SOUND", "sound/stariliad_music_lossless.fsb"),
 }
 
 local function fn()

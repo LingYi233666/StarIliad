@@ -1,5 +1,9 @@
 local BlytheSkillBase_Passive = require("components/blythe_skill_base_passive")
 
+local function in_speed_burst(self, val)
+
+end
+
 local BlytheSkillSpeedBurst = Class(BlytheSkillBase_Passive, function(self, inst)
     BlytheSkillBase_Passive._ctor(self, inst)
 
@@ -20,6 +24,11 @@ local BlytheSkillSpeedBurst = Class(BlytheSkillBase_Passive, function(self, inst
     self.in_speed_burst = false
     self.charge_time = 0
 end)
+
+function BlytheSkillSpeedBurst:SetInSpeedBurst(val)
+    self.in_speed_burst = val
+    self.inst.replica.blythe_skill_speed_burst:SetInSpeedBurst(val)
+end
 
 function BlytheSkillSpeedBurst:IsInSpeedBurst()
     return self.in_speed_burst
@@ -88,7 +97,7 @@ local function CollideTask(inst, self)
 end
 
 function BlytheSkillSpeedBurst:StartSpeedBurst()
-    self.in_speed_burst = true
+    self:SetInSpeedBurst(true)
 
     self.inst.components.locomotor:SetExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst", self.speed_mult)
     self.inst.components.locomotor:SetTriggersCreep(false)
@@ -113,7 +122,7 @@ function BlytheSkillSpeedBurst:StartSpeedBurst()
 end
 
 function BlytheSkillSpeedBurst:StopSpeedBurst()
-    self.in_speed_burst = false
+    self:SetInSpeedBurst(false)
 
     self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "blythe_skill_speed_burst")
     self.inst.components.locomotor:SetTriggersCreep(true)

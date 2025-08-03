@@ -69,6 +69,9 @@ PrefabFiles = {
     "blythe_blaster_repair_kit",
 
     "stariliad_walls",
+    "stariliad_raindrop_warning",
+
+    "blythe_heal_castfx",
 }
 
 -- See stariliad_main_assets.lua

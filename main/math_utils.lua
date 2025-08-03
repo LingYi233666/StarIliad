@@ -91,4 +91,30 @@ function StarIliadMath.RotateVector3(dir_1, axis, angle_degrees)
     return term1 + term2 + term3
 end
 
+local normal_distribution_z0, normal_distribution_z1
+local normal_distribution_generate = false
+function StarIliadMath.NormalDistribution(mean, stddev)
+    mean = mean or 0
+    stddev = stddev or 1
+
+    local u1, u2, s, r
+    normal_distribution_generate = not normal_distribution_generate
+
+    if not normal_distribution_generate then
+        return normal_distribution_z1 * stddev + mean
+    end
+
+    repeat
+        u1 = math.random() * 2 - 1
+        u2 = math.random() * 2 - 1
+        s = u1 * u1 + u2 * u2
+    until s < 1
+
+    r = math.sqrt(-2 * math.log(s) / s)
+    normal_distribution_z0 = r * u1
+    normal_distribution_z1 = r * u2
+
+    return normal_distribution_z0 * stddev + mean
+end
+
 GLOBAL.StarIliadMath = StarIliadMath
