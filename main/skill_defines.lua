@@ -245,6 +245,13 @@ BLYTHE_SKILL_DEFINES = {
     },
 
     {
+        name = "heal",
+        dtype = BLYTHE_SKILL_TYPE.MAGIC,
+
+        on_pressed = CastSkillByComponentWrapper("blythe_skill_heal")
+    },
+
+    {
         name = "stealth",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 

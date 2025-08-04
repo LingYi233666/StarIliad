@@ -17,10 +17,12 @@ STRINGS.CHARACTER_SURVIVABILITY.blythe = "简单"
 STRINGS.NAMES.BLYTHE_BLASTER = "魔法枪"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER = "这东西已经超出我所认知的科学的范畴了。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER = "值得信赖的小手枪，能发射不同种类的弹药！"
+STRINGS.RECIPE_DESC.BLYTHE_BLASTER = "你值得信赖的武器。"
 
 STRINGS.NAMES.BLYTHE_BLASTER_REPAIR_KIT = "魔法枪修补套件"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER_REPAIR_KIT = "我不知道它的运作原理。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER_REPAIR_KIT = "可以用来修理我的魔法枪。"
+STRINGS.RECIPE_DESC.BLYTHE_BLASTER_REPAIR_KIT = "用于修理魔法枪。"
 
 STRINGS.NAMES.STARILIAD_ALIEN_STATUE_NORMAL_CHOZO = "神族雕像"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ALIEN_STATUE_NORMAL_CHOZO = "一尊未知种族的雕像。"
@@ -211,7 +213,12 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     PARRY = {
         NAME = "拨挡攻击",
-        DESC = "进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用魔法枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹补给。",
+        DESC = "使用手中的武器进行一次快速的格挡。如果你成功挡下了一次攻击，则你可以马上使用魔法枪的光束发动一次强力反击。\n*被反击的生物会掉落导弹补给。",
+    },
+
+    HEAL = {
+        NAME = "人鱼之心",
+        DESC = "消耗些许饥饿值，引导人鱼的魔力治愈自己和周围的盟友。",
     },
 
     -- 月岛浴场群系 "MoonIsland_Baths"
@@ -223,13 +230,13 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 大沼泽群系 "Squeltch"
     DODGE = {
         NAME = "闪光转移",
-        DESC = "瞬间向鼠标所指方向高速移动一段距离。可以连续使用两次。",
+        DESC = "消耗一点饥饿值，瞬间向鼠标所指方向高速移动一段距离。可以连续使用两次。",
     },
 
     -- 泥泞光照区群系 "MudLights"
     SCAN = {
-        NAME = "脉冲雷达",
-        DESC = "消耗些许饥饿值，使用脉冲雷达扫描周围的地形，周期性揭示半径60码内的地图，持续10秒。\n*脉冲可以迫使隐形的生物显形。",
+        NAME = "星辰视界",
+        DESC = "消耗些许饥饿值，使用魔法波动扫描周围的地形，周期性揭示半径50地皮范围内的地图，持续10秒。\n*魔法波动可以迫使隐形的生物显形。",
     },
 
     UNKNOWN = {

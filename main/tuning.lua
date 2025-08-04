@@ -1,10 +1,10 @@
 --选人界面人物三维显示
 TUNING.BLYTHE_HEALTH = 99
-TUNING.BLYTHE_HUNGER = 150
+TUNING.BLYTHE_HUNGER = 200
 TUNING.BLYTHE_SANITY = 150
 
 -- Blythe chop, mine and hammer actions work effectiveness
-TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER = 0.84
+TUNING.BLYTHE_WORKEFFECTIVENESS_MODIFIER = 0.9
 
 -- 59.5 * 0.84 = 49.98，so 2 attack with hambat can't kill a spider(100 HP)
 -- Force players to use blaster instead of normal melee weapons
@@ -80,6 +80,10 @@ TUNING.BLYTHE_ICE_FOG_CHAIN_BONUS = 10 * FRAMES
 
 TUNING.BLYTHE_ICE_FOG_ANIM_HOLD_TIME = 10 * FRAMES
 TUNING.BLYTHE_ICE_FOG_ANIM_FINISH_TIME = 27 * FRAMES
+
+----------------------------------------------
+
+TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE = 34
 
 --选人界面初始物品显示
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.BLYTHE = { "blythe_blaster" }

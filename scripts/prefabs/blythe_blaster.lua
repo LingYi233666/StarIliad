@@ -85,6 +85,42 @@ local function OnRepaired(inst)
     inst:RemoveTag("broken")
 end
 
+local function CanBeUpgraded(inst, item)
+    local total = inst.components.finiteuses.total
+
+    -- No need to upgrade, no need to fix
+    if total >= TUNING.BLYTHE_BLASTER_USES_THRESHOLD and inst.components.finiteuses:GetPercent() >= 1 then
+        return false
+    end
+
+    return item and item.prefab == "sewing_kit"
+end
+
+local function OnUpgraded(inst, upgrader, item)
+    local new_total = inst.components.finiteuses.total + TUNING.BLYTHE_BLASTER_USES_UPGRADE
+    new_total = math.clamp(new_total, TUNING.BLYTHE_BLASTER_USES, TUNING.BLYTHE_BLASTER_USES_THRESHOLD)
+
+    inst.components.finiteuses:SetMaxUses(new_total)
+    inst.components.finiteuses:SetPercent(1.0)
+end
+
+local function OnSave(inst, data)
+    data.maxuses = inst.components.finiteuses.total
+end
+
+local function OnLoad(inst, data)
+    if data ~= nil then
+        if data.maxuses ~= nil then
+            local total = math.clamp(data.maxuses, TUNING.BLYTHE_BLASTER_USES, TUNING.BLYTHE_BLASTER_USES_THRESHOLD)
+            local current = inst.components.finiteuses:GetUses()
+            current = math.clamp(current, 0, total)
+
+            inst.components.finiteuses:SetMaxUses(total)
+            inst.components.finiteuses:SetUses(current)
+        end
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -139,9 +175,18 @@ local function fn()
     inst.components.forgerepairable:SetRepairMaterial(FORGEMATERIALS.BLYTHE_BLASTER)
     inst.components.forgerepairable:SetOnRepaired(OnRepaired)
 
+    inst:AddComponent("upgradeable")
+    inst.components.upgradeable.upgradetype = UPGRADETYPES.DEFAULT
+    inst.components.upgradeable:SetOnUpgradeFn(OnUpgraded)
+    inst.components.upgradeable:SetCanUpgradeFn(CanBeUpgraded)
+
     -- To push toolbroken event, we need a more accurate procession
     -- MakeForgeRepairable(inst, FORGEMATERIALS.BLYTHE_BLASTER, OnBroken, OnRepaired)
     MakeHauntableLaunch(inst)
+
+
+    inst.OnSave = OnSave
+    inst.OnLoad = OnLoad
 
 
     return inst

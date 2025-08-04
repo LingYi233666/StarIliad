@@ -214,9 +214,9 @@ local function wrapper_altar(item_prefab)
         inst.OnLoad = OnLoadAltar
 
         inst:DoTaskInTime(1, function()
-            print(inst, "Try run init spawn code.")
+            -- print(inst, "Try run init spawn code.")
             if inst.init_spawn then
-                print(inst, "Init spawn code already processed, so we don't run it again.")
+                -- print(inst, "Init spawn code already processed, so we don't run it again.")
                 return
             end
 
@@ -236,7 +236,7 @@ local function wrapper_altar(item_prefab)
 
             inst.init_spawn = true
 
-            print(inst, "Init spawn code finish successful.")
+            -- print(inst, "Init spawn code finish successful.")
         end)
 
         return inst

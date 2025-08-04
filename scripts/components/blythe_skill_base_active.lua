@@ -168,11 +168,16 @@ function BlytheSkillBase_Active:CanCast(x, y, z, target)
         return false, "COOLING_DOWN"
     end
 
-    if #self.costs > 0 then
-        local cost_success, reason = self:_CanCost(x, y, z, target)
-        if not cost_success then
-            return false, reason
-        end
+    -- if #self.costs > 0 then
+    --     local cost_success, reason = self:_CanCost(x, y, z, target)
+    --     if not cost_success then
+    --         return false, reason
+    --     end
+    -- end
+
+    local cost_success, reason = self:_CanCost(x, y, z, target)
+    if not cost_success then
+        return false, reason
     end
 
     return true

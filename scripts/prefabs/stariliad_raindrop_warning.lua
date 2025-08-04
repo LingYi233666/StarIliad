@@ -130,7 +130,7 @@ local function fn()
         -- local offset = math.clamp(step * i + UnitRand() * step * 0.5, 0, MAX_PERSIST_TIME - FRAMES)
         -- table.insert(inst.emit_time, GetTime() + offset)
     end
-    table.insert(inst.emit_time, MAX_PERSIST_TIME - FRAMES)
+    table.insert(inst.emit_time, GetTime() + MAX_PERSIST_TIME - FRAMES)
 
     -- inst.emit_time = { FRAMES }
     table.sort(inst.emit_time, function(a, b)

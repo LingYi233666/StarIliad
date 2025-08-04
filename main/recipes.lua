@@ -4,8 +4,14 @@ local function MyAddRecipe2(name, ingredients, tech, config, filters, ...)
     -- For quick search build image
     if config then
         if config.atlas == nil and config.image == nil then
-            config.image = name .. ".tex"
-            config.atlas = "images/inventoryimages/" .. name .. ".xml"
+            local xml_path = "images/inventoryimages/" .. name .. ".xml"
+            if resolvefilepath_soft(xml_path) ~= nil then
+                config.image = name .. ".tex"
+                config.atlas = xml_path
+            else
+                config.image = "stariliad_debug_inventoryimage.tex"
+                config.atlas = "images/inventoryimages/stariliad_debug_inventoryimage.xml"
+            end
         end
     end
 
@@ -63,4 +69,30 @@ AddRecipeWithManyIngredients("blythe_unlock_skill_item_super_missile",
         -- nounlock = true,
     },
     { "CHARACTER", "WEAPON" }
+)
+
+MyAddRecipe2("blythe_blaster",
+    {
+        Ingredient("transistor", 2),
+        Ingredient("gears", 1),
+        Ingredient(CHARACTER_INGREDIENT.SANITY, 10),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", "WEAPON" }
+)
+
+MyAddRecipe2("blythe_blaster_repair_kit",
+    {
+        Ingredient("twigs", 2),
+        Ingredient("silk", 2),
+        Ingredient("pigskin", 1),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", }
 )

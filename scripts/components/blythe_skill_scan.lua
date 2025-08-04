@@ -9,7 +9,7 @@ local BlytheSkillScan = Class(BlytheSkillBase_Active, function(self, inst)
 
     self.duration = 13.1
     self.reveal_step = 10
-    self.reveal_radius = 60
+    self.reveal_radius = 200
     self.reveal_stealth_radius = 36
     self.reveal_cooldown = 3.5
 
@@ -80,21 +80,31 @@ function BlytheSkillScan:RevealMaps()
 
     local mid_pos = self.inst:GetPosition()
 
-    local x_count = 2 * self.reveal_radius / self.reveal_step
-    local z_count = 2 * self.reveal_radius / self.reveal_step
+    if self.offset_storage == nil then
+        self.offset_storage = {}
 
-    for i = 0, x_count do
-        for j = 0, z_count do
-            local x = -self.reveal_radius + i * self.reveal_step
-            local z = -self.reveal_radius + j * self.reveal_step
-            local offset = Vector3(x, 0, z)
-            local dist = offset:Length()
-            if dist <= self.reveal_radius then
-                local cur_pos = mid_pos + offset
+        local x_count = 2 * self.reveal_radius / self.reveal_step
+        local z_count = 2 * self.reveal_radius / self.reveal_step
 
-                self.inst.player_classified.MapExplorer:RevealArea(cur_pos.x, 0, cur_pos.z)
+        for i = 0, x_count do
+            for j = 0, z_count do
+                local x = -self.reveal_radius + i * self.reveal_step
+                local z = -self.reveal_radius + j * self.reveal_step
+                local offset = Vector3(x, 0, z)
+                local dist = offset:Length()
+                if dist <= self.reveal_radius then
+                    table.insert(self.offset_storage, offset)
+                end
             end
         end
+    end
+
+    for _, offset in pairs(self.offset_storage) do
+        self.inst.player_classified.MapExplorer:RevealArea(
+            mid_pos.x + offset.x,
+            0,
+            mid_pos.z + offset.z
+        )
     end
 end
 

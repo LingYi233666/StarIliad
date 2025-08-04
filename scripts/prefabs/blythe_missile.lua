@@ -115,7 +115,8 @@ end
 
 
 
-local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, explode_range, damage, work_damage)
+local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, explode_range, normal_damage, damage,
+                           work_damage)
     local function fn()
         local inst = CreateEntity()
 
@@ -147,7 +148,7 @@ local function MakeMissile(prefab, anim_prefab, tail_prefab, explode_prefab, exp
         inst.Physics:SetCollisionCallback(CollisionCallback)
 
         inst:AddComponent("weapon")
-        inst.components.weapon:SetDamage(0)
+        inst.components.weapon:SetDamage(normal_damage)
 
         inst:AddComponent("planardamage")
         inst.components.planardamage:SetBaseDamage(1)
@@ -213,10 +214,14 @@ end
 return
     MakeMissile("blythe_missile", "blythe_missile_anim_normal", "blythe_missile_tail",
         { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
-        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE, TUNING.BLYTHE_MISSILE_DAMAGE, TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
+        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE, 0, TUNING.BLYTHE_MISSILE_DAMAGE, TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
     MakeMissile("blythe_super_missile", "blythe_missile_anim_super", "blythe_super_missile_tail",
         "blythe_super_missile_explode_fx",
-        TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
+        TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE, 0, TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
         TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE),
+    MakeMissile("stariliad_hexa_ghost_missile", "blythe_missile_anim_normal", "blythe_missile_tail",
+        { "blythe_missile_explode_fx", "blythe_missile_explode_smoke_fx" },
+        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE, TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE, 0,
+        TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
     MakeAnim("blythe_missile_anim_normal", "idle"),
     MakeAnim("blythe_missile_anim_super", "idle_super")

@@ -1118,6 +1118,79 @@ AddStategraphState("wilson",
     }
 )
 
+AddStategraphState("wilson",
+    State {
+        name = "blythe_heal",
+        tags = { "busy", "nopredict" },
+
+        onenter = function(inst)
+            local cmp = inst.components.blythe_skill_heal
+            if not cmp then
+                inst.sg:GoToState("idle", true)
+                return
+            end
+
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(false)
+            end
+            inst.AnimState:PlayAnimation("cointoss_pre")
+            inst.AnimState:PushAnimation("cointoss", false)
+            inst.components.locomotor:Stop()
+
+            inst.sg.statemem.fxcolour = cmp.fxcolour or { 1, 1, 1 }
+            inst.sg.statemem.castsound = cmp.castsound or nil
+        end,
+
+        timeline =
+        {
+            TimeEvent(7 * FRAMES, function(inst)
+                inst.sg.statemem.animfx = inst:SpawnChild((inst.components.rider ~= nil and inst.components.rider:IsRiding()) and
+                    "blythe_heal_castfx_mount" or "blythe_heal_castfx")
+                inst.sg.statemem.animfx:SetUp(inst.sg.statemem.fxcolour)
+            end),
+            TimeEvent(15 * FRAMES, function(inst)
+                inst.sg.statemem.fxlight = SpawnAt("staff_castinglight", inst)
+                inst.sg.statemem.fxlight:SetUp(inst.sg.statemem.fxcolour, 1.2, .33)
+            end),
+            TimeEvent(13 * FRAMES, function(inst)
+                if inst.sg.statemem.castsound then
+                    inst.SoundEmitter:PlaySound(inst.sg.statemem.castsound)
+                end
+            end),
+            TimeEvent(53 * FRAMES, function(inst)
+                inst.sg.statemem.animfx = nil  --Can't be cancelled anymore
+                inst.sg.statemem.fxlight = nil --Can't be cancelled anymore
+                if inst.components.blythe_skill_heal then
+                    inst.components.blythe_skill_heal:DoHealing()
+                end
+            end),
+            TimeEvent(70 * FRAMES, function(inst)
+                inst.sg:GoToState("idle", true)
+            end),
+        },
+
+        events =
+        {
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
+            end),
+        },
+
+        onexit = function(inst)
+            if inst.components.playercontroller ~= nil then
+                inst.components.playercontroller:Enable(true)
+            end
+            if inst.sg.statemem.animfx ~= nil and inst.sg.statemem.animfx:IsValid() then
+                inst.sg.statemem.animfx:Remove()
+            end
+            if inst.sg.statemem.fxlight ~= nil and inst.sg.statemem.fxlight:IsValid() then
+                inst.sg.statemem.fxlight:Remove()
+            end
+        end,
+    }
+)
 --------------------------------------------------------------------
 
 local FREEZE_COLOUR_2 = { 82 / 255, 115 / 255, 124 / 255, 1 }
