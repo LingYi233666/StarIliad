@@ -2,6 +2,8 @@ local assets = {
     Asset("ANIM", "anim/bloodpump.zip"),
     Asset("ANIM", "anim/cointosscast_fx.zip"),
     Asset("ANIM", "anim/mount_cointosscast_fx.zip"),
+
+    Asset("ANIM", "anim/blythe_skill_heal.zip"),
 }
 
 local function SetUp(inst, colour)
@@ -18,9 +20,14 @@ local function MakeFX(prefab, bank, build, anim, face)
 
         inst:AddTag("FX")
 
-        inst.AnimState:SetBank("bloodpump")
-        inst.AnimState:SetBuild("bloodpump")
-        inst.AnimState:PlayAnimation("idle")
+        inst.AnimState:SetBank("blythe_skill_heal")
+        inst.AnimState:SetBuild("blythe_skill_heal")
+        inst.AnimState:PlayAnimation("heart")
+
+        local s = 0.4
+        inst.AnimState:SetScale(s, s, s)
+
+        inst.AnimState:SetLightOverride(1)
 
         inst.persists = false
 
@@ -48,12 +55,14 @@ local function MakeFX(prefab, bank, build, anim, face)
         inst.AnimState:SetSymbolMultColour("coin01", 0, 0, 0, 0)
 
         inst.AnimState:SetFinalOffset(1)
+        inst.AnimState:SetLightOverride(1)
 
         if not TheNet:IsDedicated() then
             local heart = MakeHeart()
             inst:AddChild(heart)
 
             heart.entity:AddFollower()
+            -- heart.Follower:FollowSymbol(inst.GUID, "coin01", 0, 0, 0, true)
             heart.Follower:FollowSymbol(inst.GUID, "coin01", 0, 0, 0)
         end
 

@@ -6,12 +6,14 @@ local BlytheSkillHeal = Class(BlytheSkillBase_Active, function(self, inst)
 
     self.cooldown = 3
     self.costs.hunger = 15
+    self.can_cast_while_riding = true
 
     self.radius = 25
     self.heal_percent_caster = 1.0
     self.heal_percent_ally = 0.75
 
-    self.fxcolour = { 248 / 255, 248 / 255, 198 / 255 }
+    -- self.fxcolour = { 248 / 255, 248 / 255, 198 / 255 }
+    self.fxcolour = { 255 / 255, 155 / 255, 205 / 255 }
     self.castsound = "dontstarve/pig/mini_game/cointoss"
 end)
 
@@ -34,6 +36,11 @@ function BlytheSkillHeal:DoHealing()
     local heal_value = self.inst.components.health.maxhealth
 
     self.inst.components.health:DoDelta(heal_value * self.heal_percent_caster, nil, self.inst.prefab)
+
+    local beefalo = self.inst.components.rider and self.inst.components.rider:GetMount()
+    if beefalo and beefalo:IsValid() and not IsEntityDead(beefalo, true) then
+        beefalo.components.health:DoDelta(heal_value * self.heal_percent_ally, nil, self.inst.prefab)
+    end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.radius, { "_health" }, { "INLIMBO", "FX" })
