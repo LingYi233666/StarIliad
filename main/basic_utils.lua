@@ -267,4 +267,9 @@ function StarIliadBasic.TeachRecipes(target, recipe_names)
     end
 end
 
+function StarIliadBasic.SetVelByMotor(inst, vx, vy, vz)
+    local x, y, z = inst.Transform:GetWorldPosition()
+    inst.Physics:SetMotorVel(inst.entity:WorldToLocalSpace(x + vx, y + vy, z + vz))
+end
+
 GLOBAL.StarIliadBasic = StarIliadBasic

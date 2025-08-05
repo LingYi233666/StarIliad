@@ -53,6 +53,7 @@ PrefabFiles = {
     "stariliad_shield_break_fx",
 
     "blythe_scan_mark",
+    "blythe_scan_mark2",
 
     "blythe_supply_ball",
     "blythe_supply_ball_tails",
@@ -67,6 +68,7 @@ PrefabFiles = {
     "stariliad_alien_ruins_pillar",
 
     "blythe_blaster_repair_kit",
+    "blythe_blaster_upgrade_kit",
 
     "stariliad_walls",
     "stariliad_raindrop_warning",

@@ -59,9 +59,12 @@ local function common_fn(bank, build, anim, radius, item_prefab, regenerate_time
         inst.AnimState:PlayAnimation(anim, true)
     end
 
-
     inst:AddTag("structure")
     inst:AddTag("statue")
+
+    if not TheNet:IsDedicated() then
+        inst:AddComponent("stariliad_important_scan_target")
+    end
 
     inst.entity:SetPristine()
 

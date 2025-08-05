@@ -88,20 +88,21 @@ end
 local function CanBeUpgraded(inst, item)
     local total = inst.components.finiteuses.total
 
-    -- No need to upgrade, no need to fix
-    if total >= TUNING.BLYTHE_BLASTER_USES_THRESHOLD and inst.components.finiteuses:GetPercent() >= 1 then
+    -- No need to upgrade
+    if total >= TUNING.BLYTHE_BLASTER_USES_THRESHOLD then
         return false
     end
 
-    return item and item.prefab == "sewing_kit"
+    return item and item.prefab == "blythe_blaster_upgrade_kit"
 end
 
 local function OnUpgraded(inst, upgrader, item)
+    local old_percent = inst.components.finiteuses:GetPercent()
     local new_total = inst.components.finiteuses.total + TUNING.BLYTHE_BLASTER_USES_UPGRADE
     new_total = math.clamp(new_total, TUNING.BLYTHE_BLASTER_USES, TUNING.BLYTHE_BLASTER_USES_THRESHOLD)
 
     inst.components.finiteuses:SetMaxUses(new_total)
-    inst.components.finiteuses:SetPercent(1.0)
+    inst.components.finiteuses:SetPercent(old_percent)
 end
 
 local function OnSave(inst, data)

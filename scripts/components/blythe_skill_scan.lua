@@ -9,7 +9,7 @@ local BlytheSkillScan = Class(BlytheSkillBase_Active, function(self, inst)
 
     self.duration = 13.1
     self.reveal_step = 10
-    self.reveal_radius = 200
+    self.reveal_radius = 76
     self.reveal_stealth_radius = 36
     self.reveal_cooldown = 3.5
 
@@ -126,6 +126,25 @@ function BlytheSkillScan:RevealStealthTargets()
     end
 end
 
+function BlytheSkillScan:PulseForImportant(delay, duration)
+    if self.pulse_start_task then
+        self.pulse_start_task:Cancel()
+        self.pulse_start_task = nil
+    end
+
+    if delay then
+        self.pulse_start_task = self.inst:DoTaskInTime(delay, function()
+            self:PulseForImportant(nil, duration)
+        end)
+    else
+        self.inst:AddTag("blythe_skill_scan_pulse")
+        self.pulse_stop_task = self.inst:DoTaskInTime(duration, function()
+            self.inst:RemoveTag("blythe_skill_scan_pulse")
+            self.pulse_stop_task = nil
+        end)
+    end
+end
+
 -- ThePlayer.components.blythe_skill_scan:Start(1.8)
 function BlytheSkillScan:Start(delay)
     if self.delay_start_task then
@@ -145,6 +164,7 @@ function BlytheSkillScan:Start(delay)
         self:SpawnMarks()
         self:RevealMaps()
         self:RevealStealthTargets()
+        self:PulseForImportant(1, 2)
         self.last_reveal_time = GetTime()
         self.inst:StartUpdatingComponent(self)
     end
@@ -168,6 +188,7 @@ function BlytheSkillScan:OnUpdate(dt)
         self:SpawnMarks()
         self:RevealMaps()
         self:RevealStealthTargets()
+        self:PulseForImportant(1, 2)
         self.last_reveal_time = GetTime()
     end
 end

@@ -92,3 +92,11 @@ AddPlayerPostInit(function(inst)
 
     inst:AddComponent("stariliad_rain_fx_bonus_watcher")
 end)
+
+AddPrefabPostInitAny(function(inst)
+    if not TheNet:IsDedicated() then
+        if inst.components.pointofinterest then
+            inst:AddComponent("stariliad_important_scan_target")
+        end
+    end
+end)

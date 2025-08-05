@@ -146,33 +146,81 @@ local function SpawnClientMarks(inst)
             if dist <= RADIUS then
                 local delay = Remap(dist, 0, RADIUS, 0, MAX_DELAY)
 
+                -- inst:DoTaskInTime(delay, function()
+                --     local fx = CreateMarker(inst)
+                --     inst:AddChild(fx)
+
+
+                --     fx.Transform:SetPosition(x, 0, z)
+
+                --     local new_pos = mid_pos + Vector3(x, 0, z)
+                --     local block_items = GetBlockItems(new_pos, master)
+                --     if #block_items > 0 then
+                --         fx.AnimState:SetAddColour(1, 1, 0, 0)
+
+                --         local may_has_enemy = false
+                --         local has_normal = false
+                --         for _, v in pairs(block_items) do
+                --             -- if v.replica.health and not v.replica.health:IsDead() then
+                --             --     local ring = CreateRing(nil, 0.5)
+                --             --     ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                --             --     break
+                --             -- end
+
+                --             -- if v.Physics and table.contains(echo_physics_groups, v.Physics:GetCollisionGroup()) then
+                --             --     local ring = CreateRing(nil, 0.5)
+                --             --     ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                --             --     break
+                --             -- end
+
+                --             if v:HasTag("hostile") or v:HasTag("monster") then
+                --                 may_has_enemy = true
+                --                 break
+                --             end
+
+                --             if v.Physics and table.contains(echo_physics_groups, v.Physics:GetCollisionGroup()) then
+                --                 has_normal = true
+                --             end
+                --         end
+
+                --         if may_has_enemy then
+                --             local ring = CreateRing(nil, 0.6)
+                --             ring.AnimState:SetMultColour(1, 0, 0, 1)
+                --             ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                --         elseif has_normal then
+                --             local ring = CreateRing(nil, 0.5)
+                --             ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                --         end
+                --     elseif TheWorld.Map:IsPassableAtPoint(new_pos.x, new_pos.y, new_pos.z, false, false) then
+                --         -- fx.AnimState:SetMultColour(0, 1, 0, 0)
+                --         fx.AnimState:SetAddColour(0, 1, 0, 0)
+                --     else
+                --         -- fx.AnimState:SetMultColour(1, 0, 0, 0)
+                --         fx.AnimState:SetAddColour(1, 0, 0, 0)
+                --     end
+                --     fx.AnimState:SetMultColour(1, 1, 1, 0)
+
+
+                --     OnFadeIn(fx)
+
+                --     fx:DoTaskInTime(KEEP_TIME, function()
+                --         OnFadeOut(fx)
+                --     end)
+
+                --     fx:DoTaskInTime(KEEP_TIME + FADEOUT_DURATION, fx.Remove)
+                -- end)
+
+                local mark_pos = offset * 1.0
                 inst:DoTaskInTime(delay, function()
-                    local fx = CreateMarker(inst)
-                    inst:AddChild(fx)
-
-
-                    fx.Transform:SetPosition(x, 0, z)
-
-                    local new_pos = mid_pos + Vector3(x, 0, z)
+                    local new_pos = mid_pos + mark_pos
                     local block_items = GetBlockItems(new_pos, master)
                     if #block_items > 0 then
-                        fx.AnimState:SetAddColour(1, 1, 0, 0)
+                        -- Yellow
+                        inst.scan_mark2:AddEmitTask(-1, 1, mark_pos)
 
                         local may_has_enemy = false
                         local has_normal = false
                         for _, v in pairs(block_items) do
-                            -- if v.replica.health and not v.replica.health:IsDead() then
-                            --     local ring = CreateRing(nil, 0.5)
-                            --     ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
-                            --     break
-                            -- end
-
-                            -- if v.Physics and table.contains(echo_physics_groups, v.Physics:GetCollisionGroup()) then
-                            --     local ring = CreateRing(nil, 0.5)
-                            --     ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
-                            --     break
-                            -- end
-
                             if v:HasTag("hostile") or v:HasTag("monster") then
                                 may_has_enemy = true
                                 break
@@ -192,22 +240,12 @@ local function SpawnClientMarks(inst)
                             ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
                         end
                     elseif TheWorld.Map:IsPassableAtPoint(new_pos.x, new_pos.y, new_pos.z, false, false) then
-                        -- fx.AnimState:SetMultColour(0, 1, 0, 0)
-                        fx.AnimState:SetAddColour(0, 1, 0, 0)
+                        -- Green
+                        inst.scan_mark2:AddEmitTask(-1, 0, mark_pos)
                     else
-                        -- fx.AnimState:SetMultColour(1, 0, 0, 0)
-                        fx.AnimState:SetAddColour(1, 0, 0, 0)
+                        -- Red
+                        inst.scan_mark2:AddEmitTask(-1, 2, mark_pos)
                     end
-                    fx.AnimState:SetMultColour(1, 1, 1, 0)
-
-
-                    OnFadeIn(fx)
-
-                    fx:DoTaskInTime(KEEP_TIME, function()
-                        OnFadeOut(fx)
-                    end)
-
-                    fx:DoTaskInTime(KEEP_TIME + FADEOUT_DURATION, fx.Remove)
                 end)
             end
         end
@@ -226,6 +264,8 @@ local function fn()
     inst._master = net_entity(inst.GUID, "inst._master")
 
     if not TheNet:IsDedicated() then
+        inst.scan_mark2 = inst:AddChild("blythe_scan_mark2")
+
         inst:DoTaskInTime(0, SpawnClientMarks)
         inst:DoTaskInTime(0, CreateRing, 1.6)
         inst:DoTaskInTime(0.1, CreateRing, 1.6)

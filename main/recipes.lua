@@ -42,6 +42,69 @@ local function AddRecipeWithManyIngredients(name, list_ingredients, tech, config
     end
 end
 
+
+MyAddRecipe2("blythe_blaster",
+    {
+        Ingredient("transistor", 2),
+        Ingredient("gears", 1),
+        Ingredient(CHARACTER_INGREDIENT.SANITY, 10),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", "WEAPON" }
+)
+
+MyAddRecipe2("blythe_blaster_repair_kit",
+    {
+        Ingredient("twigs", 2),
+        Ingredient("spidergland", 1),
+        Ingredient("goldnugget", 1),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", }
+)
+
+MyAddRecipe2("blythe_blaster_upgrade_kit",
+    {
+        Ingredient("moonrocknugget", 2),
+        Ingredient("transistor", 2),
+        Ingredient("greengem", 1),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", }
+)
+
+-- MyAddRecipe2("blythe_unlock_skill_item_missile",
+--     {
+--         Ingredient("gunpowder", 1), Ingredient("redgem", 1),
+--     },
+--     TECH.SCIENCE_TWO,
+--     {
+--         builder_tag = "blythe",
+--     },
+--     { "CHARACTER", "WEAPON" }
+-- )
+
+-- AddRecipeWithManyIngredients("blythe_unlock_skill_item_super_missile",
+--     {
+--         Ingredient("gunpowder", 1), Ingredient("greengem", 1),
+--     },
+--     TECH.ANCIENT_FOUR,
+--     {
+--         builder_tag = "blythe",
+--     },
+--     { "CHARACTER", "WEAPON" }
+-- )
+
+
 AddRecipeWithManyIngredients("blythe_unlock_skill_item_missile",
     {
         { Ingredient("gunpowder", 1), Ingredient("redgem", 1), Ingredient("turf_desertdirt", 1), },
@@ -69,30 +132,4 @@ AddRecipeWithManyIngredients("blythe_unlock_skill_item_super_missile",
         -- nounlock = true,
     },
     { "CHARACTER", "WEAPON" }
-)
-
-MyAddRecipe2("blythe_blaster",
-    {
-        Ingredient("transistor", 2),
-        Ingredient("gears", 1),
-        Ingredient(CHARACTER_INGREDIENT.SANITY, 10),
-    },
-    TECH.NONE,
-    {
-        builder_tag = "blythe",
-    },
-    { "CHARACTER", "WEAPON" }
-)
-
-MyAddRecipe2("blythe_blaster_repair_kit",
-    {
-        Ingredient("twigs", 2),
-        Ingredient("silk", 2),
-        Ingredient("pigskin", 1),
-    },
-    TECH.NONE,
-    {
-        builder_tag = "blythe",
-    },
-    { "CHARACTER", }
 )
