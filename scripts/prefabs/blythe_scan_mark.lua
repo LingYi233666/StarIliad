@@ -6,7 +6,7 @@ local FADEIN_DURATION = 0.33
 local FADEOUT_DURATION = 0.5
 local MAX_DELAY = 1
 local KEEP_TIME = 1
-local RADIUS = 32
+local RADIUS = 60
 local GRID_SIZE = 1
 local CENTER_DURATION = MAX_DELAY + KEEP_TIME + FADEOUT_DURATION
 
@@ -212,7 +212,7 @@ local function SpawnClientMarks(inst)
 
                 local mark_pos = offset * 1.0
                 inst:DoTaskInTime(delay, function()
-                    local new_pos = mid_pos + mark_pos
+                    local new_pos = mid_pos + offset
                     local block_items = GetBlockItems(new_pos, master)
                     if #block_items > 0 then
                         -- Yellow
@@ -234,10 +234,10 @@ local function SpawnClientMarks(inst)
                         if may_has_enemy then
                             local ring = CreateRing(nil, 0.6)
                             ring.AnimState:SetMultColour(1, 0, 0, 1)
-                            ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                            ring.Transform:SetPosition(new_pos:Get())
                         elseif has_normal then
                             local ring = CreateRing(nil, 0.5)
-                            ring.Transform:SetPosition(fx.Transform:GetWorldPosition())
+                            ring.Transform:SetPosition(new_pos:Get())
                         end
                     elseif TheWorld.Map:IsPassableAtPoint(new_pos.x, new_pos.y, new_pos.z, false, false) then
                         -- Green
@@ -264,7 +264,7 @@ local function fn()
     inst._master = net_entity(inst.GUID, "inst._master")
 
     if not TheNet:IsDedicated() then
-        inst.scan_mark2 = inst:AddChild("blythe_scan_mark2")
+        inst.scan_mark2 = inst:SpawnChild("blythe_scan_mark2")
 
         inst:DoTaskInTime(0, SpawnClientMarks)
         inst:DoTaskInTime(0, CreateRing, 1.6)

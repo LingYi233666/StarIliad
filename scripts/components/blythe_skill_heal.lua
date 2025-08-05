@@ -37,15 +37,22 @@ function BlytheSkillHeal:DoHealing()
 
     self.inst.components.health:DoDelta(heal_value * self.heal_percent_caster, nil, self.inst.prefab)
 
-    local beefalo = self.inst.components.rider and self.inst.components.rider:GetMount()
-    if beefalo and beefalo:IsValid() and not IsEntityDead(beefalo, true) then
-        beefalo.components.health:DoDelta(heal_value * self.heal_percent_ally, nil, self.inst.prefab)
-    end
+    -- local beefalo = self.inst.components.rider and self.inst.components.rider:GetMount()
+    -- if beefalo and beefalo:IsValid() and not IsEntityDead(beefalo, true) then
+    --     beefalo.components.health:DoDelta(heal_value * self.heal_percent_ally, nil, self.inst.prefab)
+    -- end
 
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, self.radius, { "_health" }, { "INLIMBO", "FX" })
+    local beefalo = self.inst.components.rider and self.inst.components.rider:GetMount()
+
+    if beefalo then
+        table.insert(ents, beefalo)
+    end
+
     for _, v in pairs(ents) do
         if v ~= self.inst
+            and v:IsValid()
             and self.inst.components.combat
             and self.inst.components.combat:IsAlly(v)
             and v.components.health

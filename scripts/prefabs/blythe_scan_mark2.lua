@@ -1,4 +1,6 @@
-local SPARKLE_TEXTURE = "fx/sparkle.tex"
+-- local SPARKLE_TEXTURE = "fx/sparkle.tex"
+-- local SPARKLE_TEXTURE = resolvefilepath("fx/blythe_scan_mark2.tex")
+local SPARKLE_TEXTURE = resolvefilepath("fx/blythe_scan_mark2_white.tex")
 
 local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 
@@ -33,6 +35,10 @@ local function InitEnvelope()
         { p1, IntColour(0, 255, 0, 255) },
         { p2, IntColour(0, 255, 0, 255) },
         { 1,  IntColour(0, 255, 0, 0) },
+
+
+        -- { 0, IntColour(0, 255, 0, 255) },
+        -- { 1, IntColour(0, 255, 0, 255) },
     })
 
     EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_YELLOW, {
@@ -66,14 +72,21 @@ end
 
 local function emit_mark_fn(effect, index, pos)
     local px, py, pz = pos:Get()
-    local uv_offset = math.random(0, 3) * .25
 
-    effect:AddParticleUV(
+    -- local uv_offset = math.random(0, 3) * .25
+    -- effect:AddParticleUV(
+    --     index,
+    --     MAX_LIFETIME, -- lifetime
+    --     px, py, pz,   -- position
+    --     0, 0, 0,      -- velocity
+    --     uv_offset, 0  -- uv offset
+    -- )
+
+    effect:AddParticle(
         index,
         MAX_LIFETIME, -- lifetime
         px, py, pz,   -- position
-        0, 0, 0,      -- velocity
-        uv_offset, 0  -- uv offset
+        0, 0, 0       -- velocity
     )
 end
 
@@ -115,15 +128,18 @@ local function fn()
     for k, v in pairs(colour_envelopes) do
         local i = k - 1
 
+        -- print("Init", i, v)
         effect:SetRenderResources(i, SPARKLE_TEXTURE, ADD_SHADER)
-        effect:SetUVFrameSize(i, .25, 1)
-        effect:SetMaxNumParticles(i, 3217)
+        -- effect:SetUVFrameSize(i, .25, 1)
+        effect:SetMaxNumParticles(i, 14400)
         effect:SetMaxLifetime(i, MAX_LIFETIME)
         effect:SetColourEnvelope(i, v)
         effect:SetScaleEnvelope(i, SCALE_ENVELOPE_NAME)
         effect:SetBlendMode(i, BLENDMODE.Additive)
-        -- effect:SetSortOrder(i, 0)
+        effect:SetSortOrder(i, 1)
         -- effect:SetSortOffset(i, 2)
+        effect:SetLayer(i, LAYER_GROUND)
+
 
         effect:SetSpawnVectors(i,
             math.cos(angle), 0, math.sin(angle),
@@ -142,12 +158,14 @@ local function fn()
 
             if t < duration then
                 table.remove(inst.emit_tasks, 1)
-
+                -- print("emit", index, pos)
                 emit_mark_fn(effect, index, pos)
             else
                 break
             end
         end
+
+        -- emit_mark_fn(effect, 0, Vector3(0, 0, 0))
     end)
 
     return inst

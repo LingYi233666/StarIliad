@@ -73,7 +73,7 @@ MyAddRecipe2("blythe_blaster_upgrade_kit",
     {
         Ingredient("moonrocknugget", 2),
         Ingredient("transistor", 2),
-        Ingredient("greengem", 1),
+        Ingredient("purplegem", 1),
     },
     TECH.NONE,
     {

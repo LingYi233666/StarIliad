@@ -8,8 +8,8 @@ local BlytheSkillScan = Class(BlytheSkillBase_Active, function(self, inst)
     self.costs.hunger = 15
 
     self.duration = 13.1
-    self.reveal_step = 10
-    self.reveal_radius = 76
+    self.reveal_step = 20
+    self.reveal_radius = 80
     self.reveal_stealth_radius = 36
     self.reveal_cooldown = 3.5
 
