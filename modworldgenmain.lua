@@ -24,76 +24,7 @@ Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/s
 })
 Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 
-AddTaskSetPreInit("default", function(taskset)
-	assert(taskset.set_pieces ~= nil)
-	assert(taskset.required_prefabs ~= nil)
 
-	local tasks_must_contain = {
-		"Make a pick",
-		"Dig that rock",
-		"Great Plains",
-		"Squeltch",
-		"Beeeees!",
-		"Speak to the king",
-		"Forest hunters",
-		"Badlands",
-		"For a nice walk",
-		"Lightning Bluff",
-	}
-
-	-- taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
-
-	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
-end)
-
--- TODO: Add alien statue layouts to classic task set
--- AddTaskSetPreInit("classic", function(taskset)
--- 	assert(taskset.set_pieces ~= nil)
-
--- 	local tasks_must_contain = {
--- 		"Make a pick",
--- 		"Dig that rock",
--- 		"Great Plains",
--- 		"Squeltch",
--- 		"Beeeees!",
--- 		"Speak to the king classic",
--- 		"Forest hunters",
--- 		"For a nice walk",
--- 	}
-
--- 	-- taskset.set_pieces["static_layout_name"] = { count = 8, tasks = { "Dig that rock", } }
--- end)
-
--- AddRoom("stariliad_alien_ruin_missile_room", {
--- 	colour = { r = .5, g = 0.6, b = .080, a = .10 },
--- 	value = WORLD_TILES.FOREST,
--- 	tags = { "ExitPiece", },
--- 	required_prefabs = {
--- 		"stariliad_alien_statue_missile",
--- 	},
--- 	contents = {
--- 		countstaticlayouts = {
--- 			stariliad_alien_ruin_missile = 1,
--- 		},
--- 		distributepercent = .3,
--- 		distributeprefabs =
--- 		{
--- 			fireflies = 0.2,
--- 			--evergreen = 6,
--- 			rock1 = 0.05,
--- 			grass = .05,
--- 			sapling = .8,
--- 			twiggytree = 0.8,
--- 			ground_twigs = 0.06,
--- 			--rabbithole=.05,
--- 			berrybush = .03,
--- 			berrybush_juicy = 0.015,
--- 			red_mushroom = .03,
--- 			green_mushroom = .02,
--- 			trees = { weight = 6, prefabs = { "evergreen", "evergreen_sparse" } }
--- 		},
--- 	}
--- })
 
 AddRoom("stariliad_alien_ruin_missile_room", {
 	colour = { r = .5, g = 1, b = .8, a = .50 },
@@ -115,6 +46,117 @@ AddRoom("stariliad_alien_ruin_missile_room", {
 		},
 	}
 })
+
+AddRoom("StarIliad_Test_Island_Room", {
+	colour = { r = 0.3, g = 0.2, b = 0.1, a = 0.3 },
+	value = WORLD_TILES.FOREST,
+	--tags = {"ForceDisconnected", "RoadPoison"},
+	internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
+	required_prefabs = {
+		"greenstaff",
+	},
+	contents = {
+		-- countstaticlayouts =
+		-- {
+		-- 	["moontrees_2"] = function(area) return 2 + math.max(1, math.floor(area / 75)) end,
+		-- 	["MoonTreeHiddenAxe"] = 1,
+		-- },
+		countprefabs =
+		{
+			greenstaff = 1,
+		},
+		distributepercent = 0.22,
+		distributeprefabs =
+		{
+			grass = 0.3,
+			sapling = 0.3,
+		},
+	},
+})
+
+AddRoom("StarIliad_Test_Water_Area_Room", {
+	colour = { r = .5, g = 0.6, b = .080, a = .10 },
+	value = WORLD_TILES.OCEAN_ROUGH,
+	internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
+	required_prefabs = {
+		"greenstaff",
+		"goldenaxe",
+	},
+	contents = {
+		countprefabs =
+		{
+			greenstaff = 1,
+		},
+		distributepercent = 0.01,
+		distributeprefabs =
+		{
+			goldenaxe = 1,
+		},
+	}
+})
+
+AddTask("StarIliad_Test_Island", {
+	locks = {},
+	keys_given = {},
+	region_id = "stariliad_island_test",
+	-- level_set_piece_blocker = true,
+	room_tags = { "RoadPoison", "not_mainland" },
+	room_choices =
+	{
+		["StarIliad_Test_Island_Room"] = 3,
+	},
+	room_bg = WORLD_TILES.FOREST,
+	background_room = "Empty_Cove",
+	cove_room_name = "Empty_Cove",
+	crosslink_factor = 1,
+	cove_room_chance = 1,
+	cove_room_max_edges = 2,
+	colour = { r = 0.6, g = 0.6, b = 0.0, a = 1 },
+})
+
+AddTask("StarIliad_Test_Water_Area", {
+	locks = {},
+	keys_given = {},
+	region_id = "stariliad_water_area_test",
+	-- level_set_piece_blocker = true,
+	room_tags = { "RoadPoison", "not_mainland" },
+	room_choices =
+	{
+		["StarIliad_Test_Water_Area_Room"] = 3,
+	},
+	room_bg = WORLD_TILES.IMPASSABLE,
+	background_room = "Empty_Cove",
+	cove_room_name = "Empty_Cove",
+	crosslink_factor = 1,
+	cove_room_chance = 1,
+	cove_room_max_edges = 2,
+	colour = { r = 0.6, g = 0.6, b = 0.0, a = 1 },
+})
+
+AddTaskSetPreInit("default", function(taskset)
+	assert(taskset.set_pieces ~= nil)
+	assert(taskset.required_prefabs ~= nil)
+
+	local tasks_must_contain = {
+		"Make a pick",
+		"Dig that rock",
+		"Great Plains",
+		"Squeltch",
+		"Beeeees!",
+		"Speak to the king",
+		"Forest hunters",
+		"Badlands",
+		"For a nice walk",
+		"Lightning Bluff",
+	}
+
+	-- taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
+
+	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
+
+	table.insert(taskset.tasks, "StarIliad_Test_Island")
+	table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
+end)
 
 AddTaskPreInit("Dig that rock", function(task)
 	task.room_choices["stariliad_alien_ruin_missile_room"] = 1
