@@ -85,7 +85,7 @@ local function OnRepaired(inst)
     inst:RemoveTag("broken")
 end
 
-local function CanBeUpgraded(inst, item)
+local function CanBeUpgraded(inst)
     local total = inst.components.finiteuses.total
 
     -- No need to upgrade
@@ -93,7 +93,7 @@ local function CanBeUpgraded(inst, item)
         return false
     end
 
-    return item and item.prefab == "blythe_blaster_upgrade_kit"
+    return true
 end
 
 local function OnUpgraded(inst, upgrader, item)
@@ -103,20 +103,24 @@ local function OnUpgraded(inst, upgrader, item)
 
     inst.components.finiteuses:SetMaxUses(new_total)
     inst.components.finiteuses:SetPercent(old_percent)
+
+    upgrader:PushEvent("repair")
 end
 
 local function OnSave(inst, data)
     data.maxuses = inst.components.finiteuses.total
+    data.currentuses = inst.components.finiteuses:GetUses()
 end
 
 local function OnLoad(inst, data)
     if data ~= nil then
         if data.maxuses ~= nil then
             local total = math.clamp(data.maxuses, TUNING.BLYTHE_BLASTER_USES, TUNING.BLYTHE_BLASTER_USES_THRESHOLD)
-            local current = inst.components.finiteuses:GetUses()
-            current = math.clamp(current, 0, total)
-
             inst.components.finiteuses:SetMaxUses(total)
+        end
+
+        if data.currentuses ~= nil then
+            local current = math.clamp(data.currentuses, 0, inst.components.finiteuses.total)
             inst.components.finiteuses:SetUses(current)
         end
     end
@@ -177,7 +181,7 @@ local function fn()
     inst.components.forgerepairable:SetOnRepaired(OnRepaired)
 
     inst:AddComponent("upgradeable")
-    inst.components.upgradeable.upgradetype = UPGRADETYPES.DEFAULT
+    inst.components.upgradeable.upgradetype = UPGRADETYPES.BLYTHE_BLASTER
     inst.components.upgradeable:SetOnUpgradeFn(OnUpgraded)
     inst.components.upgradeable:SetCanUpgradeFn(CanBeUpgraded)
 

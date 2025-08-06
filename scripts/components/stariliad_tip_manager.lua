@@ -12,7 +12,13 @@ local StarIliadTipManager = Class(function(self, inst)
 
     self.use_blythe_reroll_data_handler = true
 
-    inst:ListenForEvent("equip", function(_, data)
+    self.inst:DoTaskInTime(0.1, function()
+        self:InitListeners()
+    end)
+end)
+
+function StarIliadTipManager:InitListeners()
+    self.inst:ListenForEvent("equip", function(_, data)
         if not TUNING.STARILIAD_TIP_ENABLE then
             return
         end
@@ -26,7 +32,7 @@ local StarIliadTipManager = Class(function(self, inst)
         end
     end)
 
-    inst:ListenForEvent("attacked", function(_, data)
+    self.inst:ListenForEvent("attacked", function(_, data)
         if not TUNING.STARILIAD_TIP_ENABLE then
             return
         end
@@ -49,7 +55,7 @@ local StarIliadTipManager = Class(function(self, inst)
         "speed_burst",
         -- "gravity_control",
     }
-    inst:ListenForEvent("blythe_skill_learned", function(_, data)
+    self.inst:ListenForEvent("blythe_skill_learned", function(_, data)
         if not TUNING.STARILIAD_TIP_ENABLE then
             return
         end
@@ -68,22 +74,35 @@ local StarIliadTipManager = Class(function(self, inst)
             self.triggered_tips.new_switch_passive = true
         end
     end)
-end)
+end
 
 function StarIliadTipManager:ShowTip(key, duration)
-    SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_tip"], self.inst.userid, key, duration or 5)
+    SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_tip"], self.inst.userid, key, duration or 10)
 end
 
 function StarIliadTipManager:OnSave()
-    return {
-        triggered_tips = self.triggered_tips
-    }
+    -- return {
+    --     triggered_tips = self.triggered_tips
+    -- }
+
+    local data = { triggered_tips = {} }
+
+    for k, v in pairs(self.triggered_tips) do
+        if v then
+            table.insert(data.triggered_tips, k)
+        end
+    end
+
+    return data
 end
 
 function StarIliadTipManager:OnLoad(data)
     if data ~= nil then
         if data.triggered_tips ~= nil then
-            self.triggered_tips = data.triggered_tips
+            -- self.triggered_tips = data.triggered_tips
+            for k, v in pairs(data.triggered_tips) do
+                self.triggered_tips[v] = true
+            end
         end
     end
 end

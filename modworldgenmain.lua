@@ -53,7 +53,7 @@ AddRoom("StarIliad_Test_Island_Room", {
 	--tags = {"ForceDisconnected", "RoadPoison"},
 	internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
 	required_prefabs = {
-		"greenstaff",
+		-- "greenstaff",
 	},
 	contents = {
 		-- countstaticlayouts =
@@ -63,7 +63,7 @@ AddRoom("StarIliad_Test_Island_Room", {
 		-- },
 		countprefabs =
 		{
-			greenstaff = 1,
+			-- greenstaff = 1,
 		},
 		distributepercent = 0.22,
 		distributeprefabs =
@@ -76,21 +76,21 @@ AddRoom("StarIliad_Test_Island_Room", {
 
 AddRoom("StarIliad_Test_Water_Area_Room", {
 	colour = { r = .5, g = 0.6, b = .080, a = .10 },
-	value = WORLD_TILES.OCEAN_ROUGH,
+	value = WORLD_TILES.FOREST,
 	internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
 	required_prefabs = {
-		"greenstaff",
-		"goldenaxe",
+		-- "greenstaff",
+		-- "goldenaxe",
 	},
 	contents = {
 		countprefabs =
 		{
-			greenstaff = 1,
+			-- greenstaff = 1,
 		},
 		distributepercent = 0.01,
 		distributeprefabs =
 		{
-			goldenaxe = 1,
+			driftwood_log = 1,
 		},
 	}
 })
@@ -118,13 +118,13 @@ AddTask("StarIliad_Test_Water_Area", {
 	locks = {},
 	keys_given = {},
 	region_id = "stariliad_water_area_test",
-	-- level_set_piece_blocker = true,
+	level_set_piece_blocker = true,
 	room_tags = { "RoadPoison", "not_mainland" },
 	room_choices =
 	{
 		["StarIliad_Test_Water_Area_Room"] = 3,
 	},
-	room_bg = WORLD_TILES.IMPASSABLE,
+	room_bg = WORLD_TILES.OCEAN_COASTAL,
 	background_room = "Empty_Cove",
 	cove_room_name = "Empty_Cove",
 	crosslink_factor = 1,
@@ -155,7 +155,7 @@ AddTaskSetPreInit("default", function(taskset)
 	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 
 	table.insert(taskset.tasks, "StarIliad_Test_Island")
-	table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
+	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
 end)
 
 AddTaskPreInit("Dig that rock", function(task)

@@ -1,10 +1,9 @@
-local function OnRepaired(inst, target, doer)
-    doer:PushEvent("repair")
-end
-
 local assets =
 {
-    Asset("ANIM", "anim/sewing_kit.zip"),
+    Asset("ANIM", "anim/blythe_blaster_upgrade_kit.zip"),
+
+    Asset("IMAGE", "images/inventoryimages/blythe_blaster_upgrade_kit.tex"),
+    Asset("ATLAS", "images/inventoryimages/blythe_blaster_upgrade_kit.xml"),
 }
 
 local function fn()
@@ -16,8 +15,8 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("sewing_kit")
-    inst.AnimState:SetBuild("sewing_kit")
+    inst.AnimState:SetBank("blythe_blaster_upgrade_kit")
+    inst.AnimState:SetBuild("blythe_blaster_upgrade_kit")
     inst.AnimState:PlayAnimation("idle")
 
     MakeInventoryFloatable(inst, "small", 0.05, 0.8)
@@ -36,10 +35,11 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("upgrader")
-    inst.components.upgrader.upgradetype = UPGRADETYPES.DEFAULT
+    inst.components.upgrader.upgradetype = UPGRADETYPES.BLYTHE_BLASTER
 
     inst:AddComponent("inventoryitem")
-    StarIliadDebug.SetDebugInventoryImage(inst)
+    inst.components.inventoryitem.imagename = "blythe_blaster_upgrade_kit"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/blythe_blaster_upgrade_kit.xml"
 
     MakeHauntableLaunch(inst)
 

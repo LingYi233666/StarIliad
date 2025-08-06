@@ -36,7 +36,7 @@ AddClassPostConstruct("widgets/controls", function(self)
 
         -- Tips
         self.StarIliadTipUI = self.bottom_root:AddChild(StarIliadTipUI(self.owner))
-        self.StarIliadTipUI:SetPosition(0, 200)
+        self.StarIliadTipUI:SetPosition(0, 150)
     end
 end)
 

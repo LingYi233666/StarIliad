@@ -129,6 +129,7 @@ local common_postinit = function(inst)
 	-- inst.AnimState:SetSymbolMultColour("blythe_parry_fx", 1, 1, 0, 1)
 
 	inst:AddTag("blythe")
+	inst:AddTag(UPGRADETYPES.BLYTHE_BLASTER .. "_upgradeuser")
 
 	inst:DoTaskInTime(1, function()
 		if TheWorld and TheWorld.has_ocean and inst.components.playeractionpicker ~= nil then
@@ -197,11 +198,11 @@ local master_postinit = function(inst)
 	-- inst:ListenForEvent("ms_becameghost", OnBecomeXParasite)
 	inst:ListenForEvent("toolbroke", OnToolBroken)
 
-	inst:DoTaskInTime(1, function()
+	inst:DoTaskInTime(0.3, function()
 		local new_skills = inst.components.blythe_skiller:LearnRootSkills()
 
 		if #new_skills > 0 then
-			inst:DoTaskInTime(0.5, function()
+			inst:DoTaskInTime(0.1, function()
 				for _, name in pairs(new_skills) do
 					local key = StarIliadBasic.GetSkillDefine(name).default_key
 					if key and StarIliadBasic.IsCastByButton(name) then

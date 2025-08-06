@@ -59,7 +59,15 @@ end
 
 function StarIliadImportantScanTarget:AddIndicator()
     ThePlayer.HUD:AddTargetIndicator(self.inst, self.hud_data)
+    self.add_indicator = true
+end
 
+function StarIliadImportantScanTarget:RemoveIndicator()
+    ThePlayer.HUD:RemoveTargetIndicator(self.inst)
+    self.add_indicator = false
+end
+
+function StarIliadImportantScanTarget:AddHeadMarker()
     self.stand = Stand()
     self.inst:AddChild(self.stand)
 
@@ -67,31 +75,31 @@ function StarIliadImportantScanTarget:AddIndicator()
     self.marker.entity:AddFollower()
 
     self.marker.Follower:FollowSymbol(self.stand.GUID, "marker", 0, self.marker_height, 0)
-
-    self.add_indicator = true
 end
 
-function StarIliadImportantScanTarget:RemoveIndicator()
-    ThePlayer.HUD:RemoveTargetIndicator(self.inst)
-
-    if self.stand and self.stand:IsValid() then
-        self.stand:Remove()
-    end
-    self.stand = nil
-
+function StarIliadImportantScanTarget:RemoveHeadMarker()
     if self.marker and self.marker:IsValid() then
         self.marker:Remove()
     end
     self.marker = nil
 
-    self.add_indicator = false
+    if self.stand and self.stand:IsValid() then
+        self.stand:Remove()
+    end
+    self.stand = nil
 end
 
 function StarIliadImportantScanTarget:OnEntitySleep() -- Master sim only.
     self.inst:StopUpdatingComponent(self)
 
-    if ThePlayer and ThePlayer.HUD and self.add_indicator then
-        self:RemoveIndicator()
+    if ThePlayer and ThePlayer.HUD then
+        if self.add_indicator then
+            self:RemoveIndicator()
+        end
+
+        if self.stand then
+            self:RemoveHeadMarker()
+        end
     end
 end
 
@@ -120,13 +128,29 @@ function StarIliadImportantScanTarget:OnUpdate(dt)
     end
 
     local is_in_screen = self:IsInScreen()
-    if self.reveal_time > 0 and not is_in_screen then
-        if not self.add_indicator then
-            self:AddIndicator()
+    if self.reveal_time > 0 then
+        if not is_in_screen then
+            if not self.add_indicator then
+                self:AddIndicator()
+            end
+            if self.stand then
+                self:RemoveHeadMarker()
+            end
+        else
+            if self.add_indicator then
+                self:RemoveIndicator()
+            end
+
+            if not self.stand then
+                self:AddHeadMarker()
+            end
         end
     else
         if self.add_indicator then
             self:RemoveIndicator()
+        end
+        if self.stand then
+            self:RemoveHeadMarker()
         end
     end
 end
@@ -134,8 +158,14 @@ end
 function StarIliadImportantScanTarget:OnRemoveEntity()
     self.inst:StopUpdatingComponent(self)
 
-    if ThePlayer and ThePlayer.HUD and self.add_indicator then
-        self:RemoveIndicator()
+    if ThePlayer and ThePlayer.HUD then
+        if self.add_indicator then
+            self:RemoveIndicator()
+        end
+
+        if self.stand then
+            self:RemoveHeadMarker()
+        end
     end
 end
 
