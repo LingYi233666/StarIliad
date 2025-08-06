@@ -37,6 +37,8 @@ STRINGS.NAMES.STARILIAD_ALIEN_STATUE_BROKEN_CHOZO = "上古神族雕像"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ALIEN_STATUE_BROKEN_CHOZO = "已经无法辨认它原本的模样了。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_ALIEN_STATUE_BROKEN_CHOZO = "这尊鸟人雕像更加古老。"
 
+STRINGS.NAMES.STARILIAD_ALIEN_STATUE_ALTAR = "古老祭坛"
+
 STRINGS.NAMES.BLYTHE_UNLOCK_SKILL_ITEM = "神秘球体"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM = "这东西很神秘。"
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM = "它迫不及待地想要和我融合。"
@@ -201,7 +203,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 击败远古守护者获得
     SPEED_BURST = {
         NAME = "速度推进器",
-        DESC = "沿着同一方向连续奔跑3秒后进入加速状态，对撞上的生物和物体造成大量破坏。速度推进器的功能可在调整轮盘页面里进行开关。",
+        DESC = "在没有被减速的情况下，沿着同一方向连续奔跑3秒后进入冲刺状态，对撞上的生物和物体造成大量破坏。速度推进器的功能可在调整轮盘页面里进行开关。",
     },
 
     -- 红蘑菇森林群系 "RedForest"
@@ -235,7 +237,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 大沼泽群系 "Squeltch"
     DODGE = {
         NAME = "闪光转移",
-        DESC = "消耗一点饥饿值，瞬间向鼠标所指方向高速移动一段距离。可以连续使用两次。",
+        DESC = "消耗一点饥饿值，在魔光的环绕下向鼠标所指方向高速移动一段距离，可以连续使用两次。\n*在被减速的情况下无法使用。",
     },
 
     -- 泥泞光照区群系 "MudLights"
@@ -248,4 +250,10 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         NAME = "未知技能",
         DESC = "这个技能需要你自己去探寻。",
     },
+}
+
+STRINGS.STARILIAD_UI.TIPS = {
+    NOT_SET_KEY = "[键位未设置]",
+    CONFIGURE_POWERSUIT = "按%s：调整武器弹药或者开关特殊效果",
+    PARRY = "按%s：格挡（需要手持一把任意武器）",
 }

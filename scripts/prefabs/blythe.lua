@@ -171,6 +171,8 @@ local master_postinit = function(inst)
 
 	inst:AddComponent("blythe_skill_heal")
 
+	inst:AddComponent("stariliad_tip_manager")
+
 	--最喜欢的食物
 	-- inst.components.foodaffinity:AddPrefabAffinity("baconeggs", TUNING.AFFINITY_15_CALORIES_HUGE)
 

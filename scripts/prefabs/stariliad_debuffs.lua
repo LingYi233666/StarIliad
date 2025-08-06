@@ -77,6 +77,30 @@ local debuffs_data = {
                 inst.components.debuff:Stop()
             end)
         end,
+    },
+
+    stariliad_debuff_heal_decrease = {
+        on_attached = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = 1
+
+            inst.detach_task = inst:DoTaskInTime(20, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
+
+        on_detached = function(inst, target)
+
+        end,
+
+        on_extended = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = inst.stacks + 1
+            if inst.detach_task then
+                inst.detach_task:Cancel()
+            end
+            inst.detach_task = inst:DoTaskInTime(20, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
     }
 }
 

@@ -10,8 +10,8 @@ local BlytheSkillSpeedBurst = Class(BlytheSkillBase_Passive, function(self, inst
 
     self.required_charge_time = 3
     self.speed_mult = 3
-    self.hunger_burn_rate = 10
-    self.hunger_collide_cost = 5
+    self.hunger_burn_rate = 5
+    self.hunger_collide_cost = 2
     self.collide_damage = 200
     self.work_damage = 30
 
@@ -197,8 +197,6 @@ function BlytheSkillSpeedBurst:OnPhysicsCollision(other)
 
     if success_hit then
         ShakeAllCameras(CAMERASHAKE.SIDE, .5, .05, .1, self.inst, 40)
-
-
 
         self.last_collide_time = GetTime()
 

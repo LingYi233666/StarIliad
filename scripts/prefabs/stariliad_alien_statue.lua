@@ -205,6 +205,8 @@ local function wrapper_altar(item_prefab)
         -- inst.AnimState:SetSortOrder(1)
         -- inst.AnimState:SetFinalOffset(2)
 
+        inst:SetPrefabNameOverride("stariliad_alien_statue_altar")
+
         inst:AddTag("NOCLICK")
 
         if not TheWorld.ismastersim then

@@ -25,6 +25,10 @@ local BlytheTV = Class(Widget, function(self, owner)
     self.anim:Hide()
 
     self.inst:ListenForEvent("BlytheSkillSpeedBurst._in_speed_burst", function()
+        if not TUNING.BLYTHE_TV_ENABLE then
+            return
+        end
+
         local cmp = self.owner.replica.blythe_skill_speed_burst
         -- print("BlytheSkillSpeedBurst._in_speed_burst trigger !")
         if cmp:IsInSpeedBurst() then

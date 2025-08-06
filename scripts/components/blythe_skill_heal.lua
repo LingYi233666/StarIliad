@@ -5,7 +5,7 @@ local BlytheSkillHeal = Class(BlytheSkillBase_Active, function(self, inst)
     BlytheSkillBase_Active._ctor(self, inst)
 
     self.cooldown = 3
-    self.costs.hunger = 15
+    self.costs.hunger = 33
     self.can_cast_while_riding = true
 
     self.radius = 25
@@ -32,10 +32,27 @@ function BlytheSkillHeal:Cast(x, y, z, target)
     self.inst.sg:GoToState("blythe_heal")
 end
 
-function BlytheSkillHeal:DoHealing()
-    local heal_value = self.inst.components.health.maxhealth
+function BlytheSkillHeal:HealTarget(target)
+    local factor = 1
+    if target == self.inst then
+        factor = self.heal_percent_caster
+    else
+        factor = self.heal_percent_ally
+    end
 
-    self.inst.components.health:DoDelta(heal_value * self.heal_percent_caster, nil, self.inst.prefab)
+    local debuff = target:GetDebuff("stariliad_debuff_heal_decrease")
+    if debuff then
+        factor = factor / math.pow(2, debuff.stacks)
+    end
+
+    local heal_value = self.inst.components.health.maxhealth * factor
+    target.components.health:DoDelta(heal_value, nil, self.inst.prefab)
+
+    -- target:AddDebuff("stariliad_debuff_heal_decrease", "stariliad_debuff_heal_decrease")
+end
+
+function BlytheSkillHeal:DoHealing()
+    self:HealTarget(self.inst)
 
     -- local beefalo = self.inst.components.rider and self.inst.components.rider:GetMount()
     -- if beefalo and beefalo:IsValid() and not IsEntityDead(beefalo, true) then
@@ -57,7 +74,7 @@ function BlytheSkillHeal:DoHealing()
             and self.inst.components.combat:IsAlly(v)
             and v.components.health
             and not IsEntityDeadOrGhost(v, true) then
-            v.components.health:DoDelta(heal_value * self.heal_percent_ally, nil, self.inst.prefab)
+            self:HealTarget(v)
         end
     end
 end

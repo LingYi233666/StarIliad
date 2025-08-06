@@ -97,4 +97,6 @@ TUNING.STARTING_ITEM_IMAGE_OVERRIDE["blythe_blaster"] = {
 
 ----------------------------------------------
 
-TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE = true
+TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE = GetModConfigData("damage_number")
+TUNING.STARILIAD_TIP_ENABLE = GetModConfigData("tips")
+TUNING.BLYTHE_TV_ENABLE = GetModConfigData("blythe_tv")

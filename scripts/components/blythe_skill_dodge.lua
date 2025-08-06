@@ -22,8 +22,13 @@ function BlytheSkillDodge:CanCast(x, y, z, target)
         return can_cost, reason
     end
 
-    if self.inst:IsOnOcean() then
-        return false, "ON_OCEAN"
+    -- if self.inst:IsOnOcean() then
+    --     return false, "ON_OCEAN"
+    -- end
+
+    local run_speed = self.inst.components.locomotor:GetRunSpeed()
+    if run_speed < 5.5 then
+        return false, "TOO_SLOW"
     end
 
     if self.dodge_charge <= 0 then

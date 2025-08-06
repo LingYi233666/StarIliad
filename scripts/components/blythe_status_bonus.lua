@@ -13,7 +13,7 @@ local BlytheStatusBonus = Class(function(self, inst)
         sanity = 0,
     }
 
-    self.use_stariliad_reroll_data_handler = true
+    self.use_blythe_reroll_data_handler = true
 end)
 
 function BlytheStatusBonus:AddBonus(dtype, val)

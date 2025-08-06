@@ -7,8 +7,9 @@ AddReplicableComponent("blythe_skill_parry")
 AddReplicableComponent("blythe_skill_stealth")
 AddReplicableComponent("blythe_skill_speed_burst")
 
-AddReplicableComponent("stariliad_rain_fx_bonus_watcher")
 
+AddReplicableComponent("stariliad_rain_fx_bonus_watcher")
+AddReplicableComponent("stariliad_tip_manager")
 --------------------------------------------------------------------
 -- Damage number API
 

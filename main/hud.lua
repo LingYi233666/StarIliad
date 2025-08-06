@@ -5,6 +5,7 @@ local TEMPLATES = require "widgets/redux/templates"
 local StarIliadMainMenu = require "screens/stariliad_main_menu"
 local BlytheMissileStatus = require "widgets/blythe_missile_status"
 local BlytheTV = require "widgets/blythe_tv"
+local StarIliadTipUI = require "widgets/stariliad_tip_ui"
 
 AddClassPostConstruct("widgets/controls", function(self)
     if self.owner:HasTag("blythe") then
@@ -32,6 +33,10 @@ AddClassPostConstruct("widgets/controls", function(self)
         self.BlytheTV = self.topright_root:AddChild(BlytheTV(self.owner))
         self.BlytheTV:SetPosition(100, -120)
         self.BlytheTV:MoveToBack()
+
+        -- Tips
+        self.StarIliadTipUI = self.bottom_root:AddChild(StarIliadTipUI(self.owner))
+        self.StarIliadTipUI:SetPosition(0, 200)
     end
 end)
 

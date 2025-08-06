@@ -218,7 +218,8 @@ BLYTHE_SKILL_DEFINES = {
 
         root = true,
 
-        default_key = 1006, --"Mouse Button 5",
+        -- default_key = 1006, --"Mouse Button 5",
+        default_key = KEY_Z,
 
         on_pressed_client = function(inst)
             if inst.replica.blythe_powersuit_configure then

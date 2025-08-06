@@ -14,7 +14,7 @@ local BlytheSkiller = Class(function(self, inst)
 
 	self:UpdateJsonData()
 
-	-- self.use_stariliad_reroll_data_handler = true
+	self.use_blythe_reroll_data_handler = true
 end, nil, {
 	json_data = onjson_data,
 })

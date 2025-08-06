@@ -221,3 +221,13 @@ AddClientModRPCHandler("stariliad_rpc", "show_damage_number", function(x, y, z, 
         -- popup_number.speed = GetRandomMinMax(34, 102)
     end
 end)
+
+AddClientModRPCHandler("stariliad_rpc", "show_tip", function(key, duration)
+    -- if ThePlayer and ThePlayer.HUD and ThePlayer.HUD.controls and ThePlayer.HUD.controls.StarIliadTipUI then
+    --     ThePlayer.HUD.controls.StarIliadTipUI:ShowTip(str, duration)
+    -- end
+
+    if ThePlayer and ThePlayer.replica.stariliad_tip_manager then
+        ThePlayer.replica.stariliad_tip_manager:Process(key, duration)
+    end
+end)
