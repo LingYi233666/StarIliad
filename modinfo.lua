@@ -1,4 +1,4 @@
-name = "星辰史诗" ---mod名字
+name = "超级星辰史诗" ---mod名字
 description = "星际游侠迷失在饥荒的永恒领域之中！" --mod描述
 author = "灵衣女王的鬼铠" --作者
 version = "0.0.1" -- mod版本 上传mod需要两次的版本不一样
@@ -64,7 +64,7 @@ configuration_options = {
     --         { description = "新手奶爸", data = 1 },
     --         { description = "饶我一命", data = 2 },
     --         { description = "中规中矩", data = 3 },
-    --         { description = "中规中矩", data = 4 },
+    --         { description = "艰难险阻", data = 4 },
     --         { description = "金属之王", data = 5 },
     --     },
     --     default = 3,

@@ -86,6 +86,7 @@ STRINGS.STARILIAD_UI.MAIN_MENU = {
     SUB_TITLES = {
         POWERSUIT_DISPLAY = "状态",
         MAGIC_TAB = "魔法",
+        SUPPORT = "赞助",
     },
 }
 
@@ -145,7 +146,7 @@ STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS = {
 STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     BASIC_BEAM = {
         NAME = "光束",
-        DESC = "能够使用魔法枪发射光束，造成34伤害。强大的生物对光束具有抗性。",
+        DESC = "能够使用魔法枪发射光束，造成中等伤害。强大的生物对光束具有抗性。",
         -- DESC = "能够使用魔法枪发射光束，造成34伤害。",
     },
 
@@ -163,14 +164,14 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 苔藓地群系 "LichenLand"
     WAVE_BEAM = {
         NAME = "波动光束",
-        DESC = "为你的光束攻击附加纯粹的异界能量，使其能穿透障碍物（此功能可在调整轮盘页面里进行开关）。并且，光束的位面攻击力永久提升17点。",
+        DESC = "为你的光束攻击附加纯粹的异界能量，使其能穿透障碍物（此功能可在调整轮盘页面里进行开关）。并且，永久提升光束的位面攻击力。",
     },
 
     -- 远古档案馆群系 "ArchiveMaze"
     -- 需要额外挑战解码
     PLASMA_BEAM = {
         NAME = "等离子光束",
-        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，光束的攻击力永久提升17点。",
+        DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，永久提升光束的攻击力。",
     },
 
     -- 海象森林群系 "Forest hunters"
@@ -184,7 +185,9 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 混合地群系 "Dig that rock"
     MISSILE = {
         NAME = "导弹",
-        DESC = "能够使用魔法枪发射一枚导弹，造成小范围120伤害并摧毁周围的建筑。导弹的上限可以通过搜集导弹柜来提升。",
+        -- DESC = "能够使用魔法枪发射一枚导弹，造成小范围120伤害并摧毁周围的建筑。导弹的上限可以通过搜集导弹柜来提升。",
+        DESC = "能够使用魔法枪发射导弹，引起小范围的爆炸并摧毁周围的建筑，爆炸伤害较高。导弹的当前数量和上限可以在屏幕右上角查看。导弹的上限可以通过导弹柜来提升。",
+
     },
 
     -- 石虾地群系 "RockyLand"
@@ -192,7 +195,8 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     SUPER_MISSILE = {
         NAME = "超级导弹",
-        DESC = "能够使用魔法枪发射一枚超级导弹，造成中范围300伤害并摧毁周围的建筑。超级导弹的上限可以通过搜集超级导弹柜来提升。",
+        -- DESC = "能够使用魔法枪发射一枚超级导弹，造成中范围300伤害并摧毁周围的建筑。超级导弹的上限可以通过搜集超级导弹柜来提升。",
+        DESC = "能够使用魔法枪发射超级导弹，引起中等范围的爆炸并摧毁周围的建筑，爆炸伤害极高。超级导弹的当前数量和上限可以在屏幕右上角查看。超级导弹的上限可以通过超级导弹柜来提升。",
     },
 
     -- Deprecated
@@ -212,7 +216,8 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 需要额外挑战解码
     GRAVITY_CONTROL = {
         NAME = "重力控制器",
-        DESC = "通过引力平衡你受到的阻力。可以在水中行动自如。",
+        -- DESC = "通过操控重力，提高物理和位面伤害防御，消除减速装备的减速效果，并且可以在水中行动自如。",
+        DESC = "通过操控重力，提高物理和位面伤害防御，并且可以在水中行动自如。",
     },
 
     CONFIGURE_POWERSUIT = {
@@ -245,7 +250,7 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     -- 泥泞光照区群系 "MudLights"
     SCAN = {
         NAME = "星辰视界",
-        DESC = "消耗些许饥饿值，使用魔法波动扫描周围的地形，周期性揭示附近区域的地图和重要建筑，持续10秒。\n*魔法波动可以迫使隐形的生物显形。",
+        DESC = "消耗些许饥饿值，使用魔法波动扫描周围的地形，周期性揭示附近区域的地图,并将重要建筑的方向显示在屏幕上，持续10秒。\n*魔法波动可以迫使隐形的生物显形。",
     },
 
     UNKNOWN = {
@@ -257,5 +262,5 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 STRINGS.STARILIAD_UI.TIPS = {
     NOT_SET_KEY = "[键位未设置]",
     CONFIGURE_POWERSUIT = "按%s：调整武器弹药或者开关特殊效果",
-    PARRY = "按%s：格挡（需要手持一把任意武器）",
+    PARRY = "按%s：弹反（需要手持一把任意武器）",
 }

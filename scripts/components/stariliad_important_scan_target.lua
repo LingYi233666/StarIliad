@@ -56,6 +56,13 @@ local function Stand()
     return _CommonIndicator({ bank = "poi_stand", build = "flint", anim = "idle" })
 end
 
+function StarIliadImportantScanTarget:SetMarkerHeight(h)
+    self.marker_height = h
+
+    if self.marker then
+        self.marker.Follower:FollowSymbol(self.stand.GUID, "marker", 0, self.marker_height, 0)
+    end
+end
 
 function StarIliadImportantScanTarget:AddIndicator()
     ThePlayer.HUD:AddTargetIndicator(self.inst, self.hud_data)

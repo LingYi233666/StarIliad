@@ -95,6 +95,26 @@ AddRoom("StarIliad_Test_Water_Area_Room", {
 	}
 })
 
+AddRoom("StarIliad_Test_Water_Area_Room2", {
+	colour = { r = .36, g = .32, b = .38, a = .50 },
+	value = WORLD_TILES.OCEAN_COASTAL,
+	internal_type = NODE_INTERNAL_CONNECTION_TYPE.EdgeCentroid,
+	custom_tiles = {
+		GeneratorFunction = RUNCA.GeneratorFunction,
+		data = {
+			iterations = 8,
+			seed_mode = CA_SEED_MODE.SEED_RANDOM,
+			num_random_points = 2,
+			translate = {
+				{ tile = WORLD_TILES.OCEAN_COASTAL, items = { "goldenaxe", "cutgrass" }, item_count = 20 },
+			},
+		},
+	},
+	contents = {
+
+	}
+})
+
 AddTask("StarIliad_Test_Island", {
 	locks = {},
 	keys_given = {},
@@ -122,7 +142,7 @@ AddTask("StarIliad_Test_Water_Area", {
 	room_tags = { "RoadPoison", "not_mainland" },
 	room_choices =
 	{
-		["StarIliad_Test_Water_Area_Room"] = 3,
+		["StarIliad_Test_Water_Area_Room2"] = 3,
 	},
 	room_bg = WORLD_TILES.OCEAN_COASTAL,
 	background_room = "Empty_Cove",

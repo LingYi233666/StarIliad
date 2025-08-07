@@ -201,7 +201,7 @@ BLYTHE_SKILL_DEFINES = {
 
     {
         name = "gravity_control",
-        -- handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
+        handle_enable = HandleEnableByComponent("blythe_skill_gravity_control"),
 
         dtype = BLYTHE_SKILL_TYPE.SUIT,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
