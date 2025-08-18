@@ -144,7 +144,7 @@ local master_postinit = function(inst)
 	-- 人物音效
 	inst.soundsname = "wendy"
 
-	inst.Physics:SetCollisionCallback(OnCollide)
+	-- inst.Physics:SetCollisionCallback(OnCollide)
 
 	inst.components.drownable.enabled = false
 

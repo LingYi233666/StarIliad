@@ -9,7 +9,7 @@ local BlytheSkillScan = Class(BlytheSkillBase_Active, function(self, inst)
 
     self.duration = 13.1
     self.reveal_step = 20
-    self.reveal_radius = 80
+    self.reveal_radius = 120
     self.reveal_stealth_radius = 36
     self.reveal_cooldown = 3.5
 
@@ -99,13 +99,21 @@ function BlytheSkillScan:RevealMaps()
         end
     end
 
-    for _, offset in pairs(self.offset_storage) do
-        self.inst.player_classified.MapExplorer:RevealArea(
-            mid_pos.x + offset.x,
-            0,
-            mid_pos.z + offset.z
-        )
-    end
+
+    self.inst:StartThread(function()
+        local per_count = 5
+        for k, offset in pairs(self.offset_storage) do
+            self.inst.player_classified.MapExplorer:RevealArea(
+                mid_pos.x + offset.x,
+                0,
+                mid_pos.z + offset.z
+            )
+
+            if k % per_count == 0 then
+                Yield()
+            end
+        end
+    end)
 end
 
 function BlytheSkillScan:RevealStealthTargets()

@@ -57,6 +57,14 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "�
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "太好了！是超级导弹柜！"
 STRINGS.RECIPE_DESC.BLYTHE_UNLOCK_SKILL_ITEM_SUPER_MISSILE = "用于提高超级导弹数量上限。"
 
+STRINGS.NAMES.STARILIAD_BOSS_GORGOROTH = "恶液巨物戈尔戈罗斯"
+
+STRINGS.NAMES.STARILIAD_FALLING_STAR = "坠落之星"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_FALLING_STAR = "星星从天上掉下来了。"
+
+STRINGS.NAMES.STARILIAD_FALLING_STAR_COOKED = "烤坠落之星"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_FALLING_STAR_COOKED = "烤得过熟了。"
+
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "射击"
 -- STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = "跳"
 STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = {
@@ -129,6 +137,7 @@ STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL = {
     WAVE_BEAM = "波动光束-穿透障碍物（开/关）",
     PLASMA_BEAM = "等离子光束-穿透敌人（开/关）",
     SPEED_BURST = "速度推进器（开/关）",
+    SHOCK_WAVE = "震荡波（开/关）",
 }
 
 STRINGS.STARILIAD_UI.BLYTHE_SKILL_TYPE_NAME = {
@@ -155,34 +164,26 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         DESC = "能够使用魔法枪连续喷出低温气体，冻结敌人。",
     },
 
-    -- 猪王树林群系 "Speak to the king"
     WIDE_BEAM = {
         NAME = "宽光束",
         DESC = "你的光束攻击能额外射出两条子光束（此功能可在调整轮盘页面里进行开关），每根子光束的攻击力均为主光束的25%。",
     },
 
-    -- 苔藓地群系 "LichenLand"
     WAVE_BEAM = {
         NAME = "波动光束",
         DESC = "为你的光束攻击附加纯粹的异界能量，使其能穿透障碍物（此功能可在调整轮盘页面里进行开关）。并且，永久提升光束的位面攻击力。",
     },
 
-    -- 远古档案馆群系 "ArchiveMaze"
-    -- 需要额外挑战解码
     PLASMA_BEAM = {
         NAME = "等离子光束",
         DESC = "为你的光束攻击附加强大的等离子体，使其能穿透敌人（此功能可在调整轮盘页面里进行开关）。并且，永久提升光束的攻击力。",
     },
 
-    -- 海象森林群系 "Forest hunters"
-    -- or
-    -- 曼德拉草森林群系 "For a nice walk"
     USURPER_SHOT = {
         NAME = "夺位射击",
         DESC = "能够使用魔法枪进行夺位射击。夺位射击能射出两种特殊的非杀伤性光束，其中“夺位射击-抓取”能将远处的生物送至你身边，或是捡起远处的物品。“夺位射击-互换”能让你与目标互换位置。",
     },
 
-    -- 混合地群系 "Dig that rock"
     MISSILE = {
         NAME = "导弹",
         -- DESC = "能够使用魔法枪发射一枚导弹，造成小范围120伤害并摧毁周围的建筑。导弹的上限可以通过搜集导弹柜来提升。",
@@ -190,9 +191,6 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     },
 
-    -- 石虾地群系 "RockyLand"
-    -- or
-    -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     SUPER_MISSILE = {
         NAME = "超级导弹",
         -- DESC = "能够使用魔法枪发射一枚超级导弹，造成中范围300伤害并摧毁周围的建筑。超级导弹的上限可以通过搜集超级导弹柜来提升。",
@@ -206,19 +204,22 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
     --     DESC = "能够使用魔法枪发射一枚毁灭飞矢，造成大范围3000伤害。每隔5天才能发射一发。",
     -- },
 
-    -- 击败远古守护者获得
     SPEED_BURST = {
         NAME = "速度推进器",
         DESC = "在没有被减速的情况下，沿着同一方向连续奔跑3秒后进入冲刺状态，对撞上的生物和物体造成大量破坏。速度推进器的功能可在调整轮盘页面里进行开关。",
     },
 
-    -- 红蘑菇森林群系 "RedForest"
-    -- 需要额外挑战解码
+    SHOCK_WAVE = {
+        NAME = "震荡波",
+        DESC = "导弹和超级导弹可以使受害者减速。",
+    },
+
     GRAVITY_CONTROL = {
         NAME = "重力控制器",
         -- DESC = "通过操控重力，提高物理和位面伤害防御，消除减速装备的减速效果，并且可以在水中行动自如。",
-        DESC = "通过操控重力，提高物理和位面伤害防御，并且可以在水中行动自如。",
+        DESC = "通过操控重力，降低你所受的伤害并抵抗击退效果，还可以让你在水中行动自如。",
     },
+
 
     CONFIGURE_POWERSUIT = {
         NAME = "调整装备",
@@ -235,19 +236,16 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         DESC = "消耗些许饥饿值，引导人鱼的魔力治愈自己和周围的盟友。",
     },
 
-    -- 月岛浴场群系 "MoonIsland_Baths"
     STEALTH = {
         NAME = "幻影斗篷",
         DESC = "进入隐形状态，躲避敌人，在使用期间会持续消耗饥饿值。如果在隐形时发动攻击或是进行其他工作，角色会短暂暴露，并额外消耗一些饥饿值。",
     },
 
-    -- 大沼泽群系 "Squeltch"
     DODGE = {
         NAME = "闪光转移",
-        DESC = "消耗一点饥饿值，在魔光的环绕下向鼠标所指方向高速移动一段距离，可以连续使用两次。\n*在被减速的情况下无法使用。",
+        DESC = "消耗少量饥饿值，在魔光的环绕下向鼠标所指方向高速移动一段距离，可以连续使用两次。\n*在被减速的情况下无法使用。",
     },
 
-    -- 泥泞光照区群系 "MudLights"
     SCAN = {
         NAME = "星辰视界",
         DESC = "消耗些许饥饿值，使用魔法波动扫描周围的地形，周期性揭示附近区域的地图,并将重要建筑的方向显示在屏幕上，持续10秒。\n*魔法波动可以迫使隐形的生物显形。",

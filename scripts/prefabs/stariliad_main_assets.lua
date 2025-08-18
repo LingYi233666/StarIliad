@@ -72,6 +72,7 @@ local assets =
     -- SFX
     Asset("SOUNDPACKAGE", "sound/stariliad_sfx.fev"),
     Asset("SOUND", "sound/stariliad_sfx.fsb"),
+    Asset("SOUND", "sound/stariliad_sfx_lossless.fsb"),
 
     Asset("SOUNDPACKAGE", "sound/stariliad_music.fev"),
     Asset("SOUND", "sound/stariliad_music.fsb"),
@@ -80,6 +81,11 @@ local assets =
 
 local function fn()
     local inst = CreateEntity()
+
+    inst:DoTaskInTime(0, function()
+        print("stariliad_main_assets is only used to load assets, it shouldn't be spawned !")
+        inst:Remove()
+    end)
 
     return inst
 end

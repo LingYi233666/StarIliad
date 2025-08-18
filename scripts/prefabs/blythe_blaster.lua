@@ -1,8 +1,5 @@
 local assets =
 {
-    Asset("ANIM", "anim/trusty_shooter.zip"),
-    Asset("ANIM", "anim/swap_trusty_shooter.zip"),
-
     Asset("ANIM", "anim/blythe_blaster.zip"),
 
     Asset("IMAGE", "images/inventoryimages/blythe_blaster.tex"),
@@ -53,24 +50,25 @@ local function OnProjectileLaunch(inst, attacker, target)
 end
 
 local function OnBroken(inst)
-    if inst.components.equippable ~= nil and inst.components.equippable:IsEquipped() then
-        local owner = inst.components.inventoryitem.owner
-        if owner ~= nil then
-            if owner.components.inventory ~= nil then
-                local item = owner.components.inventory:Unequip(inst.components.equippable.equipslot)
-                if item ~= nil then
-                    owner.components.inventory:GiveItem(item, nil, owner:GetPosition())
-                    owner:PushEvent("toolbroke", { tool = item })
+    if inst.components.equippable ~= nil then
+        if inst.components.equippable:IsEquipped() then
+            local owner = inst.components.inventoryitem.owner
+            if owner ~= nil then
+                if owner.components.inventory ~= nil then
+                    local item = owner.components.inventory:Unequip(inst.components.equippable.equipslot)
+                    if item ~= nil then
+                        owner.components.inventory:GiveItem(item, nil, owner:GetPosition())
+                        owner:PushEvent("toolbroke", { tool = item })
+                    end
+                else
+                    owner:PushEvent("toolbroke", { tool = inst })
                 end
-            else
-                owner:PushEvent("toolbroke", { tool = inst })
             end
         end
-    end
 
-    if inst.components.equippable ~= nil then
         inst:RemoveComponent("equippable")
     end
+
 
     inst:AddTag("broken")
 end
@@ -90,7 +88,7 @@ local function CanBeUpgraded(inst)
 
     -- No need to upgrade
     if total >= TUNING.BLYTHE_BLASTER_USES_THRESHOLD then
-        return false
+        return false, "BLASTER_MAX_LEVEL"
     end
 
     return true

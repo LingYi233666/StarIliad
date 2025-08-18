@@ -1,9 +1,5 @@
 local BlytheSkillBase_Passive = require("components/blythe_skill_base_passive")
 
-local function in_speed_burst(self, val)
-
-end
-
 local BlytheSkillSpeedBurst = Class(BlytheSkillBase_Passive, function(self, inst)
     BlytheSkillBase_Passive._ctor(self, inst)
 
@@ -85,11 +81,11 @@ end
 
 local function CollideTask(inst, self)
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, 3, nil, { "INLIMBO", "FX" })
+    local ents = TheSim:FindEntities(x, y, z, 6, nil, { "INLIMBO", "FX" })
     for _, v in pairs(ents) do
         if v:IsValid() then
             local dist = math.sqrt(inst:GetDistanceSqToInst(v))
-            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) and self:CanCollide(v) then
+            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) + 0.3 and self:CanCollide(v) then
                 self:OnPhysicsCollision(v)
             end
         end
@@ -110,9 +106,9 @@ function BlytheSkillSpeedBurst:StartSpeedBurst()
         self.shinny_task = self.inst:DoPeriodicTask(0.1, ShinnyTask, nil, self)
     end
 
-    if not self.collide_task then
-        self.collide_task = self.inst:DoPeriodicTask(0, CollideTask, nil, self)
-    end
+    -- if not self.collide_task then
+    --     self.collide_task = self.inst:DoPeriodicTask(0, CollideTask, nil, self)
+    -- end
 
     if not self.particle_fx then
         self.particle_fx = self.inst:SpawnChild("blythe_speed_burst_particle")
@@ -210,6 +206,10 @@ function BlytheSkillSpeedBurst:OnUpdate(dt)
     local velocity = Vector3(self.inst.Physics:GetVelocity())
     local pos = self.inst:GetPosition()
 
+    if self:IsInSpeedBurst() then
+        CollideTask(self.inst, self)
+    end
+
     -- if not self.inst.sg:HasStateTag("moving")
     --     or self.inst:HasTag("playerghost")
     --     or self.inst.components.hunger:IsStarving()
@@ -256,6 +256,8 @@ function BlytheSkillSpeedBurst:OnUpdate(dt)
     else
         self:DoDeltaChargeTime(dt)
     end
+
+
 
     self.last_velocity = velocity
     self.last_pos = pos

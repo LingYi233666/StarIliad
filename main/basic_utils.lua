@@ -78,9 +78,14 @@ function StarIliadBasic.MakeCollidableProjectilePhysics(inst, mass, rad)
     phys:SetRestitution(.5)
     phys:SetCollisionGroup(COLLISION.ITEMS)
     phys:ClearCollisionMask()
-    phys:CollidesWith(COLLISION.GROUND)
-    phys:CollidesWith(COLLISION.OBSTACLES)
-    phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+    -- phys:CollidesWith(COLLISION.GROUND)
+    -- phys:CollidesWith(COLLISION.OBSTACLES)
+    -- phys:CollidesWith(COLLISION.SMALLOBSTACLES)
+    phys:SetCollisionMask(
+        COLLISION.GROUND,
+        COLLISION.OBSTACLES,
+        COLLISION.SMALLOBSTACLES
+    )
     phys:SetSphere(rad)
     return phys
 end
@@ -271,5 +276,76 @@ function StarIliadBasic.SetVelByMotor(inst, vx, vy, vz)
     local x, y, z = inst.Transform:GetWorldPosition()
     inst.Physics:SetMotorVel(inst.entity:WorldToLocalSpace(x + vx, y + vy, z + vz))
 end
+
+function StarIliadBasic.AddTriggeredEventMusic(inst, name, dist_in, dist_keep, dist_out)
+    dist_in = dist_in or 20
+    dist_keep = dist_keep or 40
+    dist_out = dist_out or 50
+
+    local function PushMusic(inst, level)
+        if ThePlayer == nil then
+            inst._playingmusic = false
+        elseif ThePlayer:IsNear(inst, inst._playingmusic and dist_keep or dist_in) then
+            inst._playingmusic = true
+            ThePlayer:PushEvent("triggeredevent", { name = name, level = level })
+        elseif inst._playingmusic and not ThePlayer:IsNear(inst, dist_out) then
+            inst._playingmusic = false
+        end
+    end
+
+    local function OnMusicDirty(inst)
+        --Dedicated server does not need to trigger music
+        if not TheNet:IsDedicated() then
+            if inst._musictask ~= nil then
+                inst._musictask:Cancel()
+            end
+
+            inst._musictask = inst:DoPeriodicTask(1, PushMusic, nil, inst._music:value())
+            PushMusic(inst, inst._music:value())
+        end
+    end
+
+    local function SetMusicLevel(inst, level)
+        if inst._music:value() ~= level then
+            inst._music:set(level)
+            OnMusicDirty(inst)
+        end
+    end
+
+
+    inst._music = net_tinybyte(inst.GUID, name .. "._music", "musicdirty")
+    inst._playingmusic = false
+    inst._musictask = nil
+    SetMusicLevel(inst, 1)
+
+    inst.SetMusicLevel = SetMusicLevel
+
+    if not TheNet:IsDedicated() then
+        inst:ListenForEvent("musicdirty", OnMusicDirty)
+    end
+end
+
+-- function StarIliadBasic.LaunchItem(inst, launcher, basespeed, startheight, startradius)
+--     local x0, y0, z0 = launcher.Transform:GetWorldPosition()
+--     local x1, y1, z1 = inst.Transform:GetWorldPosition()
+--     local dx, dz = x1 - x0, z1 - z0
+--     local dsq = dx * dx + dz * dz
+--     local angle
+--     if dsq > 0 then
+--         local dist = math.sqrt(dsq)
+--         angle = math.atan2(dz / dist, dx / dist) + (math.random() * 20 - 10) * DEGREES
+--     else
+--         angle = TWOPI * math.random()
+--     end
+--     local sina, cosa = math.sin(angle), math.cos(angle)
+--     local speed = basespeed + math.random()
+--     inst.Physics:Teleport(x0 + startradius * cosa, startheight, z0 + startradius * sina)
+--     inst.Physics:SetVel(cosa * speed, speed * 5 + math.random() * 2, sina * speed)
+-- end
+
+-- function StarIliadBasic.LaunchItem(item, xz_speed, y_speed, angle)
+--     angle = angle * DEGREES
+--     item.Physics:SetVel(xz_speed * math.cos(angle), y_speed, xz_speed * math.sin(angle))
+-- end
 
 GLOBAL.StarIliadBasic = StarIliadBasic

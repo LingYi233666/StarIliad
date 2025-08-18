@@ -29,8 +29,8 @@ local function fn()
 
     -- inst:AddComponent("tradable")
 
-    inst:AddComponent("stackable")
-    inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
+    -- inst:AddComponent("stackable")
+    -- inst.components.stackable.maxsize = TUNING.STACK_SIZE_LARGEITEM
 
     inst:AddComponent("inspectable")
 

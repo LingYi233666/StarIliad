@@ -12,7 +12,7 @@ local StarIliadTipUI = Class(Widget, function(self, owner)
 
     self.owner = owner
 
-    self.text = self:AddChild(Text(UIFONT, 51))
+    self.text = self:AddChild(Text(UIFONT, 43))
     self.text:Hide()
 end)
 

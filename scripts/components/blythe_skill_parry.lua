@@ -193,7 +193,7 @@ function BlytheSkillParry:OnAttackedWhileParrying(data)
             local spdamage = {
                 planar = all_damage / 2,
             }
-            attacker.components.combat:GetAttacked(self.inst, damage, nil, "electric", spdamage)
+            attacker.components.combat:GetAttacked(self.inst, damage, nil, nil, spdamage)
 
             SpawnAt("electrichitsparks", attacker):AlignToTarget(attacker, self.inst, true)
         end

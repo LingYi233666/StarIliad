@@ -15,37 +15,37 @@ local function MyAddStaticLayout(name, path)
 	return Layouts[name]
 end
 
-Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/stariliad_alien_ruin_circle_pillar", {
+Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/stariliad_alien_ruin_circle_pillar2", {
 	areas = {
 		middle_entity = function()
 			return { "stariliad_alien_statue_missile" }
 		end,
 	},
 })
-Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
+-- Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
+MyAddStaticLayout("stariliad_gorgoroth_hideout", "map/static_layouts/stariliad_gorgoroth_hideout")
 
 
+-- AddRoom("stariliad_alien_ruin_missile_room", {
+-- 	colour = { r = .5, g = 1, b = .8, a = .50 },
+-- 	value = WORLD_TILES.GRASS,
 
-AddRoom("stariliad_alien_ruin_missile_room", {
-	colour = { r = .5, g = 1, b = .8, a = .50 },
-	value = WORLD_TILES.GRASS,
-
-	required_prefabs = {
-		"stariliad_alien_statue_missile",
-	},
-	contents = {
-		countstaticlayouts = {
-			stariliad_alien_ruin_missile = 1,
-		},
-		distributepercent = .1,
-		distributeprefabs =
-		{
-			fireflies = 1,
-			flower = 4,
-			beehive = 1,
-		},
-	}
-})
+-- 	required_prefabs = {
+-- 		"stariliad_alien_statue_missile",
+-- 	},
+-- 	contents = {
+-- 		countstaticlayouts = {
+-- 			stariliad_alien_ruin_missile = 1,
+-- 		},
+-- 		distributepercent = .1,
+-- 		distributeprefabs =
+-- 		{
+-- 			fireflies = 1,
+-- 			flower = 4,
+-- 			beehive = 1,
+-- 		},
+-- 	}
+-- })
 
 AddRoom("StarIliad_Test_Island_Room", {
 	colour = { r = 0.3, g = 0.2, b = 0.1, a = 0.3 },
@@ -170,14 +170,28 @@ AddTaskSetPreInit("default", function(taskset)
 		"Lightning Bluff",
 	}
 
-	-- taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
+	taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
 
-	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
+	table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 
-	table.insert(taskset.tasks, "StarIliad_Test_Island")
+	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
 end)
 
-AddTaskPreInit("Dig that rock", function(task)
-	task.room_choices["stariliad_alien_ruin_missile_room"] = 1
+AddTaskSetPreInit("cave_default", function(taskset)
+	assert(taskset.set_pieces ~= nil)
+	assert(taskset.required_prefabs ~= nil)
+
+	taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "LichenLand", } }
+
+	table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth_spawner")
+
+	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
+	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
 end)
+
+
+
+-- AddTaskPreInit("Dig that rock", function(task)
+-- 	task.room_choices["stariliad_alien_ruin_missile_room"] = 1
+-- end)

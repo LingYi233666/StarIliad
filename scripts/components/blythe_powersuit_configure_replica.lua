@@ -234,6 +234,23 @@ local items_candidate = {
         },
         widget_scale = widget_scale,
     },
+
+    {
+        required_skill = "shock_wave",
+        label = STRINGS.STARILIAD_UI.POWERSUIT_CONFIGURE_WHEEL.SHOCK_WAVE,
+        execute = function(inst)
+            SendModRPCToServer(MOD_RPC["stariliad_rpc"]["switch_enable_skill"], "shock_wave")
+            return true
+        end,
+        postinit = MakeAutoCastToggle(EnabledIsValidFn("shock_wave")),
+        bank = "spell_icons_willow",
+        build = "spell_icons_willow",
+        anims =
+        {
+            idle = { anim = "fire_burst" },
+        },
+        widget_scale = widget_scale,
+    },
 }
 
 for _, v in pairs(items_candidate) do

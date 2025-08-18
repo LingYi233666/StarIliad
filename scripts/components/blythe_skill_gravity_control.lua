@@ -9,6 +9,7 @@ function BlytheSkillGravityControl:Enable(enable, is_onload)
     BlytheSkillBase_Passive.Enable(self, enable, is_onload)
 
     if not old_enable and enable then
+        self.inst:AddTag("heavybody")
         self.inst.components.combat.externaldamagetakenmultipliers:SetModifier(self.inst,
             TUNING.BLYTHE_GRAVITY_CONTROL_DAMAGE_PERCENT,
             "gravity_control")
@@ -18,6 +19,8 @@ function BlytheSkillGravityControl:Enable(enable, is_onload)
         -- self.inst:StartUpdatingComponent(self)
     elseif old_enable and not enable then
         -- self.inst:StopUpdatingComponent(self)
+
+        self.inst:RemoveTag("heavybody")
 
         self.inst.components.combat.externaldamagetakenmultipliers:RemoveModifier(self.inst, "gravity_control")
         self.inst.components.planardefense:RemoveBonus(self.inst, "gravity_control")

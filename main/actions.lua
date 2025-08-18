@@ -213,3 +213,14 @@ end)
 AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.BLYTHE_UNLOCK_SKILL, "dolongaction"))
 
 AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.BLYTHE_UNLOCK_SKILL, "dolongaction"))
+
+----------------------------------------------------------------------------------------------------
+
+AddAction("STARILIAD_BLOB_RETURN", "STARILIAD_BLOB_RETURN", function(act)
+    if act.target and not (act.target.sg and act.target.sg:HasStateTag("no_absorb_blob")) then
+        act.target:PushEvent("absorb_blob", { blob = act.doer })
+        return true
+    end
+end)
+
+ACTIONS.STARILIAD_BLOB_RETURN.distance = 0

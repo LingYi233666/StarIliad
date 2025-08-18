@@ -36,6 +36,7 @@ BLYTHE_SKILL_TYPE = {
     MAGIC = "MAGIC",
 }
 
+-- See also: stariliad_alien_statue.lua
 STARILIAD_ALIEN_STATUE_TYPE = {
     NORMAL_CHOZO = "NORMAL_CHOZO",
     BROKEN_CHOZO = "BROKEN_CHOZO",
@@ -45,7 +46,10 @@ STARILIAD_ALIEN_STATUE_TYPE = {
 }
 
 BLYTHE_SKILL_DEFINES = {
-    -- ENERGY
+    ------------------------------------------------------------------------
+    ----------------------------     ENERGY     ----------------------------
+    ------------------------------------------------------------------------
+
     {
         name = "basic_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -58,18 +62,22 @@ BLYTHE_SKILL_DEFINES = {
         root = true,
     },
 
+    -- 猪王树林群系 "Speak to the king"
     {
         name = "wide_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
+    -- 苔藓地群系 "LichenLand"
     {
         name = "wave_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
+    -- 远古档案馆群系 "ArchiveMaze"
+    -- 需要额外挑战解码
     {
         name = "plasma_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -78,13 +86,20 @@ BLYTHE_SKILL_DEFINES = {
         encrypted = true,
     },
 
+    -- 海象森林群系 "Forest hunters"
+    -- or
+    -- 曼德拉草森林群系 "For a nice walk"
     {
         name = "usurper_shot",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO,
     },
 
-    -- KINETIC
+    ------------------------------------------------------------------------
+    ----------------------------     KINETIC     ---------------------------
+    ------------------------------------------------------------------------
+
+    -- 混合地群系 "Dig that rock"
     {
         name = "missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
@@ -134,6 +149,10 @@ BLYTHE_SKILL_DEFINES = {
         end,
     },
 
+    -- 石虾地群系 "RockyLand"
+    -- or
+    -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
+    -- 或者打双子魔眼解锁？
     {
         name = "super_missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
@@ -189,7 +208,12 @@ BLYTHE_SKILL_DEFINES = {
     --     dtype = BLYTHE_SKILL_TYPE.KINETIC,
     -- },
 
-    -- SUIT
+
+    ------------------------------------------------------------------------
+    -----------------------------     SUIT     -----------------------------
+    ------------------------------------------------------------------------
+
+    -- 击败远古守护者获得
     {
         name = "speed_burst",
         handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
@@ -199,6 +223,19 @@ BLYTHE_SKILL_DEFINES = {
         -- Add unlock item to minotaur treasure
     },
 
+    -- 需要额外挑战解码
+    {
+        name = "shock_wave",
+
+        dtype = BLYTHE_SKILL_TYPE.SUIT,
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
+
+        -- Unlock item params
+        encrypted = true,
+    },
+
+    -- 红蘑菇森林群系 "RedForest"
+    -- 需要额外挑战解码
     {
         name = "gravity_control",
         handle_enable = HandleEnableByComponent("blythe_skill_gravity_control"),
@@ -211,7 +248,11 @@ BLYTHE_SKILL_DEFINES = {
         encrypted = true,
     },
 
-    -- MAGIC
+
+
+    ------------------------------------------------------------------------
+    ----------------------------     MAGIC     -----------------------------
+    ------------------------------------------------------------------------
     {
         name = "configure_powersuit",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
@@ -245,6 +286,7 @@ BLYTHE_SKILL_DEFINES = {
         -- on_pressed = CastSkillByComponentWrapper("blythe_skill_parry")
     },
 
+    -- 海中小岛解锁
     {
         name = "heal",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
@@ -252,6 +294,7 @@ BLYTHE_SKILL_DEFINES = {
         on_pressed = CastSkillByComponentWrapper("blythe_skill_heal")
     },
 
+    -- 月岛浴场群系 "MoonIsland_Baths"
     {
         name = "stealth",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
@@ -259,6 +302,7 @@ BLYTHE_SKILL_DEFINES = {
         on_pressed = CastSkillByComponentWrapper("blythe_skill_stealth")
     },
 
+    -- 大沼泽群系 "Squeltch"
     {
         name = "dodge",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
@@ -270,6 +314,7 @@ BLYTHE_SKILL_DEFINES = {
         on_pressed = CastSkillByComponentWrapper("blythe_skill_dodge")
     },
 
+    -- 泥泞光照区群系 "MudLights"
     {
         name = "scan",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,

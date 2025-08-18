@@ -120,12 +120,12 @@ local function fn()
 
     local num_drops = math.random(MIN_NUM_DROPS, MAX_NUM_DROPS)
     local step = MAX_PERSIST_TIME / num_drops
-    for i = 0, num_drops do
-        -- table.insert(inst.emit_time, GetTime() + math.random() * (MAX_PERSIST_TIME - FRAMES))
+    for i = 1, num_drops do
+        table.insert(inst.emit_time, GetTime() + math.random() * (MAX_PERSIST_TIME - FRAMES))
 
-        local offset = StarIliadMath.NormalDistribution(0.5, 0.25) * MAX_PERSIST_TIME
-        offset = math.clamp(offset, 0, MAX_PERSIST_TIME)
-        table.insert(inst.emit_time, GetTime() + offset)
+        -- local offset = StarIliadMath.NormalDistribution(0.5, 0.25) * MAX_PERSIST_TIME
+        -- offset = math.clamp(offset, 0, MAX_PERSIST_TIME)
+        -- table.insert(inst.emit_time, GetTime() + offset)
 
         -- local offset = math.clamp(step * i + UnitRand() * step * 0.5, 0, MAX_PERSIST_TIME - FRAMES)
         -- table.insert(inst.emit_time, GetTime() + offset)

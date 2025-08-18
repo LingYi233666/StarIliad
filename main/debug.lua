@@ -154,4 +154,14 @@ function GLOBAL.si_lightning_storm(enable)
     end
 end
 
+function GLOBAL.si_falling_star(num)
+    TheWorld:StartThread(function()
+        for i = 1, num or 10 do
+            local pos = ThePlayer:GetPosition() + Vector3FromTheta(math.random() * PI2, GetRandomMinMax(2, 20))
+            SpawnAt("stariliad_falling_star", pos):DoFalling()
+            Sleep(GetRandomMinMax(0.1, 3))
+        end
+    end)
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

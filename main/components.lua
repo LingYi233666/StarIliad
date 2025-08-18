@@ -128,6 +128,35 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
             end
         end
     end)
+
+    AddComponentPostInit("health", function(self)
+        local function OnHealthDelta(inst, data)
+            if not (data and data.amount and data.amount > 0) then
+                return
+            end
+
+            local x, y, z = inst.Transform:GetWorldPosition()
+            local players_nearby = FindPlayersInRange(x, y, z, 40)
+            if #players_nearby <= 0 then
+                return
+            end
+
+            for _, v in pairs(players_nearby) do
+                SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_damage_number"], v.userid, x, y, z,
+                    "HEAL", data.amount)
+            end
+        end
+        self.inst:ListenForEvent("healthdelta", OnHealthDelta)
+
+        local old_OnRemoveFromEntity = self.OnRemoveFromEntity
+        self.OnRemoveFromEntity = function(self, ...)
+            self.inst:ListenForEvent("healthdelta", OnHealthDelta)
+
+            if old_OnRemoveFromEntity ~= nil then
+                return old_OnRemoveFromEntity(self, ...)
+            end
+        end
+    end)
 end
 --------------------------------------------------------------------
 
@@ -234,7 +263,10 @@ AddComponentPostInit("playercontroller", function(self)
 end)
 
 local STARILIAD_MUSIC = {
-
+    stariliad_boss_gorgoroth = {
+        "",
+        "stariliad_music/music/spire_boss_1_mind",
+    },
 }
 
 AddComponentPostInit("dynamicmusic", function(self)
@@ -282,6 +314,10 @@ AddComponentPostInit("dynamicmusic", function(self)
     end
     -- print("After modify, TRIGGERED_DANGER_MUSIC is:")
     -- dumptable(TRIGGERED_DANGER_MUSIC)
+
+    for k, v in pairs(STARILIAD_MUSIC) do
+        TRIGGERED_DANGER_MUSIC[k] = v
+    end
 
     print("Modify success !")
 end)

@@ -10,7 +10,10 @@
 return {
 	ACTIONFAIL =
 	{
-
+		UPGRADE =
+		{
+			BLASTER_MAX_LEVEL = "爆能枪已经升级到极限了。",
+		},
 	},
 
 	ANNOUNCE_BLASTER_BROKEN = "呀，我的枪坏掉了！我得做个魔法枪修补套件修好它。",

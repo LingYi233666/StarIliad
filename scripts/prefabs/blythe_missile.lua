@@ -5,10 +5,15 @@ local assets =
 
 
 local function CollisionCallback(inst, other)
-    if other and not other:HasTag("pond")
+    if inst.physics_collision_target == nil
+        and other and not other:HasTag("pond")
         and inst.components.complexprojectile.attacker ~= nil
         and other ~= inst.components.complexprojectile.attacker then
-        inst.components.complexprojectile:Hit(other)
+        -- If we put hit function in both OnUpdate and CollisionCallback,
+        -- it may cause a pointer error in C++ layer engine.
+        -- inst.components.complexprojectile:Hit(other)
+
+        inst.physics_collision_target = other
     end
 end
 
@@ -38,6 +43,10 @@ local function OnHit(inst, attacker, target)
                 -- StarIliadBasic.TryBreakShieldState(target)
                 attacker.components.combat:DoAttack(v, inst, inst, nil, nil, math.huge)
                 v:AddDebuff("stariliad_debuff_shield_break", "stariliad_debuff_shield_break")
+
+                if attacker.components.blythe_skiller and attacker.components.blythe_skiller:IsEnabled("shock_wave") then
+                    v:AddDebuff("stariliad_debuff_shock_wave", "stariliad_debuff_shock_wave")
+                end
             elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
                 v.components.workable:WorkedBy(attacker, inst.work_damage)
             end
@@ -53,6 +62,11 @@ end
 
 
 local function OnUpdate(inst)
+    if inst.physics_collision_target and inst.physics_collision_target:IsValid() then
+        inst.components.complexprojectile:Hit(inst.physics_collision_target)
+        return true
+    end
+
     inst.max_range = inst.max_range or GetRandomMinMax(20, 25)
     inst.start_pos = inst.start_pos or inst:GetPosition()
 

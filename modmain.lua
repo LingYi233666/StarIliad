@@ -74,6 +74,17 @@ PrefabFiles = {
     "stariliad_raindrop_warning",
 
     "blythe_heal_castfx",
+
+    "blythe_screw_attack_fx",
+
+    "stariliad_boss_gorgoroth",
+
+    "stariliad_meteor_shadow",
+    "stariliad_boss_gorgoroth_trail",
+    "stariliad_boss_gorgoroth_blob",
+
+    "stariliad_falling_star_fx",
+    "stariliad_falling_star",
 }
 
 -- See stariliad_main_assets.lua
@@ -93,7 +104,9 @@ AddModCharacter("blythe", "FEMALE")
 local import_list = {
     "constants",
     "tuning",
+    "postprocess",
     "actions",
+    "cooking",
     "language_chs",
     "basic_utils",
     "string_utils",

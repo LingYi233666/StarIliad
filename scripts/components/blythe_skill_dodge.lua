@@ -5,7 +5,7 @@ local BlytheSkillDodge = Class(BlytheSkillBase_Active, function(self, inst)
     BlytheSkillBase_Active._ctor(self, inst)
 
     self.cooldown = FRAMES
-    self.costs.hunger = 1
+    self.costs.hunger = 3
 
     self.can_cast_while_busy = true
 

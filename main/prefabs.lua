@@ -87,10 +87,13 @@ end)
 
 AddPrefabPostInitAny(function(inst)
     if not TheNet:IsDedicated() then
+        if inst.components.pointofinterest or inst:HasTag("epic") then
+            inst:AddComponent("stariliad_important_scan_target")
+        end
+
         if inst.components.pointofinterest then
             local h = inst.components.pointofinterest.height or 200
 
-            inst:AddComponent("stariliad_important_scan_target")
             inst.components.stariliad_important_scan_target:SetMarkerHeight(h)
         end
     end

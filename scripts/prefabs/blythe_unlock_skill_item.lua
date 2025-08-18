@@ -89,7 +89,9 @@ end
 local rets = {}
 for _, data in pairs(BLYTHE_SKILL_DEFINES) do
     -- table.insert(rets, MakeItem(data.name, data.encrypted, data.stack_size, data.teach_override))
-    table.insert(rets, MakeItem(data))
+    if not data.root then
+        table.insert(rets, MakeItem(data))
+    end
 end
 
 return unpack(rets)

@@ -101,7 +101,42 @@ local debuffs_data = {
                 inst.components.debuff:Stop()
             end)
         end,
-    }
+    },
+
+    stariliad_debuff_shock_wave = {
+        on_attached = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = 1
+
+            local speed_mult = math.pow(TUNING.BLYTHE_SHOCK_WAVE_DEBUFF_MOVESPEED_MULT, inst.stacks)
+            if target.components.locomotor then
+                target.components.locomotor:SetExternalSpeedMultiplier(inst, "stariliad_debuff_shock_wave", speed_mult)
+            end
+
+            inst.detach_task = inst:DoTaskInTime(TUNING.BLYTHE_SHOCK_WAVE_DEBUFF_DURATION, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
+
+        on_detached = function(inst, target)
+            target.components.locomotor:RemoveExternalSpeedMultiplier(inst, "stariliad_debuff_shock_wave")
+        end,
+
+        on_extended = function(inst, target, followsymbol, followoffset, data, buffer)
+            inst.stacks = math.min(inst.stacks + 1, TUNING.BLYTHE_SHOCK_WAVE_DEBUFF_MAX_STACKS)
+
+            local speed_mult = math.pow(TUNING.BLYTHE_SHOCK_WAVE_DEBUFF_MOVESPEED_MULT, inst.stacks)
+            if target.components.locomotor then
+                target.components.locomotor:SetExternalSpeedMultiplier(inst, "stariliad_debuff_shock_wave", speed_mult)
+            end
+
+            if inst.detach_task then
+                inst.detach_task:Cancel()
+            end
+            inst.detach_task = inst:DoTaskInTime(TUNING.BLYTHE_SHOCK_WAVE_DEBUFF_DURATION, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
+    },
 }
 
 local function MakeDebuff(prefab, on_attached, on_detached, on_extended)
