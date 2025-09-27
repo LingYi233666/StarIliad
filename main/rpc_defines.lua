@@ -231,3 +231,26 @@ AddClientModRPCHandler("stariliad_rpc", "show_tip", function(key, duration)
         ThePlayer.replica.stariliad_tip_manager:Process(key, duration)
     end
 end)
+
+local StariliadShakingText = require "widgets/stariliad_shaking_text"
+AddClientModRPCHandler("stariliad_rpc", "show_destroy3_text", function(guardian)
+    if ThePlayer and ThePlayer:IsValid() and ThePlayer.HUD then
+        local ui = ThePlayer.HUD:AddChild(StariliadShakingText(TALKINGFONT, 45,
+            STRINGS.STARILIAD_NPC_SPEECH.STARILIAD_BOSS_GUARDIAN.DESTROY3, { 238 / 255, 69 / 255, 105 / 255, 1 }))
+        -- ui:SetTarget(guardian, "head", Vector3(0, -250, 0))
+        ui:SetTarget(guardian, nil, Vector3(0, -800, 0))
+        ui:Hide()
+        ui.inst:DoTaskInTime(3, function()
+            ui:Kill()
+        end)
+        ui.inst:DoStaticPeriodicTask(0, function()
+            local facing = ui.target.Transform:GetFacing()
+            if facing == FACING_RIGHT or facing == FACING_UPRIGHT or facing == FACING_DOWNRIGHT
+                or facing == FACING_LEFT or facing == FACING_UPLEFT or facing == FACING_DOWNLEFT then
+                ui.offset = Vector3(200, -800, 0)
+            else
+                ui.offset = Vector3(0, -800, 0)
+            end
+        end)
+    end
+end)

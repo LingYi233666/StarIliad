@@ -14,7 +14,7 @@ local StarIliadSkillSlot = Class(ImageButton, function(self, skill_name)
 
     self.icon = self:AddChild(Image())
     self.icon:Hide()
-    self.icon:SetScale(default_scale)
+    -- self.icon:SetScale(default_scale)
 
     self.recharge = self:AddChild(UIAnim())
     self.recharge:GetAnimState():SetBank("recharge_meter")
@@ -57,7 +57,7 @@ function StarIliadSkillSlot:SetSkillName(skill_name)
         self.icon:Hide()
     else
         self.icon:SetTexture(atlas, image)
-        self.icon:SetSize(55, 55)
+        self.icon:SetSize(65, 65)
         self.icon:Show()
     end
 end

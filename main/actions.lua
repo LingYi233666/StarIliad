@@ -224,3 +224,20 @@ AddAction("STARILIAD_BLOB_RETURN", "STARILIAD_BLOB_RETURN", function(act)
 end)
 
 ACTIONS.STARILIAD_BLOB_RETURN.distance = 0
+
+
+----------------------------------------------------------------------------------------------------
+
+local old_PICK_extra_arrive_dist = ACTIONS.PICK.extra_arrive_dist
+
+ACTIONS.PICK.extra_arrive_dist = function(inst, dest, ...)
+    if dest and dest.inst and dest.inst:IsValid() and dest.inst:HasTag("stariliad_alien_statue_chozo") then
+        return 1
+    end
+
+    if old_PICK_extra_arrive_dist then
+        return old_PICK_extra_arrive_dist(inst, dest, ...)
+    end
+
+    return 0
+end

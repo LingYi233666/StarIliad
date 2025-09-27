@@ -83,6 +83,8 @@ AddPrefabPostInit("forest", function(inst)
     end
 
     inst:AddComponent("stariliad_weather_lightning_storm")
+
+    inst:AddComponent("stariliad_weather_falling_star")
 end)
 
 AddPrefabPostInitAny(function(inst)

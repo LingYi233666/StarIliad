@@ -7,8 +7,8 @@ local Layouts = require("map/layouts").Layouts
 local Tasks = require("map/tasks")
 
 
-local function MyAddStaticLayout(name, path)
-	Layouts[name] = StaticLayout.Get(path)
+local function MyAddStaticLayout(name, path, additional_props)
+	Layouts[name] = StaticLayout.Get(path, additional_props)
 
 	Layouts[name].ground_types[WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 
@@ -25,6 +25,39 @@ Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/s
 -- Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 MyAddStaticLayout("stariliad_gorgoroth_hideout", "map/static_layouts/stariliad_gorgoroth_hideout")
 
+MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
+	areas = {
+		statue = function()
+			return { "stariliad_alien_statue_wave_beam" }
+		end,
+		lights = function()
+			return { "cavelight" }
+		end,
+	},
+	disable_transform = true
+})
+Layouts.stariliad_chozo_statue_room_sample.ground_types[9] = WORLD_TILES.ARCHIVE
+-- Layouts.stariliad_chozo_statue_room_sample.ground_types[9] = WORLD_TILES.SINKHOLE
+Layouts.stariliad_chozo_statue_room_sample.layout.stariliad_interior_wall_archive[1].properties = {
+	data = {
+		wall_data = {
+			{
+				{ -0.5, 0, -0.5 },
+				{ -0.5, 0, 4.5 },
+				{ 20.5, 0, 4.5 },
+				{ 20.5, 0, -0.5 }
+
+				-- { 0,  0, 0 },
+				-- { 0,  0, 4 },
+				-- { 20, 0, 4 },
+				-- { 20, 0, 0 }
+			}, -- vertexes
+			false, --loop
+		},
+	}
+}
+
+-- si_layout("stariliad_chozo_statue_room_sample")
 
 -- AddRoom("stariliad_alien_ruin_missile_room", {
 -- 	colour = { r = .5, g = 1, b = .8, a = .50 },
@@ -182,9 +215,9 @@ AddTaskSetPreInit("cave_default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
 	assert(taskset.required_prefabs ~= nil)
 
-	taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "LichenLand", } }
+	-- taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "LichenLand", } }
 
-	table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth_spawner")
+	-- table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth_spawner")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")

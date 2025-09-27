@@ -44,7 +44,8 @@ end
 local function OnUpdate(inst, x, y, z, rad)
     for i, v in ipairs(TheSim:FindEntities(x, y, z, rad, { "locomotor" }, { "flying", "playerghost", "INLIMBO", "shadow_aligned" })) do
         if v.components.locomotor ~= nil then
-            v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.GORGOROTH_TRAIL_SPEED_PENALTY, WORLD_TILES.MUD)
+            v.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.STARILIAD_BOSS_GORGOROTH_TRAIL_SPEED_PENALTY,
+                WORLD_TILES.MUD)
         end
     end
 end
@@ -55,7 +56,8 @@ local function OnUpdateClient(inst, x, y, z, rad)
         player.components.locomotor ~= nil and
         not player:HasTag("playerghost") and
         player:GetDistanceSqToPoint(x, 0, z) < rad * rad then
-        player.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.GORGOROTH_TRAIL_SPEED_PENALTY, WORLD_TILES.MUD)
+        player.components.locomotor:PushTempGroundSpeedMultiplier(TUNING.STARILIAD_BOSS_GORGOROTH_TRAIL_SPEED_PENALTY,
+            WORLD_TILES.MUD)
     end
 end
 

@@ -131,7 +131,8 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
 
     AddComponentPostInit("health", function(self)
         local function OnHealthDelta(inst, data)
-            if not (data and data.amount and data.amount > 0) then
+            local value = (data.newpercent - data.oldpercent) * self.maxhealth
+            if value <= 1e-6 then
                 return
             end
 
@@ -143,7 +144,7 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
 
             for _, v in pairs(players_nearby) do
                 SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["show_damage_number"], v.userid, x, y, z,
-                    "HEAL", data.amount)
+                    "HEAL", value)
             end
         end
         self.inst:ListenForEvent("healthdelta", OnHealthDelta)
@@ -266,6 +267,11 @@ local STARILIAD_MUSIC = {
     stariliad_boss_gorgoroth = {
         "",
         "stariliad_music/music/spire_boss_1_mind",
+    },
+
+    stariliad_boss_guardian = {
+        "",
+        "stariliad_music/music/spire_boss_1",
     },
 }
 

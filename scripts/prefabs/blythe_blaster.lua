@@ -95,7 +95,7 @@ local function CanBeUpgraded(inst)
 end
 
 local function OnUpgraded(inst, upgrader, item)
-    local old_percent = inst.components.finiteuses:GetPercent()
+    local old_percent = math.max(inst.components.finiteuses:GetPercent(), 0.01)
     local new_total = inst.components.finiteuses.total + TUNING.BLYTHE_BLASTER_USES_UPGRADE
     new_total = math.clamp(new_total, TUNING.BLYTHE_BLASTER_USES, TUNING.BLYTHE_BLASTER_USES_THRESHOLD)
 

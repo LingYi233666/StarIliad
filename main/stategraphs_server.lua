@@ -19,6 +19,24 @@ AddStategraphPostInit("wilson", function(sg)
     end
 end)
 
+-- pick
+AddStategraphPostInit("wilson", function(sg)
+    local old_PICK = sg.actionhandlers[ACTIONS.PICK].deststate
+    sg.actionhandlers[ACTIONS.PICK].deststate = function(inst, action)
+        local old_rets = old_PICK(inst, action)
+        local target = action.target
+        if target and old_rets ~= nil then
+            if target:HasTag("stariliad_pick_high") and not (inst.components.rider and inst.components.rider:IsRiding()) then
+                return "stariliad_pick_high"
+            end
+        end
+
+        return old_rets
+    end
+end)
+
+
+
 -- castaoe
 -- AddStategraphPostInit("wilson", function(sg)
 --     local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
@@ -1188,6 +1206,44 @@ AddStategraphState("wilson",
             if inst.sg.statemem.fxlight ~= nil and inst.sg.statemem.fxlight:IsValid() then
                 inst.sg.statemem.fxlight:Remove()
             end
+        end,
+    }
+)
+
+AddStategraphState("wilson",
+    State {
+        name = "stariliad_pick_high",
+        tags = { "doing", "busy", "nodangle" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            if not inst.SoundEmitter:PlayingSound("make") then
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make")
+            end
+
+            inst.AnimState:PlayAnimation("construct_pre")
+            inst.AnimState:PushAnimation("construct_loop", true)
+
+            inst.sg:SetTimeout(1)
+        end,
+
+        ontimeout = function(inst)
+            inst:PerformBufferedAction()
+
+            inst.AnimState:PlayAnimation("construct_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+
+        timeline =
+        {
+            TimeEvent(FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make")
         end,
     }
 )

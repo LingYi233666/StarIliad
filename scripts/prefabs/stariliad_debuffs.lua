@@ -118,7 +118,9 @@ local debuffs_data = {
         end,
 
         on_detached = function(inst, target)
-            target.components.locomotor:RemoveExternalSpeedMultiplier(inst, "stariliad_debuff_shock_wave")
+            if target.components.locomotor then
+                target.components.locomotor:RemoveExternalSpeedMultiplier(inst, "stariliad_debuff_shock_wave")
+            end
         end,
 
         on_extended = function(inst, target, followsymbol, followoffset, data, buffer)

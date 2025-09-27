@@ -22,6 +22,9 @@ local SCALE_ENVELOPE_NAME_CIRCLE2 = "stariliad_falling_star_scaleenvelope_circle
 
 local SCALE_ENVELOPE_NAME_TAIL2 = "stariliad_falling_star_scaleenvelope_tail2"
 
+local COLOUR_ENVELOPE_NAME_STAR2_BLUE = "stariliad_falling_star_colourenvelope_star2_blue"
+local COLOUR_ENVELOPE_NAME_STAR2_YELLOW = "stariliad_falling_star_colourenvelope_star2_yellow"
+local SCALE_ENVELOPE_NAME_STAR2 = "stariliad_falling_star_scaleenvelope_star2"
 
 local assets =
 {
@@ -33,79 +36,36 @@ local assets =
 
 --------------------------------------------------------------------------
 
-local function IntColour(r, g, b, a)
-    return { r / 255, g / 255, b / 255, a / 255 }
-end
-
-local function CreateShiningColour(r, g, b, a, step)
-    a = a or 255
-    step = step or 0.15
-    -- step = step or 0.3
-    local t = 0
-
-    local envs = {}
-    while t + step + 0.01 < 1 do
-        table.insert(envs, { t, IntColour(r, g, b, a) })
-        t = t + step
-        table.insert(envs, { t, IntColour(255, 255, 255, 255) })
-        t = t + .01
-    end
-
-    table.insert(envs, { 1, IntColour(r, g, b, 0) })
-
-    return envs
-end
-
-local function CreateFadingColour(r, g, b, a)
-    a = a or 255
-    return {
-        { 0, IntColour(r, g, b, a) },
-        { 1, IntColour(r, g, b, 0) },
-    }
-end
-
-local function CreateConstantColour(r, g, b, a)
-    a = a or 255
-    return {
-        { 0, IntColour(r, g, b, a) },
-        { 1, IntColour(r, g, b, a) },
-    }
-end
-
 local function InitEnvelope()
-    -- local envs = {}
-    -- local t = 0
-    -- local step = .15
-    -- while t + step + .01 < 1 do
-    --     table.insert(envs, { t, IntColour(255, 255, 150, 255) })
-    --     t = t + step
-    --     table.insert(envs, { t, IntColour(255, 255, 150, 0) })
-    --     t = t + .01
-    -- end
-    -- table.insert(envs, { 1, IntColour(255, 255, 150, 0) })
+    -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE, StarIliadColour.CreateShiningColour(0, 229, 232))
+    -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE, StarIliadColour.CreateShiningColour(0, 0, 232))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE,
+        StarIliadColour.CreateShiningColour(0, 255, 255))
 
-    -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE, CreateShiningColour(0, 229, 232))
-    -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE, CreateShiningColour(0, 0, 232))
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_BLUE, CreateShiningColour(0, 255, 255))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_PINK,
+        StarIliadColour.CreateShiningColour(240, 92, 240))
 
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_PINK, CreateShiningColour(240, 92, 240))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_PURPLE,
+        StarIliadColour.CreateShiningColour(230, 0, 230))
 
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_PURPLE, CreateShiningColour(230, 0, 230))
-
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_YELLOW, CreateShiningColour(230, 230, 0))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_CIRCLE_YELLOW,
+        StarIliadColour.CreateShiningColour(230, 230, 0))
 
 
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_YELLOW, CreateConstantColour(230, 230, 0))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_YELLOW, StarIliadColour.CreateConstantColour(230, 230, 0))
 
     -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_BLUE, CreateConstantColour(0, 229, 232))
     -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_BLUE, CreateConstantColour(0, 255, 255))
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_BLUE, CreateConstantColour(0, 120, 190))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR_BLUE, StarIliadColour.CreateConstantColour(0, 120, 190))
 
     -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_TAIL, CreateConstantColour(0, 10, 232))
     -- EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_TAIL, CreateConstantColour(230, 230, 0))
-    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_TAIL, CreateFadingColour(0, 10, 232))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_TAIL, StarIliadColour.CreateFadingColour(0, 10, 232))
 
-
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR2_YELLOW,
+        StarIliadColour.CreateFadingInOutColour(230, 230, 0))
+    EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_STAR2_BLUE,
+        StarIliadColour.CreateFadingInOutColour(0, 120, 190))
 
     -- local circle_max_scale = 0.6
     local circle_max_scale = 0.4
@@ -145,8 +105,6 @@ local function InitEnvelope()
         }
     )
 
-
-
     circle_max_scale = 0.5
     EnvelopeManager:AddVector2Envelope(
         SCALE_ENVELOPE_NAME_CIRCLE2,
@@ -173,14 +131,19 @@ local function InitEnvelope()
             { 0,   { tail_max_scale, tail_max_scale } },
             { 0.2, { tail_max_scale * 0.5, tail_max_scale * 0.5 } },
             { 1,   { tail_max_scale * 0.5, tail_max_scale * 0.5 } },
-
-
         }
     )
 
+    star_max_scale = 0.75
+    EnvelopeManager:AddVector2Envelope(
+        SCALE_ENVELOPE_NAME_STAR2,
+        {
+            { 0, { star_max_scale, star_max_scale } },
+            { 1, { star_max_scale * 0.1, star_max_scale * 0.1 } },
+        }
+    )
 
     InitEnvelope = nil
-    IntColour = nil
 end
 
 --------------------------------------------------------------------------
@@ -570,5 +533,83 @@ local function hit_fn()
     return inst
 end
 
+local function item_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddNetwork()
+
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    inst.persists = false
+
+    --Dedicated server does not need to spawn local particle fx
+    if TheNet:IsDedicated() then
+        return inst
+    elseif InitEnvelope ~= nil then
+        InitEnvelope()
+    end
+
+    inst.num_to_emit = 0
+
+    local effect = inst.entity:AddVFXEffect()
+    effect:InitEmitters(2)
+
+    local colour_names_star = {
+        COLOUR_ENVELOPE_NAME_STAR2_BLUE,
+        COLOUR_ENVELOPE_NAME_STAR2_YELLOW,
+    }
+
+    for k, v in pairs(colour_names_star) do
+        local index = k - 1
+        effect:SetRenderResources(index, STAR_TEXTURE, ADD_SHADER)
+        effect:SetRotationStatus(index, true)
+        effect:SetMaxNumParticles(index, 32)
+        effect:SetMaxLifetime(index, MAX_LIFETIME_STAR)
+        effect:SetColourEnvelope(index, v)
+        effect:SetScaleEnvelope(index, SCALE_ENVELOPE_NAME_STAR2)
+        effect:SetBlendMode(index, BLENDMODE.Additive)
+        effect:EnableBloomPass(index, true)
+        effect:SetDragCoefficient(index, 0.07)
+        effect:SetSortOrder(index, 1)
+        effect:SetSortOffset(index, 1)
+    end
+
+    -----------------------------------------------------
+
+    local sphere_emitter_star = CreateSphereEmitter(0.25)
+
+    EmitterManager:AddEmitter(inst, nil, function()
+        local parent = inst.entity:GetParent()
+        if not parent then
+            return
+        end
+
+        if not TheCamera then
+            return
+        end
+
+        inst.num_to_emit = inst.num_to_emit + GetRandomMinMax(0, 0.1)
+
+        while inst.num_to_emit > 0 do
+            local pos = Vector3(sphere_emitter_star())
+            pos.y = math.abs(pos.y)
+            -- local vel = -TheCamera:GetDownVec() * GetRandomMinMax(0.05, 0.07)
+
+            -- vel.x = vel.x + UnitRand() * 0.01
+            -- vel.z = vel.z + UnitRand() * 0.01
+            local vel = Vector3(0, GetRandomMinMax(0.05, 0.07), 0)
+
+            emit_star_fn(effect, math.random(0, 1), pos, vel)
+            inst.num_to_emit = inst.num_to_emit - 1
+        end
+    end)
+
+    return inst
+end
+
 return Prefab("stariliad_falling_star_fx", fn, assets),
-    Prefab("stariliad_falling_star_hit_fx", hit_fn, assets)
+    Prefab("stariliad_falling_star_hit_fx", hit_fn, assets),
+    Prefab("stariliad_falling_star_item_fx", item_fn, assets)

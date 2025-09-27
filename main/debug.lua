@@ -164,4 +164,9 @@ function GLOBAL.si_falling_star(num)
     end)
 end
 
+function GLOBAL.si_layout(name, pos)
+    pos = pos or ConsoleWorldPosition()
+    StarIliadLayout.Spawn(name, pos)
+end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

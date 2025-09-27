@@ -204,7 +204,7 @@ local function OnHealthDelta(inst, data)
     local afflicter = data.afflicter
 
 
-    while inst.damage_check >= TUNING.GORGOROTH_RELEASE_BLOB_DAMAGE do
+    while inst.damage_check >= TUNING.STARILIAD_BOSS_GORGOROTH_RELEASE_BLOB_DAMAGE do
         local direction
 
         if afflicter and afflicter:IsValid() then
@@ -221,13 +221,13 @@ local function OnHealthDelta(inst, data)
         blob.components.entitytracker:TrackEntity("mainblob", inst)
         blob.sg:GoToState("spawn", { vel = direction * speed })
 
-        inst.damage_check = inst.damage_check - TUNING.GORGOROTH_RELEASE_BLOB_DAMAGE
+        inst.damage_check = inst.damage_check - TUNING.STARILIAD_BOSS_GORGOROTH_RELEASE_BLOB_DAMAGE
     end
 end
 
 local function AbsorbSmallBlob(inst)
     if not inst.components.health:IsDead() then
-        inst.components.health:DoDelta(TUNING.GORGOROTH_BLOB_REGEN_HEALTH)
+        inst.components.health:DoDelta(TUNING.STARILIAD_BOSS_GORGOROTH_BLOB_REGEN_HEALTH)
     end
 end
 
@@ -298,26 +298,26 @@ local function fn()
     inst.components.locomotor.runspeed = 6
 
     inst:AddComponent("combat")
-    inst.components.combat:SetDefaultDamage(TUNING.GORGOROTH_DAMAGE)
-    inst.components.combat:SetAttackPeriod(TUNING.GORGOROTH_ATTACK_PERIOD)
-    inst.components.combat:SetRange(TUNING.GORGOROTH_ATTACK_RANGE)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GORGOROTH_DAMAGE)
+    inst.components.combat:SetAttackPeriod(TUNING.STARILIAD_BOSS_GORGOROTH_ATTACK_PERIOD)
+    inst.components.combat:SetRange(TUNING.STARILIAD_BOSS_GORGOROTH_ATTACK_RANGE)
     inst.components.combat:SetRetargetFunction(1, RetargetFn)
     inst.components.combat:SetKeepTargetFunction(KeepTargetFn)
     inst.components.combat:SetOnHit(OnHit)
     inst.components.combat:SetHurtSound("rifts4/goop/hit_big")
-    inst.components.combat.playerdamagepercent = TUNING.GORGOROTH_PLAYERDAMAGEPERCENT
+    inst.components.combat.playerdamagepercent = TUNING.STARILIAD_BOSS_GORGOROTH_PLAYERDAMAGEPERCENT
 
     inst:AddComponent("planarentity")
 
     inst:AddComponent("planardamage")
-    inst.components.planardamage:SetBaseDamage(TUNING.GORGOROTH_PLANAR_DAMAGE)
+    inst.components.planardamage:SetBaseDamage(TUNING.STARILIAD_BOSS_GORGOROTH_PLANAR_DAMAGE)
 
     -- Almost immune to planar damage
     inst:AddComponent("planardefense")
     inst.components.planardefense:SetBaseDefense(9999)
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(TUNING.GORGOROTH_HEALTH)
+    inst.components.health:SetMaxHealth(TUNING.STARILIAD_BOSS_GORGOROTH_HEALTH)
     inst.components.health.destroytime = 8
 
     inst:AddComponent("lootdropper")
@@ -436,10 +436,10 @@ local function StartMeteor(inst, no_warning_time, has_warning_time)
         -- Spawn trails and slowdown
         SpawnTrails(inst,
             nil,
-            TUNING.GORGOROTH_METEOR_TRAIL_RADIUS,
-            math.random(unpack(TUNING.GORGOROTH_METEOR_TRAIL_NUMS)),
-            TUNING.GORGOROTH_METEOR_TRAIL_DURATION,
-            TUNING.GORGOROTH_METEOR_TRAIL_DURATION_VAR)
+            TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_TRAIL_RADIUS,
+            math.random(unpack(TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_TRAIL_NUMS)),
+            TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_TRAIL_DURATION,
+            TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_TRAIL_DURATION_VAR)
 
         if inst.owner and inst.owner:IsValid() then
             local x, y, z = inst.Transform:GetWorldPosition()
@@ -447,7 +447,7 @@ local function StartMeteor(inst, no_warning_time, has_warning_time)
 
             for _, v in pairs(ents) do
                 if v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
-                    v.components.workable:WorkedBy(inst.owner, TUNING.GORGOROTH_METEOR_WORK_DAMAGE)
+                    v.components.workable:WorkedBy(inst.owner, TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_WORK_DAMAGE)
                 elseif v.components.combat and inst.owner.components.combat and inst.owner.components.combat:CanTarget(v) then
                     inst.owner.components.combat:DoAttack(v, inst, nil, nil, nil, 99999)
                 end
@@ -512,7 +512,7 @@ local function meteor_fn()
     inst.StartMeteor = StartMeteor
 
     inst:AddComponent("weapon")
-    inst.components.weapon:SetDamage(TUNING.GORGOROTH_METEOR_DAMAGE)
+    inst.components.weapon:SetDamage(TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_DAMAGE)
 
     -- inst:ListenForEvent("animover", function()
     --     if inst.AnimState:IsCurrentAnimation("egg_crash_pre") then

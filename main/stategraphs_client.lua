@@ -21,6 +21,23 @@ AddStategraphPostInit("wilson_client", function(sg)
     end
 end)
 
+
+AddStategraphPostInit("wilson", function(sg)
+    local old_PICK = sg.actionhandlers[ACTIONS.PICK].deststate
+    sg.actionhandlers[ACTIONS.PICK].deststate = function(inst, action)
+        local old_rets = old_PICK(inst, action)
+        local target = action.target
+        if target and old_rets ~= nil then
+            if target:HasTag("stariliad_pick_high") and not (inst.replica.rider and inst.replica.rider:IsRiding()) then
+                return "stariliad_pick_high"
+            end
+        end
+
+        return old_rets
+    end
+end)
+
+
 -- castaoe
 -- AddStategraphPostInit("wilson_client", function(sg)
 --     local old_CASTAOE = sg.actionhandlers[ACTIONS.CASTAOE].deststate
@@ -707,6 +724,55 @@ AddStategraphState("wilson_client",
         ontimeout = function(inst)
             -- inst:ClearBufferedAction()
             inst.sg:GoToState("idle", true)
+        end,
+    }
+)
+
+
+AddStategraphState("wilson_client",
+    State {
+        name = "stariliad_pick_high",
+        tags = { "doing", "busy" },
+        server_states = { "stariliad_pick_high" },
+
+        onenter = function(inst)
+            inst.components.locomotor:Stop()
+
+            inst.SoundEmitter:PlaySound("dontstarve/wilson/make_trap", "make_preview")
+
+            inst.AnimState:PlayAnimation("construct_pre")
+            inst.AnimState:PushAnimation("construct_loop", true)
+
+            inst:PerformPreviewBufferedAction()
+            inst.sg:SetTimeout(2)
+        end,
+
+        timeline =
+        {
+            TimeEvent(4 * FRAMES, function(inst)
+                inst.sg:RemoveStateTag("busy")
+            end),
+        },
+
+        onupdate = function(inst)
+            if inst.sg:ServerStateMatches() then
+                if inst.entity:FlattenMovementPrediction() then
+                    inst.sg:GoToState("idle", "noanim")
+                end
+            elseif inst.bufferedaction == nil then
+                inst.AnimState:PlayAnimation("construct_pst")
+                inst.sg:GoToState("idle", true)
+            end
+        end,
+
+        ontimeout = function(inst)
+            inst:ClearBufferedAction()
+            inst.AnimState:PlayAnimation("construct_pst")
+            inst.sg:GoToState("idle", true)
+        end,
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("make_preview")
         end,
     }
 )

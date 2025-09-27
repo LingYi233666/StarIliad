@@ -148,6 +148,8 @@ local master_postinit = function(inst)
 
 	inst.components.drownable.enabled = false
 
+	inst:AddComponent("blythe_status_bonus")
+
 	inst:AddComponent("stariliad_ocean_land_jump")
 
 	inst:AddComponent("blythe_missile_counter")
@@ -171,6 +173,8 @@ local master_postinit = function(inst)
 	inst:AddComponent("blythe_skill_stealth")
 
 	inst:AddComponent("blythe_skill_heal")
+
+	inst:AddComponent("blythe_skill_gravity_control")
 
 	inst:AddComponent("stariliad_tip_manager")
 

@@ -507,5 +507,8 @@ local function small_smoke_fn()
     return inst
 end
 
-return Prefab("stariliad_normal_explode_particle", fn, assets),
-    Prefab("stariliad_small_explode_particle", small_smoke_fn, assets)
+return Prefab("stariliad_normal_explode_particle_old", fn, assets),
+    Prefab("stariliad_small_explode_particle_old", small_smoke_fn, assets)
+
+-- ThePlayer:SpawnChild("stariliad_normal_explode_particle_old")
+-- ThePlayer:SpawnChild("stariliad_normal_explode_particle")

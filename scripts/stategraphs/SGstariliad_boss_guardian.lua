@@ -1,18 +1,65 @@
 require("stategraphs/commonstates")
 
+local function hit_recovery_skip_cooldown_fn(inst, last_t, delay)
+    return inst.components.combat:InCooldown() and inst.sg:HasStateTag("idle")
+end
+
 local events =
 {
-    CommonHandlers.OnAttacked(),
+    CommonHandlers.OnAttacked(nil, 2, hit_recovery_skip_cooldown_fn),
     CommonHandlers.OnLocomote(true, true),
+    CommonHandlers.OnDeath(),
+
+    EventHandler("doattack", function(inst, data)
+        if inst.components.health and not inst.components.health:IsDead() and
+            (not inst.sg:HasStateTag("busy") or
+                (inst.sg:HasStateTag("hit") and not inst.sg:HasStateTag("electrocute"))
+            )
+        then
+            local target = data and data.target or inst.components.combat.target
+            if not (target and target:IsValid()) then
+                return
+            end
+
+            if inst.defensive_mode then
+                inst.sg:GoToState("attack_counter", { target = target })
+            elseif inst.ability_name == "combo_punch" then
+                print("Use combo_punch !")
+                inst.sg:GoToState("attack1", {
+                    target = target,
+                    count = 5,
+                    uppercut = true,
+                })
+                inst.ability_name = "destroy3"
+                inst.can_use_ability_time = GetTime() + 6
+            else
+                -- inst.sg:GoToState("attack1", { target = target, count = 1, uppercut = false, })
+                inst.sg:GoToState("attack1", { target = target })
+            end
+        end
+    end),
+
 
     EventHandler("defensive_mode_change", function(inst, data)
+        if inst.components.health:IsDead() then
+            return
+        end
+
         if inst.defensive_mode then
+            -- inst:SetEyeFlame(1)
+            inst:SetEyeFlame(0)
+
+
             if not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("enter_defensive_mode")
+            else
+                inst.sg.mem.enter_defensive_mode = true
             end
         else
             SpawnAt("stariliad_boss_guardian_break_fx", inst)
-            if not inst.sg:HasStateTag("busy") then
+            if inst.components.combat:HasTarget() then
+                inst.sg:GoToState("taunt2")
+            elseif not inst.sg:HasStateTag("busy") then
                 inst.sg:GoToState("leave_defensive_mode")
             end
         end
@@ -33,7 +80,8 @@ end
 
 local function PlayPoundSounds(inst)
     inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
-    inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/trails/bodyfall")
+    -- inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/trails/bodyfall")
+    inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
     inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
 end
 
@@ -66,8 +114,17 @@ local function DoPunchAttack(inst)
     DoAreaAttack(inst, inst.components.combat:GetHitRange(), 120)
 end
 
+local function DoCounterAttack(inst)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_COUNTER_DAMAGE)
+
+    DoAreaAttack(inst, inst.components.combat:GetHitRange(), 120)
+
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
+end
+
+
 local function DoUppercutAttack(inst)
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_UPPERCUT_DAMAGE)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_UPPERCUT_DAMAGE)
 
     local victims = DoAreaAttack(inst, inst.components.combat:GetHitRange(), 100)
     for _, v in pairs(victims) do
@@ -77,57 +134,49 @@ local function DoUppercutAttack(inst)
         end
     end
 
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_DAMAGE)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
 end
-
-local function DoLeapAttack(inst)
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_LEAP_DAMAGE)
-
-    local victims = DoAreaAttack(inst, 6, nil, 20)
-    for _, v in pairs(victims) do
-        if v:IsValid() then
-            v:PushEvent("knockback", { knocker = inst, radius = 8, strengthmult = 2 })
-        end
-    end
-
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_DAMAGE)
-end
-
-local function DoTauntPoundAttack(inst, knockback)
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_TAUNT_POUND_DAMAGE)
-
-    local victims = DoAreaAttack(inst, 6, nil, 2)
-    if knockback then
-        for _, v in pairs(victims) do
-            if v:IsValid() then
-                v:PushEvent("knockback", { knocker = inst, radius = 4 })
-            end
-        end
-    end
-
-    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_GUARDIAN_DAMAGE)
-end
-
 
 local function DoLeapPound(inst)
     ShakePound(inst)
     PlayPoundSounds(inst)
 
-    DoLeapAttack(inst)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_LEAP_DAMAGE)
+
+    local victims = DoAreaAttack(inst, 6, nil, 20)
+    for _, v in pairs(victims) do
+        if v:IsValid() then
+            -- v:PushEvent("knockback", { knocker = inst, radius = 8, strengthmult = 2 })
+            v:PushEvent("knockback", { knocker = inst, radius = 5 })
+        end
+    end
+
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
 end
 
 local function DoTauntPound1(inst)
     ShakePound(inst)
     PlayPoundSounds(inst)
 
-    DoTauntPoundAttack(inst)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_TAUNT_POUND_DAMAGE)
+    DoAreaAttack(inst, 6, nil, 2)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
 end
 
 local function DoTauntPound2(inst)
     ShakePound(inst)
     PlayPoundSounds(inst)
 
-    DoTauntPoundAttack(inst, true)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_TAUNT_POUND_DAMAGE)
+
+    local victims = DoAreaAttack(inst, 6, nil, 2)
+    for _, v in pairs(victims) do
+        if v:IsValid() then
+            v:PushEvent("knockback", { knocker = inst, radius = 4 })
+        end
+    end
+
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
 end
 
 local states =
@@ -142,10 +191,12 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.components.combat:StartAttack()
 
-            inst:ForceFacePoint(data.target:GetPosition())
             inst.AnimState:PlayAnimation("attack3")
 
-            inst.sg.statemem.target = data.target
+            if data.target and data.target:IsValid() then
+                inst.sg.statemem.target = data.target
+                inst:ForceFacePoint(data.target:GetPosition())
+            end
 
             inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/swipe")
         end,
@@ -172,17 +223,19 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.components.combat:StartAttack()
 
-            inst:ForceFacePoint(data.target:GetPosition())
             inst.AnimState:PlayAnimation("block_counter")
 
-            inst.sg.statemem.target = data.target
+            if data.target and data.target:IsValid() then
+                inst.sg.statemem.target = data.target
+                inst:ForceFacePoint(data.target:GetPosition())
+            end
 
             inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/swipe")
         end,
 
         timeline = {
             TimeEvent(6 * FRAMES, function(inst)
-                DoPunchAttack(inst)
+                DoCounterAttack(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/attack")
             end),
         },
@@ -207,6 +260,7 @@ local states =
 
             inst.components.locomotor:StopMoving()
             inst.components.combat:StartAttack()
+            inst:StopBrain()
 
             inst:ForceFacePoint(data.pos)
 
@@ -214,10 +268,12 @@ local states =
             inst.AnimState:PushAnimation("bellyflop", false)
 
             local duration = 17 * FRAMES
-            inst.sg.statemem.speed = math.clamp((data.pos - inst:GetPosition()):Length() / duration, 0.1, 12)
+            inst.sg.statemem.speed = math.clamp((data.pos - inst:GetPosition()):Length() / duration, 0.1, 24)
             inst.sg.statemem.pos = data.pos
 
-            inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/jump")
+            -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/jump")
+
+            inst.SoundEmitter:PlaySound("grotto/creatures/centipede/aoe")
         end,
 
         onupdate = function(inst)
@@ -229,24 +285,36 @@ local states =
         timeline = {
             TimeEvent(6 * FRAMES, function(inst)
                 ToggleOffCharacterCollisions(inst)
+
                 inst.Physics:SetMotorVel(inst.sg.statemem.speed, 0, 0)
                 inst.sg.statemem.moving = true
+
+                inst:SetEyeFlame(0)
             end),
 
-            TimeEvent(23 * FRAMES, function(inst)
+            TimeEvent(20 * FRAMES, function(inst)
                 DoLeapPound(inst)
                 ToggleOnCharacterCollisions(inst)
+
+                inst.sg.statemem.moving = false
                 inst.Physics:Stop()
             end),
         },
 
         events =
         {
-
-            EventHandler("animover", function(inst)
-                inst.sg:GoToState("idle")
+            EventHandler("animqueueover", function(inst)
+                if inst.AnimState:AnimDone() then
+                    inst.sg:GoToState("idle")
+                end
             end),
         },
+
+        onexit = function(inst)
+            inst:RestartBrain()
+            -- inst:SetEyeFlame(1)
+            inst:SetEyeFlame(0)
+        end,
     },
 
     State {
@@ -255,9 +323,8 @@ local states =
 
         onenter = function(inst)
             inst.components.locomotor:StopMoving()
-            inst.AnimState("taunt")
+            inst.AnimState:PlayAnimation("taunt")
         end,
-
 
         timeline = {
             TimeEvent(0, function(inst)
@@ -351,7 +418,15 @@ CommonStates.AddIdle(states,
     nil,
     function(inst)
         return inst.defensive_mode and "block_loop" or "idle_loop"
-    end
+    end,
+    {
+        TimeEvent(0 * FRAMES, function(inst)
+            if inst.defensive_mode and inst.sg.mem.enter_defensive_mode then
+                inst.sg:GoToState("enter_defensive_mode")
+            end
+            inst.sg.mem.enter_defensive_mode = nil
+        end),
+    }
 )
 
 CommonStates.AddHitState(states,
@@ -364,11 +439,37 @@ CommonStates.AddHitState(states,
                 inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/hit")
             end
         end),
+
+        TimeEvent(10 * FRAMES, function(inst)
+            if inst.defensive_mode and inst.sg.mem.enter_defensive_mode then
+                inst.sg:GoToState("enter_defensive_mode")
+            end
+            inst.sg.mem.enter_defensive_mode = nil
+        end),
     },
     function(inst)
         return inst.defensive_mode and "block_hit" or "hit"
     end
 )
+
+local function MakePowerOnOffLines(start_t, dt, counts)
+    local timeline = {}
+
+    for i = 1, counts do
+        table.insert(timeline,
+            TimeEvent(start_t + dt * (i * 2 - 2), function(inst)
+                inst:SetBluePower(true)
+            end)
+        )
+        table.insert(timeline,
+            TimeEvent(start_t + dt * (i * 2 - 1), function(inst)
+                inst:SetBluePower(false)
+            end)
+        )
+    end
+
+    return unpack(timeline)
+end
 
 CommonStates.AddDeathState(states,
     {
@@ -379,6 +480,11 @@ CommonStates.AddDeathState(states,
 
         TimeEvent(13 * FRAMES, function(inst)
             inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/shatter")
+
+            inst.AnimState:HideSymbol("horns")
+
+            inst:SetEyeFlame(0)
+            inst:TurnOffLight()
         end),
 
         TimeEvent(43 * FRAMES, function(inst)
@@ -387,9 +493,22 @@ CommonStates.AddDeathState(states,
         end),
 
         TimeEvent(62 * FRAMES, function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
+            -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
+            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
+            -- inst.SoundEmitter:PlaySound("dontstarve/creatures/deerclops/bodyfall_dirt")
+
+            inst.AnimState:HideSymbol("chest")
+
             ShakePound(inst)
         end),
+
+        TimeEvent(92 * FRAMES, function(inst)
+            inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
+
+            inst:SetBluePower(false)
+        end),
+
+        MakePowerOnOffLines(93 * FRAMES, FRAMES, 8)
     }
 )
 
@@ -463,10 +582,13 @@ local function AddDoublePunchState(states, name, onenter, timeline)
             inst.components.locomotor:StopMoving()
             inst.components.combat:StartAttack()
 
-            inst:ForceFacePoint(data.target:GetPosition())
             inst.AnimState:PlayAnimation(name)
 
-            inst.sg.statemem.target = data.target
+            if data.target and data.target:IsValid() then
+                inst.sg.statemem.target = data.target
+                inst:ForceFacePoint(data.target:GetPosition())
+            end
+
             inst.sg.statemem.count = data.count or 0
             inst.sg.statemem.uppercut = data.uppercut
 
@@ -481,6 +603,12 @@ local function AddDoublePunchState(states, name, onenter, timeline)
         {
             EventHandler("animover", function(inst)
                 inst.sg.statemem.count = inst.sg.statemem.count - 1
+
+                -- To avoid combat:CanAttack() error
+                inst.sg:RemoveStateTag("busy")
+                if inst.sg.statemem.count > 0 then
+                    inst.components.combat:ResetCooldown()
+                end
 
                 local target = inst.sg.statemem.target
                 if not inst.components.combat:CanAttack(target) then
@@ -497,7 +625,11 @@ local function AddDoublePunchState(states, name, onenter, timeline)
                     nxt_state = nxt_states_map[name]
                 end
 
-                if inst.sg.statemem.count <= 0 or not inst.components.combat:CanAttack(target) or nxt_state == nil then
+                print("target:", target)
+                print("nxt_state:", nxt_state)
+                -- print("CanAttack:", inst.components.combat:CanAttack(target))
+
+                if inst.sg.statemem.count <= 0 or nxt_state == nil then
                     local pst_anim = pst_anims_map[name]
                     if pst_anim then
                         inst.AnimState:PlayAnimation(pst_anim)
@@ -507,7 +639,7 @@ local function AddDoublePunchState(states, name, onenter, timeline)
                     end
                 else
                     inst.sg:GoToState(nxt_state, {
-                        target = inst.sg.statemem.target,
+                        target = target,
                         count = inst.sg.statemem.count,
                         uppercut = inst.sg.statemem.uppercut
                     })

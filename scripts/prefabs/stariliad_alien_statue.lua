@@ -4,6 +4,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins_small_gem.zip"),
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
+    Asset("ANIM", "anim/stariliad_alien_statue_chozo.zip"),
 
     Asset("ANIM", "anim/lavaarena_portal.zip"),
     Asset("ANIM", "anim/lavaarena_keyhole.zip"),
@@ -74,6 +75,8 @@ local function common_fn(bank, build, anim, radius, item_prefab, regenerate_time
 
     inst:AddComponent("inspectable")
 
+    inst:AddComponent("savedrotation")
+
     if item_prefab and regenerate_time then
         inst:AddComponent("pickable")
         -- inst.components.pickable.picksound = "dontstarve/wilson/pickup_reeds"
@@ -101,24 +104,31 @@ end
 
 local function OnPickedNormalChozo(inst, picker)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
-    inst.AnimState:ClearOverrideSymbol("swap_gem")
+    -- inst.AnimState:ClearOverrideSymbol("swap_gem")
+
+    inst.AnimState:HideSymbol("swap_object")
 end
 
 local function OnRegenNormalChozo(inst)
-    inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", "greengem")
+    inst.AnimState:ShowSymbol("swap_object")
 end
 
 local function MakeEmptyNormalChozo(inst)
-    inst.AnimState:ClearOverrideSymbol("swap_gem")
+    inst.AnimState:HideSymbol("swap_object")
 end
 
 local function wrapper_normal_chozo(item_prefab)
     local function fn()
-        local inst = common_fn("statue_ruins", "statue_ruins", "idle_full", nil, item_prefab, 10,
+        local inst = common_fn("stariliad_alien_statue_chozo", "stariliad_alien_statue_chozo", "idle", nil,
+            item_prefab, 10,
             "dontstarve/common/floating_statue_hum")
 
-        inst.AnimState:OverrideSymbol("swap_gem", "statue_ruins_gem", "greengem")
+        inst.Transform:SetTwoFaced()
 
+        inst.AnimState:ShowSymbol("swap_object")
+
+        inst:AddTag("stariliad_pick_high")
+        inst:AddTag("stariliad_alien_statue_chozo")
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
 

@@ -93,4 +93,34 @@ function StarIliadString.Strip(s, start_index, num_words)
     end
 end
 
+function StarIliadString.Split(s)
+    local result = {}
+    local i = 1
+    local len = #s -- 获取字符串的字节长度
+
+    while i <= len do
+        local char_len = 1
+        local byte = string.byte(s, i)
+
+        -- 根据 UTF-8 编码的第一个字节来确定字符的长度
+        if byte >= 0xF0 and byte <= 0xF7 then     -- 4 字节字符
+            char_len = 4
+        elseif byte >= 0xE0 and byte <= 0xEF then -- 3 字节字符 (中文常用)
+            char_len = 3
+        elseif byte >= 0xC0 and byte <= 0xDF then -- 2 字节字符
+            char_len = 2
+            -- 否则，它是一个单字节 ASCII 字符 (0x00 到 0x7F)
+        end
+
+        -- 提取字符
+        local char = string.sub(s, i, i + char_len - 1)
+        table.insert(result, char)
+
+        -- 移动到下一个字符的起始位置
+        i = i + char_len
+    end
+
+    return result
+end
+
 GLOBAL.StarIliadString = StarIliadString

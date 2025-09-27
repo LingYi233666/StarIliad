@@ -7,6 +7,7 @@ local function MakeItem(data)
     local assets =
     {
         Asset("ANIM", "anim/moonrock_seed.zip"),
+        Asset("ANIM", "anim/stariliad_chozo_ability_ball.zip"),
     }
 
     if has_inventoryimage then
@@ -32,8 +33,8 @@ local function MakeItem(data)
             inst.AnimState:SetBuild(data.build)
             inst.AnimState:PlayAnimation(data.anim)
         else
-            inst.AnimState:SetBank("moonrock_seed")
-            inst.AnimState:SetBuild("moonrock_seed")
+            inst.AnimState:SetBank("stariliad_chozo_ability_ball")
+            inst.AnimState:SetBuild("stariliad_chozo_ability_ball")
             inst.AnimState:PlayAnimation("idle")
 
             if data.encrypted then

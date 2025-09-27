@@ -110,6 +110,10 @@ function StarIliadOceanLandJump:CreateWaterTail(x, y, z, dir_x, dir_z)
 end
 
 function StarIliadOceanLandJump:EnableSwimming(enable)
+    if enable == nil then
+        enable = false
+    end
+
     local x, y, z = self.inst.Transform:GetWorldPosition()
     local has_gravity_control = StarIliadBasic.HasGravityControl(self.inst)
 

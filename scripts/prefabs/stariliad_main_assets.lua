@@ -56,6 +56,19 @@ local assets =
     Asset("IMAGE", "images/ui/skill_slot/unknown.tex"),
     Asset("ATLAS", "images/ui/skill_slot/unknown.xml"),
 
+    Asset("IMAGE", "images/ui/skill_slot/parry.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/parry.xml"),
+
+    Asset("IMAGE", "images/ui/skill_slot/stealth.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/stealth.xml"),
+
+    Asset("IMAGE", "images/ui/skill_slot/dodge.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/dodge.xml"),
+
+    Asset("IMAGE", "images/ui/skill_slot/scan.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/scan.xml"),
+
+
     Asset("IMAGE", "images/ui/missile_status/missile.tex"),
     Asset("ATLAS", "images/ui/missile_status/missile.xml"),
 

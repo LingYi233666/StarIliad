@@ -223,8 +223,9 @@ local states =
                 local meteor = SpawnAt("stariliad_boss_gorgoroth_meteor", inst.sg.statemem.pos)
                 meteor.owner = inst
                 meteor:StartMeteor(
-                    TUNING.GORGOROTH_METEOR_LANDING_DURATION - TUNING.GORGOROTH_METEOR_LANDING_WARNING_DURATION,
-                    TUNING.GORGOROTH_METEOR_LANDING_WARNING_DURATION
+                    TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_LANDING_DURATION -
+                    TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_LANDING_WARNING_DURATION,
+                    TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_LANDING_WARNING_DURATION
                 )
             end),
         },

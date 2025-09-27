@@ -23,7 +23,8 @@ PrefabFiles = {
     "blythe_beam_swap",
     "blythe_beam_swap_particle",
 
-    "stariliad_normal_explode_particle",
+    "stariliad_normal_explode_particle", -- deprecated
+    "stariliad_normal_explode_particle2",
 
     "blythe_clone",
 
@@ -85,6 +86,15 @@ PrefabFiles = {
 
     "stariliad_falling_star_fx",
     "stariliad_falling_star",
+
+    "stariliad_preparedfoods_generate",
+
+    "stariliad_boss_guardian",
+    "stariliad_boss_guardian_eye_flame",
+
+
+    "stariliad_interior_wall",
+    "stariliad_interior_camera",
 }
 
 -- See stariliad_main_assets.lua
@@ -109,11 +119,13 @@ local import_list = {
     "cooking",
     "language_chs",
     "basic_utils",
+    "colour_utils",
     "string_utils",
     "math_utils",
     "weaponskill_utils",
     "usurper_utils",
     "parry_reflect_utils",
+    "layout_utils",
     "spdamage",
     "rpc_defines",
     "skill_defines",
