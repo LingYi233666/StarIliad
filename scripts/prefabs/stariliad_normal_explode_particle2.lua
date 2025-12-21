@@ -43,11 +43,15 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
     local COLOUR_ENVELOPE_NAME_ARROW = prefab .. "_colourenvelope_arrow"
     local SCALE_ENVELOPE_NAME_ARROW = prefab .. "_scaleenvelope_arrow"
 
+    local COLOUR_ENVELOPE_NAME_LINE = prefab .. "_colourenvelope_line"
+    local SCALE_ENVELOPE_NAME_LINE = prefab .. "_scaleenvelope_line"
+
     local EMBER_MAX_LIFETIME = 3
     local AROUND_SMOKE_MAX_LIFETIME = 2
     local MIDDLE_CIRCLE_MAX_LIFETIME = 0.6
     local MIDDLE_SMOKE_MAX_LIFETIME = 0.5
     local ARROW_MAX_LIFETIME = 1
+    local LINE_MAX_LIFETIME = 1
 
     local num_emitters = GetTableSize(envelopes)
     local name_index_tab = {}
@@ -82,6 +86,11 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
         if envelopes.arrow then
             EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_ARROW, envelopes.arrow.colour)
             EnvelopeManager:AddVector2Envelope(SCALE_ENVELOPE_NAME_ARROW, envelopes.arrow.scale)
+        end
+
+        if envelopes.line then
+            EnvelopeManager:AddColourEnvelope(COLOUR_ENVELOPE_NAME_LINE, envelopes.line.colour)
+            EnvelopeManager:AddVector2Envelope(SCALE_ENVELOPE_NAME_LINE, envelopes.line.scale)
         end
 
         InitEnvelope = nil
@@ -160,6 +169,18 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
                 effect:SetDragCoefficient(index, .14)
                 effect:SetRotateOnVelocity(index, true)
                 -- effect:SetAcceleration(index, 0, -0.3, 0)
+            elseif name == "line" then
+                -- LINE
+                effect:SetRenderResources(index, ANIM_SMOKE_TEXTURE, REVEAL_SHADER)
+                effect:SetRotateOnVelocity(index, true)
+                effect:SetMaxNumParticles(index, 25)
+                effect:SetMaxLifetime(index, LINE_MAX_LIFETIME)
+                effect:SetColourEnvelope(index, COLOUR_ENVELOPE_NAME_LINE)
+                effect:SetScaleEnvelope(index, SCALE_ENVELOPE_NAME_LINE)
+                effect:SetBlendMode(index, BLENDMODE.AlphaBlended)
+                effect:EnableBloomPass(index, true)
+                effect:SetRadius(index, 1)
+                effect:SetDragCoefficient(index, .14)
             end
         end
 
@@ -237,13 +258,26 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
 
         effect:AddParticleUV(
             index,
-            lifetime,        -- lifetime
-            px, py + .4, pz, -- position
-            vx, vy, vz,      -- velocity
-            uv_offset, 0     -- uv offset
+            lifetime,         -- lifetime
+            px, py + 0.4, pz, -- position
+            vx, vy, vz,       -- velocity
+            uv_offset, 0      -- uv offset
         )
     end
 
+    local function emit_line(effect, index, sphere_emitter)
+        local lifetime = LINE_MAX_LIFETIME * (0.7 + math.random() * .3)
+        local px, py, pz = sphere_emitter()
+        local vec = Vector3(px, py, pz):GetNormalized() * GetRandomMinMax(0.5, 0.6)
+        local vx, vy, vz = vec:Get()
+
+        effect:AddParticle(
+            index,
+            lifetime,         -- lifetime
+            px, py + 0.4, pz, -- position
+            vx, vy, vz        -- velocity
+        )
+    end
 
     local function fn()
         local inst = CreateEntity()
@@ -272,6 +306,7 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
         local ember_sphere_emitter = CreateSphereEmitter(spawn_radius.ember or 0.15)
         local around_smoke_sphere_emitter = CreateSphereEmitter(spawn_radius.around_smoke or 0.2)
         local arrow_sphere_emitter = CreateSphereEmitter(spawn_radius.arrow or 0.1)
+        local line_sphere_emitter = CreateSphereEmitter(spawn_radius.line or 0.1)
 
         EmitterManager:AddEmitter(inst, nil, function()
             -- print("start AddEmitter")
@@ -319,6 +354,12 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
                     end
                 end
 
+                if name_index_tab.line then
+                    for i = 1, (num_particles.line or 25) do
+                        emit_line(effect, name_index_tab.line, line_sphere_emitter)
+                    end
+                end
+
                 inst.emitted = true
             end
         end)
@@ -341,6 +382,10 @@ local middle_circle_max_scale = 15
 local middle_smoke_max_scale = 1.5
 local arrow_max_scale = 2.25
 
+local guardian_around_smoke_max_scale = 0.7
+local guardian_middle_circle_max_scale = 20
+local guardian_middle_smoke_max_scale = 2.0
+local guardian_line_max_scale = 1.8
 
 local function CreateBlueEmberColour()
     local ember_colour_envs = {}
@@ -547,6 +592,110 @@ local dataset = {
 
             inst.VFXEffect:SetDragCoefficient(inst.name_index_tab.around_smoke, 0.2)
             inst.VFXEffect:SetSortOrder(inst.name_index_tab.around_smoke, 0)
+        end,
+    },
+
+    stariliad_guardian_explode_particle = {
+        envelopes = {
+            ember = {
+                colour = {
+                    { 0,    IntColour(200, 85, 60, 25) },
+                    { .075, IntColour(230, 140, 90, 200) },
+                    { .3,   IntColour(255, 90, 70, 255) },
+                    { .6,   IntColour(255, 90, 70, 255) },
+                    { .9,   IntColour(255, 90, 70, 230) },
+                    { 1,    IntColour(255, 70, 70, 0) },
+                },
+                scale  = {
+                    { 0, { ember_max_scale, ember_max_scale } },
+                    { 1, { ember_max_scale * 0.2, ember_max_scale * 0.2 } },
+                },
+            },
+
+            around_smoke = {
+                colour = {
+                    { 0,   IntColour(10, 10, 10, 0) },
+                    { 0.1, IntColour(10, 10, 10, 10) },
+                    { .3,  IntColour(10, 10, 10, 175) },
+                    { .52, IntColour(10, 10, 10, 90) },
+                    { 1,   IntColour(10, 10, 10, 0) },
+                },
+                scale  = {
+                    { 0, { guardian_around_smoke_max_scale * .5, guardian_around_smoke_max_scale * .5 } },
+                    { 1, { guardian_around_smoke_max_scale, guardian_around_smoke_max_scale } },
+                },
+            },
+
+            middle_circle = {
+                colour = {
+                    { 0,    IntColour(255, 90, 70, 0) },
+                    { .075, IntColour(255, 90, 70, 255) },
+                    { .3,   IntColour(200, 85, 60, 60) },
+                    { .6,   IntColour(230, 140, 90, 50) },
+                    { .9,   IntColour(255, 90, 70, 25) },
+                    { 1,    IntColour(255, 70, 70, 0) },
+                },
+                scale  = {
+                    { 0, { guardian_middle_circle_max_scale, guardian_middle_circle_max_scale } },
+                    { 1, { guardian_middle_circle_max_scale * 1.1, guardian_middle_circle_max_scale * 1.1 } },
+                },
+            },
+
+            middle_smoke = {
+                colour = {
+                    { 0,  IntColour(255, 90, 70, 0) },
+                    { .2, IntColour(255, 120, 90, 240) },
+                    { .3, IntColour(200, 85, 60, 60) },
+                    { .6, IntColour(230, 140, 90, 50) },
+                    { .9, IntColour(255, 90, 70, 25) },
+                    { 1,  IntColour(255, 70, 70, 0) },
+                },
+                scale  = {
+                    { 0, { guardian_middle_smoke_max_scale, guardian_middle_smoke_max_scale } },
+                    { 1, { guardian_middle_smoke_max_scale * 1.1, guardian_middle_smoke_max_scale * 1.1 } },
+                },
+            },
+
+            line = {
+                colour = {
+                    { 0,  IntColour(255, 45, 10, 180) },
+                    { .2, IntColour(255, 60, 10, 255) },
+                    { .6, IntColour(255, 45, 10, 175) },
+                    { 1,  IntColour(0, 0, 0, 0) },
+                },
+                scale  = {
+                    { 0,   { guardian_line_max_scale * 0.07, guardian_line_max_scale } },
+                    { 0.2, { guardian_line_max_scale * 0.07, guardian_line_max_scale } },
+                    { 1,   { guardian_line_max_scale * .005, guardian_line_max_scale * 0.6 } },
+                },
+            },
+        },
+
+        num_particles = {
+            ember = 80,
+            around_smoke = 75,
+            line = 8,
+        },
+
+        -- Currently not used
+        -- speeds = {
+        --     ember = 0,
+        --     around_smoke = 0,
+        --     arrow = 0,
+        -- },
+
+        spawn_radius = {
+            ember = 0.25,
+            around_smoke = 0.3,
+            arrow = 0.1,
+        },
+
+        post_init = function(inst)
+            inst.VFXEffect:SetSortOrder(inst.name_index_tab.ember, 1)
+            inst.VFXEffect:SetSortOrder(inst.name_index_tab.around_smoke, 1)
+            inst.VFXEffect:SetSortOrder(inst.name_index_tab.middle_circle, 1)
+            inst.VFXEffect:SetSortOrder(inst.name_index_tab.middle_smoke, 1)
+            inst.VFXEffect:SetSortOrder(inst.name_index_tab.line, 1)
         end,
     },
 }

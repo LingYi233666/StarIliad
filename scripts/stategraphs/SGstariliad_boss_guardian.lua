@@ -6,9 +6,15 @@ end
 
 local events =
 {
-    CommonHandlers.OnAttacked(nil, 2, hit_recovery_skip_cooldown_fn),
+    CommonHandlers.OnAttacked(nil, 1, hit_recovery_skip_cooldown_fn),
     CommonHandlers.OnLocomote(true, true),
-    CommonHandlers.OnDeath(),
+
+    EventHandler("death", function(inst, data)
+        if not inst.sg:HasStateTag("dead") then
+            inst.sg:GoToState("death_pre", data)
+        end
+    end),
+
 
     EventHandler("doattack", function(inst, data)
         if inst.components.health and not inst.components.health:IsDead() and
@@ -96,7 +102,7 @@ local function DoAreaAttack(inst, range, facing_angle, work_damage)
 
     local victims = {}
     for _, v in pairs(ents) do
-        if (facing_angle == nil or StarIliadBasic.GetFaceAngle(inst, v) <= facing_angle * 0.5) and inst:IsNear(v, range + v:GetPhysicsRadius(0)) then
+        if v:IsValid() and (facing_angle == nil or StarIliadBasic.GetFaceAngle(inst, v) <= facing_angle * 0.5) and inst:IsNear(v, range + v:GetPhysicsRadius(0)) then
             if inst.components.combat:CanTarget(v) and not inst.components.combat:IsAlly(v) then
                 inst.components.combat:DoAttack(v)
                 table.insert(victims, v)
@@ -177,6 +183,25 @@ local function DoTauntPound2(inst)
     end
 
     inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
+end
+
+local function MakePowerOnOffLines(start_t, dt, counts)
+    local timeline = {}
+
+    for i = 1, counts do
+        table.insert(timeline,
+            TimeEvent(start_t + dt * (i * 2 - 2), function(inst)
+                inst:SetBluePower(true)
+            end)
+        )
+        table.insert(timeline,
+            TimeEvent(start_t + dt * (i * 2 - 1), function(inst)
+                inst:SetBluePower(false)
+            end)
+        )
+    end
+
+    return unpack(timeline)
 end
 
 local states =
@@ -327,18 +352,33 @@ local states =
         end,
 
         timeline = {
-            TimeEvent(0, function(inst)
-
-            end),
-
             TimeEvent(10 * FRAMES, function(inst)
-                inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/taunt")
+                -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/taunt")
+
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/taunt1")
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/taunt2")
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/taunt3")
+
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/destroy3", "destroy3")
+
+
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/hurt")
+                -- inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
+
+                inst.SoundEmitter:PlaySound("grotto/creatures/centipede/taunt")
+
+
                 ShakeRoar(inst)
             end),
 
             TimeEvent(24 * FRAMES, PlayChestPoundSounds),
             TimeEvent(28 * FRAMES, PlayChestPoundSounds),
             TimeEvent(32 * FRAMES, PlayChestPoundSounds),
+
+            TimeEvent(30 * FRAMES, function(inst)
+                inst.SoundEmitter:KillSound("destroy3")
+            end),
+
             TimeEvent(36 * FRAMES, PlayChestPoundSounds),
         },
 
@@ -348,6 +388,10 @@ local states =
                 inst.sg:GoToState("idle")
             end),
         },
+
+        onexit = function(inst)
+            inst.SoundEmitter:KillSound("destroy3")
+        end
     },
 
     State {
@@ -412,6 +456,161 @@ local states =
             end),
         },
     },
+
+    State {
+        name = "death_pre",
+        tags = { "busy", "dead" },
+
+        onenter = function(inst)
+            inst.Physics:Stop()
+            inst.AnimState:PlayAnimation("stun_loop", true)
+
+            inst:SetMusicLevel(1)
+
+            inst.sg.statemem.fx = inst:SpawnChild("stariliad_boss_guardian_glitch_fx", inst)
+            inst.sg.statemem.fx.entity:AddFollower()
+            inst.sg.statemem.fx.Follower:FollowSymbol(inst.GUID, "body", 0, 0, 0)
+
+            inst.SoundEmitter:PlaySound("dontstarve/impacts/lava_arena/electric", "electric")
+
+            inst.sg:SetTimeout(3)
+        end,
+
+        timeline = {
+            TimeEvent(1 * FRAMES, function(inst)
+                local explode = inst:SpawnChild("stariliad_boss_guardian_explode_small_fx")
+                explode.entity:AddFollower()
+                explode.Follower:FollowSymbol(inst.GUID, "head", 0, 275, 0)
+
+                -- local smokes = inst:SpawnChild("stariliad_small_explode_blue_particle")
+                -- smokes.entity:AddFollower()
+                -- smokes.Follower:FollowSymbol(inst.GUID, "head", 0, 0, 0)
+
+
+                -- inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_explo")
+                inst.SoundEmitter:PlaySound("dontstarve/impacts/lava_arena/hammer")
+
+                inst:SetEyeFlame(0)
+            end),
+
+            TimeEvent(16 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/glitch_loop", "glitch_loop")
+            end),
+        },
+
+        ontimeout = function(inst)
+            inst.sg:GoToState("death")
+        end,
+
+        onexit = function(inst)
+            if inst.sg.statemem.fx and inst.sg.statemem.fx:IsValid() then
+                inst.sg.statemem.fx:KillFX()
+            end
+
+            inst.SoundEmitter:KillSound("electric")
+        end
+    },
+
+    State {
+        name = "death",
+        tags = { "busy", "dead" },
+
+        onenter = function(inst)
+            inst.components.locomotor:StopMoving()
+            inst.AnimState:PlayAnimation("death")
+
+            inst.sg.statemem.fires = {}
+        end,
+
+        timeline = {
+            TimeEvent(0, function(inst)
+                -- inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/death")
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/taunt2", "roar_before_explode")
+
+                -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/glitch_loop", "roar_before_explode")
+
+                inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/hurt")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
+
+                ShakePound(inst)
+            end),
+
+            TimeEvent(13 * FRAMES, function(inst)
+                local pos = inst:GetPosition()
+                pos.y = pos.y + 4
+                inst.components.lootdropper:DropLoot(pos)
+
+                inst.AnimState:HideSymbol("horns")
+
+                inst:SetEyeFlame(0)
+                inst:TurnOffLight()
+
+                ShakePound(inst)
+
+                local explode = inst:SpawnChild("stariliad_boss_guardian_explode_large_fx")
+                explode.entity:AddFollower()
+                explode.Follower:FollowSymbol(inst.GUID, "head", 0, 0, 0)
+
+                local particle = inst:SpawnChild("stariliad_guardian_explode_particle")
+                particle.entity:AddFollower()
+                particle.Follower:FollowSymbol(inst.GUID, "head", 0, 0, 0)
+
+                local fire_offsets = {
+                    Vector3(0, 0, 0),
+                    Vector3(-24, 10, 0),
+                    Vector3(15, -10, 0),
+                }
+                local fire_remove_t = 6
+
+                for _, v in pairs(fire_offsets) do
+                    local fire = inst:SpawnChild("stariliad_guardian_death_fire_particle")
+                    fire.entity:AddFollower()
+                    fire.Follower:FollowSymbol(inst.GUID, "head", v.x + 24, v.y - 124, v.z)
+                    fire:DoTaskInTime(fire_remove_t, fire.Remove)
+                end
+
+                local smoke = inst:SpawnChild("stariliad_smoke_trail")
+                smoke.entity:AddFollower()
+                smoke.Follower:FollowSymbol(inst.GUID, "head", 24, -124, 0)
+                smoke:DoTaskInTime(fire_remove_t + 3, smoke.Remove)
+
+                inst.SoundEmitter:PlaySound("dontstarve/wilson/torch_LP", "fire")
+                inst.SoundEmitter:SetParameter("fire", "intensity", 1)
+
+                inst:DoTaskInTime(fire_remove_t, function()
+                    inst.SoundEmitter:PlaySound("dontstarve/common/fireOut")
+                    inst.SoundEmitter:KillSound("fire")
+                end)
+
+                -- inst.SoundEmitter:KillSound("roar_before_explode")
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/shatter")
+                inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/death2")
+            end),
+
+            TimeEvent(43 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
+                ShakePound(inst)
+            end),
+
+            TimeEvent(62 * FRAMES, function(inst)
+                -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
+                inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
+                -- inst.SoundEmitter:PlaySound("dontstarve/creatures/deerclops/bodyfall_dirt")
+
+                inst.AnimState:HideSymbol("chest")
+
+                ShakePound(inst)
+            end),
+
+            TimeEvent(92 * FRAMES, function(inst)
+                inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
+
+                inst:SetBluePower(false)
+            end),
+
+            MakePowerOnOffLines(93 * FRAMES, FRAMES, 8),
+        },
+    },
 }
 
 CommonStates.AddIdle(states,
@@ -436,7 +635,10 @@ CommonStates.AddHitState(states,
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
                 inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
             else
-                inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/hit")
+                -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/hit")
+                inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/guardian/hurt")
+                -- inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
+                -- inst.SoundEmitter:PlaySound("grotto/creatures/centipede/hit_react")
             end
         end),
 
@@ -452,65 +654,6 @@ CommonStates.AddHitState(states,
     end
 )
 
-local function MakePowerOnOffLines(start_t, dt, counts)
-    local timeline = {}
-
-    for i = 1, counts do
-        table.insert(timeline,
-            TimeEvent(start_t + dt * (i * 2 - 2), function(inst)
-                inst:SetBluePower(true)
-            end)
-        )
-        table.insert(timeline,
-            TimeEvent(start_t + dt * (i * 2 - 1), function(inst)
-                inst:SetBluePower(false)
-            end)
-        )
-    end
-
-    return unpack(timeline)
-end
-
-CommonStates.AddDeathState(states,
-    {
-        TimeEvent(0, function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/death")
-            ShakePound(inst)
-        end),
-
-        TimeEvent(13 * FRAMES, function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/slurtle/shatter")
-
-            inst.AnimState:HideSymbol("horns")
-
-            inst:SetEyeFlame(0)
-            inst:TurnOffLight()
-        end),
-
-        TimeEvent(43 * FRAMES, function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve/creatures/lava_arena/boarrior/bonehit2")
-            ShakePound(inst)
-        end),
-
-        TimeEvent(62 * FRAMES, function(inst)
-            -- inst.SoundEmitter:PlaySound("dontstarve/forge2/beetletaur/chain_hit")
-            inst.SoundEmitter:PlaySound("dontstarve_DLC001/creatures/bearger/groundpound")
-            -- inst.SoundEmitter:PlaySound("dontstarve/creatures/deerclops/bodyfall_dirt")
-
-            inst.AnimState:HideSymbol("chest")
-
-            ShakePound(inst)
-        end),
-
-        TimeEvent(92 * FRAMES, function(inst)
-            inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
-
-            inst:SetBluePower(false)
-        end),
-
-        MakePowerOnOffLines(93 * FRAMES, FRAMES, 8)
-    }
-)
 
 CommonStates.AddRunStates(states, {
     runtimeline = {

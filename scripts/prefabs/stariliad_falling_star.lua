@@ -1,5 +1,10 @@
 local assets = {
     Asset("ANIM", "anim/stariliad_falling_star.zip"),
+
+    Asset("IMAGE", "images/inventoryimages/stariliad_falling_star.tex"),
+    Asset("ATLAS", "images/inventoryimages/stariliad_falling_star.xml"),
+    Asset("IMAGE", "images/inventoryimages/stariliad_falling_star_cooked.tex"),
+    Asset("ATLAS", "images/inventoryimages/stariliad_falling_star_cooked.xml"),
 }
 
 local FISH_DATA = require("prefabs/oceanfishdef")
@@ -198,10 +203,11 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.imagename = "stariliad_falling_star"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/stariliad_falling_star.xml"
     inst.components.inventoryitem:SetSinks(true)
     inst.components.inventoryitem:SetOnDroppedFn(OnDropped)
     inst.components.inventoryitem:SetOnPutInInventoryFn(OnPutInInventory)
-    StarIliadDebug.SetDebugInventoryImage(inst)
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM
@@ -236,9 +242,7 @@ local function cooked_fn()
 
     inst.AnimState:SetBank("stariliad_falling_star")
     inst.AnimState:SetBuild("stariliad_falling_star")
-    inst.AnimState:PlayAnimation("idle")
-
-    inst.AnimState:SetMultColour(0.4, 0.4, 0.4, 1)
+    inst.AnimState:PlayAnimation("idle_cooked")
 
     inst.entity:SetPristine()
 
@@ -249,8 +253,9 @@ local function cooked_fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
+    inst.components.inventoryitem.imagename = "stariliad_falling_star_cooked"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/stariliad_falling_star_cooked.xml"
     inst.components.inventoryitem:SetSinks(true)
-    StarIliadDebug.SetDebugInventoryImage(inst)
 
     inst:AddComponent("stackable")
     inst.components.stackable.maxsize = TUNING.STACK_SIZE_SMALLITEM

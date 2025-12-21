@@ -9,6 +9,9 @@ local assets =
     Asset("ANIM", "anim/healing_flower.zip"),
     Asset("ANIM", "anim/fossilized.zip"),
 
+    Asset("ANIM", "anim/lavaarena_hammer_attack_fx.zip"),
+
+
     Asset("ANIM", "anim/stariliad_boss_guardian.zip"),
     Asset("ANIM", "anim/stariliad_boss_guardian_no_power.zip"),
     -- Asset("ANIM", "anim/stariliad_boss_guardian_head_fix.zip"),
@@ -17,11 +20,25 @@ local assets =
 SetSharedLootTable("stariliad_boss_guardian",
     {
         { "blythe_unlock_skill_item_super_missile", 1.0 },
+
         { "gears",                                  1.0 },
         { "gears",                                  0.5 },
-        { "nightmarefuel",                          1.0 },
+
         { "transistor",                             1.0 },
-        { "transistor",                             1.0 },
+        { "transistor",                             0.5 },
+
+        { "trinket_6",                              1.0 },
+        -- { "trinket_6",                              1.0 },
+        { "trinket_6",                              0.5 },
+
+        { "thulecite_pieces",                       1.0 },
+        { "thulecite_pieces",                       1.0 },
+        { "thulecite_pieces",                       1.0 },
+        -- { "thulecite_pieces",                       1.0 },
+        -- { "thulecite_pieces",                       1.0 },
+        -- { "thulecite_pieces",                       1.0 },
+        -- { "thulecite_pieces",                       1.0 },
+        { "thulecite_pieces",                       0.5 },
     }
 )
 
@@ -267,7 +284,9 @@ local function OnHealthDelta(inst, data)
         if inst.damage_to_defense <= 0 then
             inst:SetDefensiveMode(true)
 
-            inst.damage_threshold = math.min(inst.damage_threshold + 34, 500)
+            inst.damage_threshold = math.min(
+                inst.damage_threshold + TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_ADDITION,
+                TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_MAX)
             inst.damage_to_defense = inst.damage_threshold
         end
     end
@@ -280,6 +299,10 @@ local function OnAttacked(inst, data)
 end
 
 local function OnNewCombatTarget(inst, data)
+    if inst.components.health:IsDead() then
+        return
+    end
+
     if inst.loss_target_task then
         inst.loss_target_task:Cancel()
         inst.loss_target_task = nil
@@ -310,6 +333,14 @@ local function OnDroppedTarget(inst, data)
     inst.old_target_fix = nil
     inst.last_loss_target_time = GetTime()
 end
+
+local function OnLootSpawned(inst, data)
+    if data.loot then
+        local fx = SpawnPrefab("stariliad_enemy_die_smoke_black")
+        fx:SetTarget(data.loot)
+    end
+end
+
 
 local function fn()
     local inst = CreateEntity()
@@ -355,10 +386,10 @@ local function fn()
 
     inst:AddTag("monster")
     inst:AddTag("hostile")
+    inst:AddTag("mech")
     inst:AddTag("largecreature")
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
-
 
     inst:AddComponent("talker")
     inst.components.talker.fontsize = 40
@@ -407,10 +438,16 @@ local function fn()
 
     inst:AddComponent("health")
     inst.components.health:SetMaxHealth(4000)
-    inst.components.health.destroytime = 8
+    -- inst.components.health.destroytime = 8
+    inst.components.health.destroytime = 12
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("stariliad_boss_guardian")
+    inst.components.lootdropper.min_speed = 2
+    inst.components.lootdropper.max_speed = 4
+    inst.components.lootdropper.y_speed = 32
+    inst.components.lootdropper.y_speed_variance = 8
+    inst.components.lootdropper.spawn_loot_inside_prefab = true
 
     inst:AddComponent("sanityaura")
     inst.components.sanityaura.aura = -TUNING.SANITYAURA_HUGE
@@ -446,6 +483,8 @@ local function fn()
     inst:ListenForEvent("attacked", OnAttacked)
     inst:ListenForEvent("newcombattarget", OnNewCombatTarget)
     inst:ListenForEvent("droppedtarget", OnDroppedTarget)
+    inst:ListenForEvent("loot_prefab_spawned", OnLootSpawned)
+
 
     -- inst:SetEyeFlame(1)
 
@@ -485,6 +524,120 @@ local function break_fx_fn()
     return inst
 end
 
+local function glitch_fx_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("lavaarena_hammer_attack_fx")
+    inst.AnimState:SetBuild("lavaarena_hammer_attack_fx")
+    inst.AnimState:PlayAnimation("crackle_loop")
+    inst.AnimState:SetBloomEffectHandle("shaders/anim.ksh")
+    inst.AnimState:SetFinalOffset(1)
+
+    inst.AnimState:SetAddColour(255 / 255, 255 / 255, 255 / 255, 1)
+
+    local s = 3
+    inst.Transform:SetScale(s, s, s)
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst.KillFX = function()
+        inst.perish = true
+    end
+
+    inst:ListenForEvent("animover", function()
+        if inst.perish then
+            if inst.AnimState:IsCurrentAnimation("crackle_pst") then
+                inst:Remove()
+            else
+                inst.AnimState:PlayAnimation("crackle_pst")
+            end
+        else
+            inst.AnimState:PlayAnimation("crackle_loop")
+        end
+    end)
+
+    return inst
+end
+
+local function explode_small_fx_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("slingshotammo")
+    inst.AnimState:SetBuild("slingshotammo")
+    inst.AnimState:PlayAnimation("used_gunpowder")
+    inst.AnimState:SetLightOverride(1)
+
+    local s = 1.5
+    inst.Transform:SetScale(s, s, s)
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst:ListenForEvent("animover", inst.Remove)
+
+    return inst
+end
+
+local function explode_large_fx_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBank("lavaarena_firebomb")
+    inst.AnimState:SetBuild("lavaarena_firebomb")
+    inst.AnimState:PlayAnimation("used")
+    inst.AnimState:SetLightOverride(1)
+
+    local s = 2
+    inst.Transform:SetScale(s, s, s)
+
+    inst:AddTag("FX")
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst:ListenForEvent("animover", inst.Remove)
+
+    return inst
+end
+
+
 
 return Prefab("stariliad_boss_guardian", fn, assets),
-    Prefab("stariliad_boss_guardian_break_fx", break_fx_fn, assets)
+    Prefab("stariliad_boss_guardian_break_fx", break_fx_fn, assets),
+    Prefab("stariliad_boss_guardian_glitch_fx", glitch_fx_fn, assets),
+    Prefab("stariliad_boss_guardian_explode_small_fx", explode_small_fx_fn, assets),
+    Prefab("stariliad_boss_guardian_explode_large_fx", explode_large_fx_fn, assets)

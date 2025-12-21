@@ -39,7 +39,7 @@ local image_dataset = {
     },
 
     archive = {
-        path = "levels/interiors/stariliad_wall_archive2.tex",
+        path = "levels/interiors/stariliad_wall_archive4.tex",
         width = 512,        -- 图像宽度
         height = 512,       -- 图像高度
         height_sink = 10,   -- 高度下沉，可以让图像向下移动一些距离，掩盖底端像素的瑕疵

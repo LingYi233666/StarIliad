@@ -114,7 +114,7 @@ local function explode_small_blue_fn()
     inst.vfx.entity:AddFollower()
     inst.vfx.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
 
-    inst:DoTaskInTime(0, function()
+    inst.sound_task = inst:DoTaskInTime(0, function()
         inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/blaster/p1_explode")
         -- inst.SoundEmitter:PlaySound("rifts5/wagstaff_boss/missile_explode")
     end)

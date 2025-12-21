@@ -95,6 +95,11 @@ PrefabFiles = {
 
     "stariliad_interior_wall",
     "stariliad_interior_camera",
+
+    "stariliad_enemy_die_smoke_fx",
+
+    "stariliad_fire_particle",
+    "stariliad_smoke_trail",
 }
 
 -- See stariliad_main_assets.lua
