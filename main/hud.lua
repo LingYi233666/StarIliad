@@ -7,6 +7,7 @@ local BlytheMissileStatus = require "widgets/blythe_missile_status"
 local BlytheTV = require "widgets/blythe_tv"
 local StarIliadTipUI = require "widgets/stariliad_tip_ui"
 local StariliadShakingText = require "widgets/stariliad_shaking_text"
+local StarIliadOpening = require "cutscenes/stariliad_opening/stariliad_opening"
 
 AddClassPostConstruct("widgets/controls", function(self)
     if self.owner:HasTag("blythe") then
@@ -28,6 +29,18 @@ AddClassPostConstruct("widgets/controls", function(self)
         )
 
         self.StarIliadMenuCaller:SetPosition(75, 28)
+
+        self.StarIliadDebugButton = self.StarIliadMenuCaller_root:AddChild(
+            TEMPLATES.StandardButton(
+                function()
+                    TheFrontEnd:PushScreen(StarIliadOpening())
+                end,
+                "DEBUG BUTTON",
+                { 140, 60 }
+            )
+        )
+
+        self.StarIliadDebugButton:SetPosition(75, 100)
 
 
         -- Blythe TV

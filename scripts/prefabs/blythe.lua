@@ -118,6 +118,10 @@ local function OnToolBroken(inst, data)
 	end
 end
 
+local function OnNewSpawn(inst)
+	inst.components.inventory:Equip(SpawnAt("blythe_backpack", inst), nil, true)
+end
+
 --这个函数将在服务器和客户端都会执行
 --一般用于添加小地图标签等动画文件或者需要主客机都执行的组件（少数）
 local common_postinit = function(inst)
@@ -233,6 +237,8 @@ local master_postinit = function(inst)
 	--         end
 	--     end
 	-- end
+
+	inst.OnNewSpawn = OnNewSpawn
 end
 
 return MakePlayerCharacter("blythe", prefabs, assets, common_postinit, master_postinit, start_inv)

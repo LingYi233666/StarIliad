@@ -11,6 +11,7 @@ local function MyAddStaticLayout(name, path, additional_props)
 	Layouts[name] = StaticLayout.Get(path, additional_props)
 
 	Layouts[name].ground_types[WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
+	Layouts[name].ground_types[17] = WORLD_TILES.MARSH
 
 	return Layouts[name]
 end
@@ -24,6 +25,14 @@ Layouts["stariliad_alien_ruin_missile"] = StaticLayout.Get("map/static_layouts/s
 })
 -- Layouts["stariliad_alien_ruin_missile"].ground_types[62] = WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB
 MyAddStaticLayout("stariliad_gorgoroth_hideout", "map/static_layouts/stariliad_gorgoroth_hideout")
+MyAddStaticLayout("stariliad_bonus_grass_missile", "map/static_layouts/stariliad_bonus_grass_missile")
+MyAddStaticLayout("stariliad_bonus_sanityrock_missile", "map/static_layouts/stariliad_bonus_sanityrock_missile")
+MyAddStaticLayout("stariliad_bonus_pigguard_missile", "map/static_layouts/stariliad_bonus_pigguard_missile")
+MyAddStaticLayout("stariliad_bonus_tallbird_missile", "map/static_layouts/stariliad_bonus_tallbird_missile")
+MyAddStaticLayout("stariliad_bonus_tentacle_missile", "map/static_layouts/stariliad_bonus_tentacle_missile")
+MyAddStaticLayout("stariliad_bonus_bishop_missile", "map/static_layouts/stariliad_bonus_bishop_missile")
+MyAddStaticLayout("stariliad_bonus_leif_missile", "map/static_layouts/stariliad_bonus_leif_missile")
+MyAddStaticLayout("stariliad_bonus_spiderden_missile", "map/static_layouts/stariliad_bonus_spiderden_missile")
 
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
 	areas = {
@@ -203,7 +212,50 @@ AddTaskSetPreInit("default", function(taskset)
 		"Lightning Bluff",
 	}
 
+	local tasks_optional = {
+		"Befriend the pigs",
+		"Kill the spiders",
+		"Killer bees!",
+		"Make a Beehat",
+		"The hunters",
+		"Magic meadow",
+		"Frogs and bugs",
+		"Mole Colony Deciduous",
+		"Mole Colony Rocks",
+		"MooseBreedingTask",
+	}
+
+	local tasks_except_begin = {
+		-- "Make a pick",
+		-- "Dig that rock",
+		"Great Plains",
+		"Squeltch",
+		"Beeeees!",
+		"Speak to the king",
+		"Forest hunters",
+		"Badlands",
+		"For a nice walk",
+		"Lightning Bluff",
+	}
+	tasks_except_begin = ArrayUnion(tasks_except_begin, tasks_optional)
+
+
 	taskset.set_pieces["stariliad_alien_ruin_missile"] = { count = 1, tasks = { "Dig that rock", } }
+	taskset.set_pieces["stariliad_bonus_grass_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_sanityrock_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_pigguard_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_tallbird_missile"] = {
+		count = 1,
+		tasks = {
+			-- "Dig that rock",
+			"Badlands",
+			"Lightning Bluff",
+		}
+	}
+	taskset.set_pieces["stariliad_bonus_tentacle_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_bishop_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_leif_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_bonus_spiderden_missile"] = { count = 1, tasks = tasks_except_begin }
 
 	table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 

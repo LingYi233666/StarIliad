@@ -273,6 +273,11 @@ local STARILIAD_MUSIC = {
         "",
         "stariliad_music/music/spire_boss_1",
     },
+
+    stariliad_boss_hexa_ghost = {
+        "",
+        "stariliad_music/music/spire_boss_1",
+    },
 }
 
 AddComponentPostInit("dynamicmusic", function(self)

@@ -87,6 +87,81 @@ AddPrefabPostInit("forest", function(inst)
     inst:AddComponent("stariliad_weather_falling_star")
 end)
 
+AddPrefabPostInit("tallbirdnest", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    local function AddStariliadMissile(inst)
+        if not inst.components.pickable then
+            return
+        end
+
+        if inst.components.pickable.canbepicked then
+            inst.components.pickable:MakeEmpty()
+        end
+
+        inst.components.pickable:ChangeProduct("blythe_unlock_skill_item_missile")
+        inst.components.pickable:Regen()
+    end
+
+    -- c_spawn("tallbirdnest"):AddStariliadMissile()
+    inst.AddStariliadMissile = AddStariliadMissile
+
+    local old_onpickedfn = inst.components.pickable.onpickedfn
+    inst.components.pickable.onpickedfn = function(inst, picker, ...)
+        local ret = { old_onpickedfn(inst, picker, ...) }
+
+        if inst.components.pickable.product == "blythe_unlock_skill_item_missile" then
+            inst.components.pickable:ChangeProduct("tallbirdegg")
+            inst.AnimState:ClearOverrideSymbol("egg01")
+        end
+
+        return unpack(ret)
+    end
+
+    local old_onregenfn = inst.components.pickable.onregenfn
+    inst.components.pickable.onregenfn = function(inst, ...)
+        local ret = { old_onregenfn(inst, ...) }
+
+        if inst.components.pickable.product == "blythe_unlock_skill_item_missile" then
+            inst.AnimState:OverrideSymbol("egg01", "blythe_missile_tank", "normal_in_nest")
+        end
+
+        return unpack(ret)
+    end
+
+    local old_OnSave = inst.OnSave
+
+    inst.OnSave = function(inst, data, ...)
+        old_OnSave(inst, data, ...)
+
+        if inst.components.pickable.product == "blythe_unlock_skill_item_missile" then
+            data.is_stariliad_missile = true
+        end
+    end
+
+    local old_OnLoad = inst.OnLoad
+
+    inst.OnLoad = function(inst, data, ...)
+        old_OnLoad(inst, data, ...)
+
+        if data ~= nil and data.is_stariliad_missile == true then
+            AddStariliadMissile(inst)
+        end
+    end
+
+    local old_onspawned = inst.components.childspawner.onspawned
+    inst.components.childspawner:SetSpawnedFn(function(inst, ...)
+        if inst.components.pickable.product == "blythe_unlock_skill_item_missile" then
+            return
+        end
+
+        return old_onspawned(inst, ...)
+    end)
+end)
+
+
 AddPrefabPostInitAny(function(inst)
     if not TheNet:IsDedicated() then
         if inst.components.pointofinterest or inst:HasTag("epic") then

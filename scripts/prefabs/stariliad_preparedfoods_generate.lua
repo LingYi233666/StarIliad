@@ -124,9 +124,11 @@ local function MakePreparedFood(data)
         else
             StarIliadDebug.SetDebugInventoryImage(inst)
         end
+
         if data.sinks then
             inst.components.inventoryitem:SetSinks(true)
         end
+
         if data.OnPutInInventory then
             inst:ListenForEvent("onputininventory", data.OnPutInInventory)
         end

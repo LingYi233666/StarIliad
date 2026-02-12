@@ -1,0 +1,152 @@
+return {
+  version = "1.1",
+  luaversion = "5.1",
+  orientation = "orthogonal",
+  width = 2,
+  height = 2,
+  tilewidth = 64,
+  tileheight = 64,
+  properties = {},
+  tilesets = {
+    {
+      name = "ground",
+      firstgid = 1,
+      filename = "../../../../../../Don't Starve Mod Tools/mod_tools/Tiled/dont_starve/ground.tsx",
+      tilewidth = 64,
+      tileheight = 64,
+      spacing = 0,
+      margin = 0,
+      image = "../../../../../../Don't Starve Mod Tools/mod_tools/Tiled/dont_starve/tiles.png",
+      imagewidth = 512,
+      imageheight = 384,
+      properties = {},
+      tiles = {}
+    }
+  },
+  layers = {
+    {
+      type = "tilelayer",
+      name = "BG_TILES",
+      x = 0,
+      y = 0,
+      width = 2,
+      height = 2,
+      visible = true,
+      opacity = 1,
+      properties = {},
+      encoding = "lua",
+      data = {
+        17, 17,
+        17, 17
+      }
+    },
+    {
+      type = "objectgroup",
+      name = "FG_OBJECTS",
+      visible = true,
+      opacity = 1,
+      properties = {},
+      objects = {
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 64,
+          y = 0,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 96,
+          y = 32,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 96,
+          y = 96,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 32,
+          y = 32,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 0,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 64,
+          y = 128,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 32,
+          y = 96,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "tentacle",
+          shape = "rectangle",
+          x = 128,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "blythe_unlock_skill_item_missile",
+          shape = "rectangle",
+          x = 64,
+          y = 64,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        }
+      }
+    }
+  }
+}

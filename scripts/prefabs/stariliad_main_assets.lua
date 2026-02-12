@@ -7,6 +7,10 @@ local assets =
 
     Asset("ANIM", "anim/spell_icons_blythe.zip"),
 
+    -- Test backpack anim
+    Asset("ANIM", "anim/blythe_backpack.zip"),
+    -- ThePlayer.AnimState:OverrideSymbol("swap_body", "blythe_backpack", "swap_body")
+
 
     -- Common height controller
     Asset("ANIM", "anim/stariliad_height_controller.zip"),
@@ -15,6 +19,8 @@ local assets =
     Asset("ANIM", "anim/player_pistol.zip"),
 
     Asset("ANIM", "anim/blythe_tv.zip"),
+
+    Asset("ANIM", "anim/stariliad_cutscene_opening.zip"),
 
     -- swap beam ui
     Asset("IMAGE", "images/ui/stariliad_8star.tex"),

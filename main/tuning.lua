@@ -134,12 +134,17 @@ TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_MAX = 750
 TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE = 34
 
 --选人界面初始物品显示
-TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.BLYTHE = { "blythe_blaster" }
+TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.BLYTHE = { "blythe_blaster", "blythe_backpack" }
 
 -- 如果你的初始物品是mod物品需要定义mod物品的图片路径 比如物品是 abc
 TUNING.STARTING_ITEM_IMAGE_OVERRIDE["blythe_blaster"] = {
 	atlas = "images/inventoryimages/blythe_blaster.xml",
 	image = "blythe_blaster.tex",
+}
+
+TUNING.STARTING_ITEM_IMAGE_OVERRIDE["blythe_backpack"] = {
+	atlas = "images/inventoryimages/blythe_backpack.xml",
+	image = "blythe_backpack.tex",
 }
 
 

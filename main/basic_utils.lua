@@ -348,4 +348,10 @@ end
 --     item.Physics:SetVel(xz_speed * math.cos(angle), y_speed, xz_speed * math.sin(angle))
 -- end
 
+local containers = require("containers")
+local containers_params = containers.params
+function StarIliadBasic.AddContainersParams(prefab, params)
+    containers_params[prefab] = params
+end
+
 GLOBAL.StarIliadBasic = StarIliadBasic

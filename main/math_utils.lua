@@ -117,4 +117,38 @@ function StarIliadMath.NormalDistribution(mean, stddev)
     return normal_distribution_z0 * stddev + mean
 end
 
+function StarIliadMath.GetDistPointToLine(point_A, point_B, point_C)
+    local AB = point_B - point_A
+    local AC = point_C - point_A
+
+    if AB:Length() <= 0 then
+        return AC:Length()
+    end
+
+    return (AB:Cross(AC)):Length() / AB:Length()
+
+    -- -- 1. 计算向量 AB 和 AC
+    -- local AB_x = point_B.x - point_A.x
+    -- local AB_y = point_B.y - point_A.y
+
+    -- local AC_x = point_C.x - point_A.x
+    -- local AC_y = point_C.y - point_A.y
+
+    -- -- 2. 计算 AB 和 AC 的二维叉乘 (Cross Product)
+    -- -- 在 2D 中，这代表了两个向量围成的平行四边形的面积（有正负）
+    -- local cross_product = math.abs(AB_x * AC_y - AB_y * AC_x)
+
+    -- -- 3. 计算底边 AB 的长度
+    -- local AB_length = math.sqrt(AB_x * AB_x + AB_y * AB_y)
+
+    -- -- 4. 距离 = 面积 / 底边
+    -- -- 检查底边是否为0（即A点和B点重合）
+    -- if AB_length == 0 then
+    --     -- 如果AB重合，距离就是点C到点A的距离
+    --     return math.sqrt(AC_x * AC_x + AC_y * AC_y)
+    -- end
+
+    -- return cross_product / AB_length
+end
+
 GLOBAL.StarIliadMath = StarIliadMath

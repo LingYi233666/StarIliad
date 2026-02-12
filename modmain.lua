@@ -100,6 +100,10 @@ PrefabFiles = {
 
     "stariliad_fire_particle",
     "stariliad_smoke_trail",
+
+    "blythe_backpack",
+
+    "stariliad_boss_hexa_ghost",
 }
 
 -- See stariliad_main_assets.lua
@@ -111,7 +115,8 @@ PREFAB_SKINS["blythe"] = { --修复人物大图显示
     "blythe_none",
 }
 
-AddMinimapAtlas("images/map_icons/blythe.xml") --增加小地图图标
+AddMinimapAtlas("images/map_icons/blythe.xml")          --增加小地图图标
+AddMinimapAtlas("images/map_icons/blythe_backpack.xml") --增加小地图图标
 
 --增加人物到mod人物列表的里面 性别为女性（MALE, FEMALE, ROBOT, NEUTRAL, and PLURAL）
 AddModCharacter("blythe", "FEMALE")
