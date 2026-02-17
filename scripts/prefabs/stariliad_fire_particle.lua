@@ -2,8 +2,8 @@ local TEXTURE = "fx/torchfire.tex"
 
 local ADD_SHADER = "shaders/vfx_particle_add.ksh"
 
-local COLOUR_ENVELOPE_NAME = "firecolourenvelope"
-local SCALE_ENVELOPE_NAME = "firescaleenvelope"
+local COLOUR_ENVELOPE_NAME = "stariliad_guardian_death_fire_firecolourenvelope"
+local SCALE_ENVELOPE_NAME = "stariliad_guardian_death_fire_firescaleenvelope"
 
 local assets =
 {
@@ -77,7 +77,7 @@ local function common_fn()
     inst.persists = false
 
     if TheNet:IsDedicated() then
-        return
+        return inst
     elseif InitEnvelope ~= nil then
         InitEnvelope()
     end
@@ -128,8 +128,8 @@ local function guardian_death_fn()
         fire_num_particles_to_emit = fire_num_particles_to_emit + 1
     end)
 
-
+    -- print("stariliad_guardian_death_fire_particle inst:", inst)
     return inst
 end
-
+-- ThePlayer:SpawnChild("stariliad_guardian_death_fire_particle")
 return Prefab("stariliad_guardian_death_fire_particle", guardian_death_fn, assets)

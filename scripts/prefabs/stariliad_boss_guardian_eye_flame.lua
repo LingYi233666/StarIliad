@@ -1,9 +1,9 @@
 local ADD_SHADER = "shaders/vfx_particle.ksh"
 
 local SMOKE_TEXTURE = "fx/smoke.tex"
-local COLOUR_ENVELOPE_NAME_BLUE = "eye_flame_blue_colourenvelope"
-local COLOUR_ENVELOPE_NAME_RED = "eye_flame_red_colourenvelope"
-local SCALE_ENVELOPE_NAME = "eye_flame_scaleenvelope"
+local COLOUR_ENVELOPE_NAME_BLUE = "stariliad_boss_guardian_eye_flame_blue_colourenvelope"
+local COLOUR_ENVELOPE_NAME_RED = "stariliad_boss_guardian_eye_flame_red_colourenvelope"
+local SCALE_ENVELOPE_NAME = "stariliad_boss_guardian_eye_flame_scaleenvelope"
 
 
 local assets =
@@ -81,14 +81,23 @@ local function common_fn()
 
     inst:AddTag("FX")
 
+    inst.entity:SetPristine()
+
+    inst.persists = false
+
     --Dedicated server does not need to spawn local particle fx
-    if InitEnvelope ~= nil and not TheNet:IsDedicated() then
+    -- if InitEnvelope ~= nil and not TheNet:IsDedicated() then
+    --     InitEnvelope()
+    -- end
+
+    if TheNet:IsDedicated() then
+        return inst
+    elseif InitEnvelope ~= nil then
         InitEnvelope()
     end
 
     local effect = inst.entity:AddVFXEffect()
     effect:InitEmitters(1)
-
 
     --normal
     effect:SetRenderResources(0, SMOKE_TEXTURE, ADD_SHADER)
@@ -122,20 +131,16 @@ local function common_fn()
     --     inst.VFXEffect:ClearAllParticles(0)
     -- end)
 
-    inst.entity:SetPristine()
-
-    if not TheWorld.ismastersim then
-        return inst
-    end
-
-    inst.persists = false
-
-
     return inst
 end
 
 local function fn_red()
     local inst = common_fn()
+
+    if TheNet:IsDedicated() then
+        return inst
+    end
+
     inst.VFXEffect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME_RED)
 
     return inst
@@ -143,6 +148,11 @@ end
 
 local function fn_blue()
     local inst = common_fn()
+
+    if TheNet:IsDedicated() then
+        return inst
+    end
+
     inst.VFXEffect:SetColourEnvelope(0, COLOUR_ENVELOPE_NAME_BLUE)
 
     return inst

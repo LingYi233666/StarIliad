@@ -5,6 +5,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins.zip"),
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
     Asset("ANIM", "anim/stariliad_alien_statue_chozo.zip"),
+    Asset("ANIM", "anim/stariliad_alien_statue_chozo_dodge.zip"),
 
     Asset("ANIM", "anim/lavaarena_portal.zip"),
     Asset("ANIM", "anim/lavaarena_keyhole.zip"),
@@ -148,6 +149,52 @@ end
 
 ------------------------------------------------------------------------------------
 
+local function OnPickedDodgeChozo(inst, picker)
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
+    -- inst.AnimState:ClearOverrideSymbol("swap_gem")
+
+    inst.AnimState:HideSymbol("swap_object")
+end
+
+local function OnRegenDodgeChozo(inst)
+    inst.AnimState:ShowSymbol("swap_object")
+end
+
+local function MakeEmptyDodgeChozo(inst)
+    inst.AnimState:HideSymbol("swap_object")
+end
+
+local function wrapper_dodge_chozo(item_prefab)
+    local function fn()
+        local inst = common_fn("stariliad_alien_statue_chozo_dodge", "stariliad_alien_statue_chozo_dodge", "idle", nil,
+            item_prefab, 10,
+            "dontstarve/common/floating_statue_hum")
+
+        -- inst.Transform:SetTwoFaced()
+
+        inst.AnimState:ShowSymbol("swap_object")
+
+        -- inst:AddTag("stariliad_pick_high")
+        -- inst:AddTag("stariliad_alien_statue_chozo")
+
+        inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.pickable.onpickedfn = OnPickedDodgeChozo
+        inst.components.pickable.onregenfn = OnRegenDodgeChozo
+        inst.components.pickable.makeemptyfn = MakeEmptyDodgeChozo
+
+        return inst
+    end
+
+    return fn
+end
+
+------------------------------------------------------------------------------------
+
 local function OnPickedBrokenChozo(inst, picker)
     inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
     inst.AnimState:ClearOverrideSymbol("swap_gem")
@@ -281,6 +328,8 @@ for _, data in pairs(BLYTHE_SKILL_DEFINES) do
         -- TODO: Finish ALTAR and MERMAID
         if data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.NORMAL_CHOZO then
             table.insert(rets, Prefab(statue_prefab, wrapper_normal_chozo(item_prefab), assets))
+        elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.DODGE_CHOZO then
+            table.insert(rets, Prefab(statue_prefab, wrapper_dodge_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO then
             table.insert(rets, Prefab(statue_prefab, wrapper_broken_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.ALTAR then

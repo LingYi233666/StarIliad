@@ -161,6 +161,50 @@ AddPrefabPostInit("tallbirdnest", function(inst)
     end)
 end)
 
+AddPrefabPostInit("gears", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    if not inst.components.tradable then
+        inst:AddComponent("tradable")
+    end
+end)
+
+AddPrefabPostInit("pigking", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    local function launchitem(item, angle)
+        local speed = math.random() * 4 + 2
+        angle = (angle + math.random() * 60 - 30) * DEGREES
+        item.Physics:SetVel(speed * math.cos(angle), math.random() * 2 + 8, speed * math.sin(angle))
+    end
+
+    local old_fn = inst.components.trader.onaccept
+
+    local function OnGetItemFromPlayer(inst, giver, item, ...)
+        old_fn(inst, giver, item, ...)
+        if item.components.tradable.goldvalue > 0
+            and inst.sg.currentstate.name == "cointoss" then
+            inst:DoTaskInTime(2 / 3, function()
+                if giver
+                    and giver:IsValid()
+                    and giver.components.blythe_skiller
+                    and not giver.components.blythe_skiller:IsLearned("wide_beam")
+                then
+                    local x, y, z = inst.Transform:GetWorldPosition()
+                    local angle = 180 - giver:GetAngleToPoint(x, 0, z)
+                    local item = SpawnAt("blythe_unlock_skill_item_wide_beam", inst, nil, { 0, 4.5, 0 })
+                    launchitem(item, angle)
+                end
+            end)
+        end
+    end
+
+    inst.components.trader.onaccept = OnGetItemFromPlayer
+end)
 
 AddPrefabPostInitAny(function(inst)
     if not TheNet:IsDedicated() then

@@ -114,6 +114,20 @@ local function OnLightFactorDirty(inst)
     CheckLightOverride(inst)
 end
 
+local function OnFlashEvent(inst)
+    local dt = FRAMES
+
+    inst:SetBluePower(false)
+    for i = 1, 8 do
+        inst:DoTaskInTime(dt * (i * 2 - 2), function()
+            inst:SetBluePower(true)
+        end)
+        inst:DoTaskInTime(dt * (i * 2 - 1), function()
+            inst:SetBluePower(false)
+        end)
+    end
+end
+
 
 local function SetDefensiveMode(inst, val, is_onload)
     local old = inst.defensive_mode
@@ -164,6 +178,7 @@ local function SetBluePower(inst, enable)
         inst.AnimState:OverrideSymbol("body", "stariliad_boss_guardian_no_power", "body")
         inst.AnimState:OverrideSymbol("arm_lower", "stariliad_boss_guardian_no_power", "arm_lower")
     end
+    -- inst.AnimState:FastForward(0)
 
     inst.Light:Enable(enable)
 
@@ -388,6 +403,7 @@ local function fn()
     inst:AddTag("hostile")
     inst:AddTag("mech")
     inst:AddTag("largecreature")
+    inst:AddTag("archive_centipede")
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
 
@@ -411,6 +427,15 @@ local function fn()
     inst._light_factor = net_float(inst.GUID, "inst._light_factor", "lightfactordirty")
     inst._light_factor:set(1.0)
     inst:ListenForEvent("lightfactordirty", OnLightFactorDirty)
+
+    inst._flash_event = net_event(inst.GUID, "flashevent")
+
+    if not TheNet:IsDedicated() then
+        inst.SetBluePower = SetBluePower
+
+        inst:ListenForEvent("flashevent", OnFlashEvent)
+    end
+
 
     inst.entity:SetPristine()
 
@@ -470,7 +495,7 @@ local function fn()
     inst.eye_flames = {}
 
     inst.SetDefensiveMode = SetDefensiveMode
-    inst.SetBluePower = SetBluePower
+    -- inst.SetBluePower = SetBluePower
     inst.TurnOffLight = TurnOffLight
     inst.SetEyeFlame = SetEyeFlame
     inst.OnSave = OnSave

@@ -39,6 +39,7 @@ BLYTHE_SKILL_TYPE = {
 -- See also: stariliad_alien_statue.lua
 STARILIAD_ALIEN_STATUE_TYPE = {
     NORMAL_CHOZO = "NORMAL_CHOZO",
+    DODGE_CHOZO = "DODGE_CHOZO",
     BROKEN_CHOZO = "BROKEN_CHOZO",
     ALTAR = "ALTAR",
     MERMAID = "MERMAID",
@@ -63,6 +64,7 @@ BLYTHE_SKILL_DEFINES = {
     },
 
     -- 猪王树林群系 "Speak to the king"
+    -- Pigking give
     {
         name = "wide_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -70,6 +72,7 @@ BLYTHE_SKILL_DEFINES = {
     },
 
     -- 苔藓地群系 "LichenLand"
+    -- daywalker/daywalker2 boss fight
     {
         name = "wave_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -78,6 +81,7 @@ BLYTHE_SKILL_DEFINES = {
 
     -- 远古档案馆群系 "ArchiveMaze"
     -- 需要额外挑战解码
+    -- TODO: Where to give?
     {
         name = "plasma_beam",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -89,6 +93,7 @@ BLYTHE_SKILL_DEFINES = {
     -- 海象森林群系 "Forest hunters"
     -- or
     -- 曼德拉草森林群系 "For a nice walk"
+    -- TODO: Where to give?
     {
         name = "usurper_shot",
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
@@ -100,6 +105,7 @@ BLYTHE_SKILL_DEFINES = {
     ------------------------------------------------------------------------
 
     -- 混合地群系 "Dig that rock"
+    -- dig that rock give and many event give
     {
         name = "missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
@@ -153,6 +159,7 @@ BLYTHE_SKILL_DEFINES = {
     -- or
     -- 蛛网岩洞穴群系 "SpillagmiteCaverns"
     -- 或者打双子魔眼解锁？
+    -- guardian and gorgoroth give
     {
         name = "super_missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
@@ -214,6 +221,8 @@ BLYTHE_SKILL_DEFINES = {
     ------------------------------------------------------------------------
 
     -- 击败远古守护者获得
+    -- minotour give
+    -- TODO: Add tomb spyder
     {
         name = "speed_burst",
         handle_enable = HandleEnableByComponent("blythe_skill_speed_burst"),
@@ -224,6 +233,7 @@ BLYTHE_SKILL_DEFINES = {
     },
 
     -- 需要额外挑战解码
+    -- TODO: Delete latter
     {
         name = "shock_wave",
 
@@ -236,6 +246,7 @@ BLYTHE_SKILL_DEFINES = {
 
     -- 红蘑菇森林群系 "RedForest"
     -- 需要额外挑战解码
+    -- TODO: Where to give? Add a boss for it
     {
         name = "gravity_control",
         handle_enable = HandleEnableByComponent("blythe_skill_gravity_control"),
@@ -308,6 +319,8 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
 
         -- root = true,
+
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.DODGE_CHOZO,
 
         -- default_key = 1002, --"Middle Mouse Button",
 

@@ -10,6 +10,17 @@ AddReplicableComponent("blythe_skill_speed_burst")
 
 AddReplicableComponent("stariliad_rain_fx_bonus_watcher")
 AddReplicableComponent("stariliad_tip_manager")
+
+--------------------------------------------------------------------
+-- lootdropper modified
+if LootTables.daywalker then
+    table.insert(LootTables.daywalker, { "blythe_unlock_skill_item_wave_beam", 1.0 })
+end
+
+if LootTables.daywalker2 then
+    table.insert(LootTables.daywalker2, { "blythe_unlock_skill_item_wave_beam", 1.0 })
+end
+
 --------------------------------------------------------------------
 -- Damage number API
 

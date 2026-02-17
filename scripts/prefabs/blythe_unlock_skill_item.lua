@@ -1,19 +1,25 @@
 local function MakeItem(data)
     local prefab = "blythe_unlock_skill_item_" .. data.name
     local should_override_name = (STRINGS.NAMES[prefab:upper()] == nil)
+
+    local tex_path = "images/inventoryimages/" .. prefab .. ".tex"
     local xml_path = "images/inventoryimages/" .. prefab .. ".xml"
-    local has_inventoryimage = (resolvefilepath_soft(xml_path) ~= nil)
+    local has_special_inv_image = (resolvefilepath_soft(xml_path) ~= nil)
+
+    if not has_special_inv_image then
+        tex_path = "images/inventoryimages/stariliad_chozo_ability_ball.tex"
+        xml_path = "images/inventoryimages/stariliad_chozo_ability_ball.xml"
+    end
 
     local assets =
     {
         Asset("ANIM", "anim/moonrock_seed.zip"),
         Asset("ANIM", "anim/stariliad_chozo_ability_ball.zip"),
+
+        Asset("IMAGE", tex_path),
+        Asset("ATLAS", xml_path),
     }
 
-    if has_inventoryimage then
-        table.insert(assets, Asset("IMAGE", "images/inventoryimages/" .. prefab .. ".tex"))
-        table.insert(assets, Asset("ATLAS", xml_path))
-    end
 
     if data.build then
         table.insert(assets, Asset("ANIM", "anim/" .. data.build .. ".zip"))
@@ -62,12 +68,12 @@ local function MakeItem(data)
         inst:AddComponent("inspectable")
 
         inst:AddComponent("inventoryitem")
-        if has_inventoryimage then
+        if has_special_inv_image then
             inst.components.inventoryitem.imagename = prefab
-            inst.components.inventoryitem.atlasname = xml_path
         else
-            StarIliadDebug.SetDebugInventoryImage(inst)
+            inst.components.inventoryitem.imagename = "stariliad_chozo_ability_ball"
         end
+        inst.components.inventoryitem.atlasname = xml_path
 
         if data.stack_size then
             inst:AddComponent("stackable")

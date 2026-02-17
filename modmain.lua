@@ -104,6 +104,10 @@ PrefabFiles = {
     "blythe_backpack",
 
     "stariliad_boss_hexa_ghost",
+
+    "stariliad_event_joust_knights",
+
+    "stariliad_hat_gelblob",
 }
 
 -- See stariliad_main_assets.lua

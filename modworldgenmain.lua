@@ -5,7 +5,14 @@ modimport("main/tiles")
 local StaticLayout = require("map/static_layout")
 local Layouts = require("map/layouts").Layouts
 local Tasks = require("map/tasks")
+-- local maze_rooms = require("map/maze_layouts")
 
+-- archive_orchestrina_main
+-- archive_centipede_husk
+-- for dir, v in pairs(maze_rooms.AllLayouts.archive_keyroom) do
+-- 	print("Remove husk:", v.layout.archive_centipede_husk)
+-- 	v.layout.archive_centipede_husk = nil
+-- end
 
 local function MyAddStaticLayout(name, path, additional_props)
 	Layouts[name] = StaticLayout.Get(path, additional_props)
@@ -33,6 +40,9 @@ MyAddStaticLayout("stariliad_bonus_tentacle_missile", "map/static_layouts/staril
 MyAddStaticLayout("stariliad_bonus_bishop_missile", "map/static_layouts/stariliad_bonus_bishop_missile")
 MyAddStaticLayout("stariliad_bonus_leif_missile", "map/static_layouts/stariliad_bonus_leif_missile")
 MyAddStaticLayout("stariliad_bonus_spiderden_missile", "map/static_layouts/stariliad_bonus_spiderden_missile")
+MyAddStaticLayout("stariliad_event_joust", "map/static_layouts/stariliad_event_joust", {
+	disable_transform = true
+})
 
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
 	areas = {
@@ -65,6 +75,48 @@ Layouts.stariliad_chozo_statue_room_sample.layout.stariliad_interior_wall_archiv
 		},
 	}
 }
+
+-- local Layouts = require("map/layouts").Layouts print(Layouts.archive_keyroom)
+
+local keyroom_1 = require("map/static_layouts/rooms/archive_keyroom/keyroom_1")
+-- data.layers[2].objects
+for _, v in pairs(keyroom_1.layers) do
+	if v.name == "FG_OBJECTS" then
+		-- local ids_to_remove = {}
+		-- for id, obj in pairs(v.objects) do
+		-- 	if obj.type == "archive_centipede_husk" then
+		-- 		table.insert(ids_to_remove.id)
+		-- 	end
+		-- end
+
+		local i = 1
+		while i <= #(v.objects) do
+			if v.objects[i].type == "archive_centipede_husk" then
+				print("Remove husk in keyroom_1:", v.objects[i])
+				table.remove(v.objects, i)
+			else
+				i = i + 1
+			end
+		end
+
+
+		local boss_data = {
+			name = "",
+			type = "stariliad_boss_guardian",
+			shape = "rectangle",
+			x = 257,
+			y = 257,
+			width = 0,
+			height = 0,
+			visible = true,
+			properties = {}
+		}
+
+		table.insert(v.objects, boss_data)
+		break
+	end
+end
+
 
 -- si_layout("stariliad_chozo_statue_room_sample")
 
@@ -256,8 +308,10 @@ AddTaskSetPreInit("default", function(taskset)
 	taskset.set_pieces["stariliad_bonus_bishop_missile"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_bonus_leif_missile"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_bonus_spiderden_missile"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_event_joust"] = { count = 1, tasks = tasks_except_begin }
 
 	table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
+	table.insert(taskset.required_prefabs, "stariliad_event_joust")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
@@ -267,9 +321,9 @@ AddTaskSetPreInit("cave_default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
 	assert(taskset.required_prefabs ~= nil)
 
-	-- taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "LichenLand", } }
+	taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "BigBatCave", } }
 
-	-- table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth_spawner")
+	table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")

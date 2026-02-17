@@ -133,6 +133,10 @@ TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_MAX = 750
 --------------------------------------------------------------------------------------------
 TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE = 34
 
+--------------------------------------------------------------------------------------------
+
+--------------------------------------------------------------------------------------------
+
 --选人界面初始物品显示
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.BLYTHE = { "blythe_blaster", "blythe_backpack" }
 

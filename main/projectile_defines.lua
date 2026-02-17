@@ -71,7 +71,8 @@ STARILIAD_PROJECTILE_DEFINES = {
 
     {
         prefab = "blythe_missile",
-        sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
+        -- sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
+        sound = "stariliad_sfx/prefabs/blaster/missile_launch",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_missile",
         -- shoot_at_sg = "blythe_shoot_missile2",
@@ -104,6 +105,7 @@ STARILIAD_PROJECTILE_DEFINES = {
     {
         prefab = "blythe_super_missile",
         sound = "stariliad_sfx/prefabs/blaster/beam_shoot2",
+        -- sound = "stariliad_sfx/prefabs/blaster/missile_launch",
         fx = "stariliad_pistol_shoot_cloud",
         attack_sg = "blythe_shoot_missile",
         -- shoot_at_sg = "blythe_shoot_missile2",

@@ -185,24 +185,24 @@ local function DoTauntPound2(inst)
     inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE)
 end
 
-local function MakePowerOnOffLines(start_t, dt, counts)
-    local timeline = {}
+-- local function MakePowerOnOffLines(start_t, dt, counts)
+--     local timeline = {}
 
-    for i = 1, counts do
-        table.insert(timeline,
-            TimeEvent(start_t + dt * (i * 2 - 2), function(inst)
-                inst:SetBluePower(true)
-            end)
-        )
-        table.insert(timeline,
-            TimeEvent(start_t + dt * (i * 2 - 1), function(inst)
-                inst:SetBluePower(false)
-            end)
-        )
-    end
+--     for i = 1, counts do
+--         table.insert(timeline,
+--             TimeEvent(start_t + dt * (i * 2 - 2), function(inst)
+--                 inst:SetBluePower(true)
+--             end)
+--         )
+--         table.insert(timeline,
+--             TimeEvent(start_t + dt * (i * 2 - 1), function(inst)
+--                 inst:SetBluePower(false)
+--             end)
+--         )
+--     end
 
-    return unpack(timeline)
-end
+--     return unpack(timeline)
+-- end
 
 local states =
 {
@@ -605,10 +605,17 @@ local states =
             TimeEvent(92 * FRAMES, function(inst)
                 inst.SoundEmitter:PlaySound("dontstarve/common/lightningrod")
 
-                inst:SetBluePower(false)
+                -- inst:SetBluePower(false)
+
+                inst._flash_event:push()
             end),
 
-            MakePowerOnOffLines(93 * FRAMES, FRAMES, 8),
+            TimeEvent(110 * FRAMES, function(inst)
+                inst.Light:Enable(false)
+            end),
+
+
+            -- MakePowerOnOffLines(93 * FRAMES, FRAMES, 8),
         },
     },
 }

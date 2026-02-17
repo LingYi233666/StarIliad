@@ -30,17 +30,17 @@ AddClassPostConstruct("widgets/controls", function(self)
 
         self.StarIliadMenuCaller:SetPosition(75, 28)
 
-        self.StarIliadDebugButton = self.StarIliadMenuCaller_root:AddChild(
-            TEMPLATES.StandardButton(
-                function()
-                    TheFrontEnd:PushScreen(StarIliadOpening())
-                end,
-                "DEBUG BUTTON",
-                { 140, 60 }
-            )
-        )
+        -- self.StarIliadDebugButton = self.StarIliadMenuCaller_root:AddChild(
+        --     TEMPLATES.StandardButton(
+        --         function()
+        --             TheFrontEnd:PushScreen(StarIliadOpening())
+        --         end,
+        --         "DEBUG BUTTON",
+        --         { 140, 60 }
+        --     )
+        -- )
 
-        self.StarIliadDebugButton:SetPosition(75, 100)
+        -- self.StarIliadDebugButton:SetPosition(75, 100)
 
 
         -- Blythe TV

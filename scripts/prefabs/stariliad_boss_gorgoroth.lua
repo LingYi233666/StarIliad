@@ -16,6 +16,7 @@ local brain = require "brains/stariliad_boss_gorgoroth_brain"
 SetSharedLootTable("stariliad_boss_gorgoroth",
     {
         { "blythe_unlock_skill_item_super_missile", 1.0 },
+        { "stariliad_hat_gelblob",                  1.0 },
         { "nightmarefuel",                          1.0 },
         { "nightmarefuel",                          1.0 },
         { "nightmarefuel",                          1.0 },
