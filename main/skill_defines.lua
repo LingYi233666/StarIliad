@@ -110,6 +110,7 @@ BLYTHE_SKILL_DEFINES = {
         name = "missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.ALTAR,
+        unique_map_icon = true,
 
         -- Unlock item params
         bank = "blythe_missile_tank",
@@ -164,6 +165,7 @@ BLYTHE_SKILL_DEFINES = {
         name = "super_missile",
         dtype = BLYTHE_SKILL_TYPE.KINETIC,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.ALTAR,
+        unique_map_icon = true,
 
         -- Unlock item params
         bank = "blythe_missile_tank",
@@ -234,15 +236,15 @@ BLYTHE_SKILL_DEFINES = {
 
     -- 需要额外挑战解码
     -- TODO: Delete latter
-    {
-        name = "shock_wave",
+    -- {
+    --     name = "shock_wave",
 
-        dtype = BLYTHE_SKILL_TYPE.SUIT,
-        statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
+    --     dtype = BLYTHE_SKILL_TYPE.SUIT,
+    --     statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
 
-        -- Unlock item params
-        encrypted = true,
-    },
+    --     -- Unlock item params
+    --     encrypted = true,
+    -- },
 
     -- 红蘑菇森林群系 "RedForest"
     -- 需要额外挑战解码

@@ -20,6 +20,7 @@ local assets =
 SetSharedLootTable("stariliad_boss_guardian",
     {
         { "blythe_unlock_skill_item_super_missile", 1.0 },
+        { "stariliad_guardian_scales",              1.0 },
 
         { "gears",                                  1.0 },
         { "gears",                                  0.5 },
@@ -351,8 +352,26 @@ end
 
 local function OnLootSpawned(inst, data)
     if data.loot then
-        local fx = SpawnPrefab("stariliad_enemy_die_smoke_black")
-        fx:SetTarget(data.loot)
+        if data.loot.prefab == "blythe_unlock_skill_item_super_missile"
+            or data.loot.prefab == "stariliad_guardian_scales" then
+            local min_speed = 0
+            local max_speed = 1
+            local y_speed = 8
+            local y_speed_variance = 4
+
+            local speed = GetRandomMinMax(min_speed, max_speed)
+            local angle = math.random() * TWOPI
+            local sinangle = math.sin(angle)
+            local cosangle = math.cos(angle)
+            data.loot.Physics:SetVel(speed * cosangle, GetRandomWithVariance(y_speed, y_speed_variance),
+                speed * -sinangle)
+
+
+            data.loot.Transform:SetPosition(inst:GetPosition():Get())
+        else
+            local fx = SpawnPrefab("stariliad_enemy_die_smoke_black")
+            fx:SetTarget(data.loot)
+        end
     end
 end
 

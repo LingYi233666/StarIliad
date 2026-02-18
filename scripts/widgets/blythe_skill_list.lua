@@ -90,7 +90,12 @@ function BlytheSkillList:CreateOutBarAndTitle()
     -----------------------------------------------------------------------------
 
     -- self.title = self:AddChild(Text(TITLEFONT, 34))
-    self.title = self:AddChild(Text(NUMBERFONT, 34))
+
+    if TUNING.STARILIAD_LANGUAGE == "eng" then
+        self.title = self:AddChild(Text(NUMBERFONT, 28))
+    else
+        self.title = self:AddChild(Text(NUMBERFONT, 34))
+    end
     self.title:SetString(self.options.title)
     -- self.title:SetColour(0, 0, 0, 1)
 

@@ -18,11 +18,18 @@ local function MakeItem(data)
 
         Asset("IMAGE", tex_path),
         Asset("ATLAS", xml_path),
-    }
 
+        Asset("IMAGE", "images/map_icons/stariliad_chozo_ability_ball.tex"), --小地图
+        Asset("ATLAS", "images/map_icons/stariliad_chozo_ability_ball.xml"),
+    }
 
     if data.build then
         table.insert(assets, Asset("ANIM", "anim/" .. data.build .. ".zip"))
+    end
+
+    if data.unique_map_icon then
+        table.insert(assets, Asset("IMAGE", "images/map_icons/" .. prefab .. ".tex"))
+        table.insert(assets, Asset("ATLAS", "images/map_icons/" .. prefab .. ".xml"))
     end
 
     local function fn()
@@ -30,6 +37,7 @@ local function MakeItem(data)
 
         inst.entity:AddTransform()
         inst.entity:AddAnimState()
+        inst.entity:AddMiniMapEntity()
         inst.entity:AddNetwork()
 
         MakeInventoryPhysics(inst)
@@ -46,6 +54,12 @@ local function MakeItem(data)
             if data.encrypted then
                 inst.AnimState:SetMultColour(0.3, 0.3, 0.3, 1)
             end
+        end
+
+        if data.unique_map_icon then
+            inst.MiniMapEntity:SetIcon(prefab .. ".tex")
+        else
+            inst.MiniMapEntity:SetIcon("stariliad_chozo_ability_ball.tex")
         end
 
         MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)

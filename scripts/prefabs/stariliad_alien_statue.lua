@@ -12,6 +12,9 @@ local assets =
     Asset("ANIM", "anim/lavaarena_portal_fx.zip"),
 
     Asset("ANIM", "anim/atrium_floor.zip"),
+
+    Asset("IMAGE", "images/map_icons/stariliad_alien_statue_chozo_dodge.tex"), --小地图
+    Asset("ATLAS", "images/map_icons/stariliad_alien_statue_chozo_dodge.xml"),
 }
 
 
@@ -169,6 +172,8 @@ local function wrapper_dodge_chozo(item_prefab)
         local inst = common_fn("stariliad_alien_statue_chozo_dodge", "stariliad_alien_statue_chozo_dodge", "idle", nil,
             item_prefab, 10,
             "dontstarve/common/floating_statue_hum")
+
+        inst.MiniMapEntity:SetIcon("stariliad_alien_statue_chozo_dodge.tex")
 
         -- inst.Transform:SetTwoFaced()
 

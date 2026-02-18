@@ -44,6 +44,9 @@ MyAddStaticLayout("stariliad_event_joust", "map/static_layouts/stariliad_event_j
 	disable_transform = true
 })
 
+-- FUNGUSMOON
+MyAddStaticLayout("stariliad_chozo_statue_dodge", "map/static_layouts/stariliad_chozo_statue_dodge")
+
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
 	areas = {
 		statue = function()
@@ -321,9 +324,13 @@ AddTaskSetPreInit("cave_default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
 	assert(taskset.required_prefabs ~= nil)
 
+	-- MoonCaveForest
+
 	taskset.set_pieces["stariliad_gorgoroth_hideout"] = { count = 1, tasks = { "BigBatCave", } }
+	taskset.set_pieces["stariliad_chozo_statue_dodge"] = { count = 1, tasks = { "MoonCaveForest", } }
 
 	table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth")
+	table.insert(taskset.required_prefabs, "stariliad_alien_statue_dodge")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")

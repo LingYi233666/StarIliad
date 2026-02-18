@@ -21,7 +21,11 @@ local BlytheSkillListItem = Class(Widget, function(self, owner, options)
     self.text_button = self:AddChild(TextButton())
     -- self.text_button:SetFont(TITLEFONT)
     self.text_button:SetFont(NUMBERFONT)
-    self.text_button:SetTextSize(34)
+    if TUNING.STARILIAD_LANGUAGE == "eng" then
+        self.text_button:SetTextSize(28)
+    else
+        self.text_button:SetTextSize(34)
+    end
     self.text_button:SetTextFocusColour({ 1, 1, 1, 1 })
 
     -- self.block = self.text_button:AddChild(Image("images/global.xml", "square.tex"))

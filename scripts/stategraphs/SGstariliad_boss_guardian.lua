@@ -519,6 +519,8 @@ local states =
             inst.components.locomotor:StopMoving()
             inst.AnimState:PlayAnimation("death")
 
+            RemovePhysicsColliders(inst)
+
             inst.sg.statemem.fires = {}
         end,
 

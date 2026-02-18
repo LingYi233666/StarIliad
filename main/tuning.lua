@@ -134,7 +134,7 @@ TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_MAX = 750
 TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE = 34
 
 --------------------------------------------------------------------------------------------
-
+TUNING.STARILIAD_GUARDIAN_SCALES_DAMAGE = 20
 --------------------------------------------------------------------------------------------
 
 --选人界面初始物品显示

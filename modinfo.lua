@@ -1,5 +1,5 @@
-name = "超级星辰史诗" ---mod名字 恩苏计划：星辰史诗外传
-description = "星际游侠迷失在饥荒的永恒领域之中！" --mod描述
+name = "恩苏计划：星辰史诗外传" ---mod名字
+description = "星际游侠迷失于行星SR114！" --mod描述
 author = "灵衣女王的鬼铠" --作者
 version = "0.0.1" -- mod版本 上传mod需要两次的版本不一样
 
@@ -107,18 +107,52 @@ configuration_options = {
 if locale == "zh" or locale == "zhr" or locale == "zht" then
     -- Do nothing
 else
-    -- name = "Icey: Back from Hell"
-    -- description = "An interesting character mod."
+    name = "Project En-Zu: Star Iliad Side Story"
+    description = "Star Ranger Stranded on Planet SR114!"
 
-    -- configuration_options[1].label = "Skill learning animation"
-    -- configuration_options[1].options[1].description = "Play"
-    -- configuration_options[1].options[2].description = "Don't play"
+    configuration_options[1].label = "Damage Numbers"
+    configuration_options[1].options[1].description = "On"
+    configuration_options[1].options[2].description = "Off"
 
-    -- configuration_options[2].label = "Dodge direction"
-    -- configuration_options[2].options[1].description = "Cursor direction"
-    -- configuration_options[2].options[2].description = "Facing direction"
+    configuration_options[2].label = "Tutorial"
+    configuration_options[2].options[1].description = "On"
+    configuration_options[2].options[2].description = "Off"
 
-    -- configuration_options[3].label = "Parry direction"
-    -- configuration_options[3].options[1].description = "Cursor direction"
-    -- configuration_options[3].options[2].description = "Facing direction"
+    configuration_options[3].label = "Blythe TV UI"
+    configuration_options[3].options[1].description = "On"
+    configuration_options[3].options[2].description = "Off"
+
+
+    -- {
+    --     name = "damage_number",
+    --     label = "伤害数值显示",
+    --     options =
+    --     {
+    --         { description = "开", data = true },
+    --         { description = "关", data = false },
+    --     },
+    --     default = true,
+    -- },
+
+    -- {
+    --     name = "tips",
+    --     label = "新手教学",
+    --     options =
+    --     {
+    --         { description = "开", data = true },
+    --         { description = "关", data = false },
+    --     },
+    --     default = true,
+    -- },
+
+    -- {
+    --     name = "blythe_tv",
+    --     label = "小电视UI",
+    --     options =
+    --     {
+    --         { description = "开", data = true },
+    --         { description = "关", data = false },
+    --     },
+    --     default = true,
+    -- },
 end

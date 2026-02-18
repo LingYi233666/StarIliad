@@ -108,6 +108,7 @@ PrefabFiles = {
     "stariliad_event_joust_knights",
 
     "stariliad_hat_gelblob",
+    "stariliad_guardian_scales",
 }
 
 -- See stariliad_main_assets.lua
@@ -119,11 +120,27 @@ PREFAB_SKINS["blythe"] = { --修复人物大图显示
     "blythe_none",
 }
 
-AddMinimapAtlas("images/map_icons/blythe.xml")          --增加小地图图标
-AddMinimapAtlas("images/map_icons/blythe_backpack.xml") --增加小地图图标
+AddMinimapAtlas("images/map_icons/blythe.xml") --增加小地图图标
+AddMinimapAtlas("images/map_icons/blythe_backpack.xml")
+AddMinimapAtlas("images/map_icons/stariliad_chozo_ability_ball.xml")
+AddMinimapAtlas("images/map_icons/blythe_unlock_skill_item_missile.xml")
+AddMinimapAtlas("images/map_icons/blythe_unlock_skill_item_super_missile.xml")
+AddMinimapAtlas("images/map_icons/stariliad_alien_statue_chozo_dodge.xml")
 
 --增加人物到mod人物列表的里面 性别为女性（MALE, FEMALE, ROBOT, NEUTRAL, and PLURAL）
 AddModCharacter("blythe", "FEMALE")
+
+TUNING.STARILIAD_LANGUAGE = ""
+
+local current_language = GetCurrentLocale()
+if current_language ~= nil then
+    current_language = current_language.code
+end
+if current_language == "zh" or current_language == "zhr" or current_language == "zht" then
+    TUNING.STARILIAD_LANGUAGE = "chs"
+else
+    TUNING.STARILIAD_LANGUAGE = "eng"
+end
 
 local import_list = {
     "constants",
@@ -131,7 +148,8 @@ local import_list = {
     "postprocess",
     "actions",
     "cooking",
-    "language_chs",
+    -- "language_chs",
+    "language_" .. TUNING.STARILIAD_LANGUAGE,
     "basic_utils",
     "colour_utils",
     "string_utils",
