@@ -481,7 +481,7 @@ local function fn()
     inst.components.combat.playerdamagepercent = TUNING.STARILIAD_BOSS_GUARDIAN_PLAYERDAMAGEPERCENT
 
     inst:AddComponent("health")
-    inst.components.health:SetMaxHealth(4000)
+    inst.components.health:SetMaxHealth(TUNING.STARILIAD_BOSS_GUARDIAN_HEALTH)
     -- inst.components.health.destroytime = 8
     inst.components.health.destroytime = 12
 

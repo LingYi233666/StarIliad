@@ -12,14 +12,27 @@ AddReplicableComponent("stariliad_rain_fx_bonus_watcher")
 AddReplicableComponent("stariliad_tip_manager")
 
 --------------------------------------------------------------------
--- lootdropper modified
-if LootTables.daywalker then
-    table.insert(LootTables.daywalker, { "blythe_unlock_skill_item_wave_beam", 1.0 })
-end
+AddGamePostInit(function()
+    -- lootdropper modified
+    if LootTables.daywalker then
+        table.insert(LootTables.daywalker, { "blythe_unlock_skill_item_wave_beam", 1.0 })
+    else
+        print("LootTables.daywalker not found!!!")
+    end
 
-if LootTables.daywalker2 then
-    table.insert(LootTables.daywalker2, { "blythe_unlock_skill_item_wave_beam", 1.0 })
-end
+    if LootTables.daywalker2 then
+        table.insert(LootTables.daywalker2, { "blythe_unlock_skill_item_wave_beam", 1.0 })
+    else
+        print("LootTables.daywalker2 not found!!!")
+    end
+
+    if LootTables.minotaur then
+        table.insert(LootTables.minotaur, { "blythe_unlock_skill_item_speed_burst", 1.0 })
+    else
+        print("LootTables.minotaur not found!!!")
+    end
+end)
+
 
 --------------------------------------------------------------------
 -- Damage number API
@@ -288,6 +301,11 @@ local STARILIAD_MUSIC = {
     stariliad_boss_hexa_ghost = {
         "",
         "stariliad_music/music/spire_boss_1",
+    },
+
+    stariliad_boss_spyder = {
+        "",
+        "stariliad_music/music/spyder",
     },
 }
 

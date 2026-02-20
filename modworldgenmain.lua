@@ -43,6 +43,12 @@ MyAddStaticLayout("stariliad_bonus_spiderden_missile", "map/static_layouts/stari
 MyAddStaticLayout("stariliad_event_joust", "map/static_layouts/stariliad_event_joust", {
 	disable_transform = true
 })
+MyAddStaticLayout("stariliad_spyder_hideout", "map/static_layouts/stariliad_spyder_hideout", {
+	disable_transform = true
+})
+MyAddStaticLayout("stariliad_spyder_hideout_large", "map/static_layouts/stariliad_spyder_hideout_large", {
+	disable_transform = true
+})
 
 -- FUNGUSMOON
 MyAddStaticLayout("stariliad_chozo_statue_dodge", "map/static_layouts/stariliad_chozo_statue_dodge")

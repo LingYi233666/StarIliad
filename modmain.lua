@@ -109,6 +109,8 @@ PrefabFiles = {
 
     "stariliad_hat_gelblob",
     "stariliad_guardian_scales",
+
+    "stariliad_boss_spyder",
 }
 
 -- See stariliad_main_assets.lua

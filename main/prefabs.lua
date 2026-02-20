@@ -66,16 +66,45 @@ AddPrefabPostInit("player_classified", function(inst)
     end)
 end)
 
-AddPrefabPostInit("minotaur", function(inst)
-    if not TheWorld.ismastersim then
-        return
-    end
+-- AddPrefabPostInit("minotaur", function(inst)
+--     if not TheWorld.ismastersim then
+--         return
+--     end
 
-    if not inst.components.lootdropper then
-        inst:AddComponent("lootdropper")
-    end
-    inst.components.lootdropper:AddChanceLoot("blythe_unlock_skill_item_speed_burst", 1.0)
-end)
+--     if not inst.components.lootdropper then
+--         inst:AddComponent("lootdropper")
+--     end
+--     inst.components.lootdropper:AddChanceLoot("blythe_unlock_skill_item_speed_burst", 1.0)
+-- end)
+
+-- AddPrefabPostInit("daywalker", function(inst)
+--     if not TheWorld.ismastersim then
+--         return
+--     end
+
+--     inst:ListenForEvent("minhealth", function()
+--         if inst.defeated then
+--             if inst.components.lootdropper then
+--                 inst.components.lootdropper:SpawnLootPrefab("blythe_unlock_skill_item_wave_beam")
+--                 inst.dropped_ball = true
+--             end
+--         end
+--     end)
+-- end)
+
+-- AddPrefabPostInit("daywalker2", function(inst)
+--     if not TheWorld.ismastersim then
+--         return
+--     end
+
+--     inst:ListenForEvent("minhealth", function()
+--         if inst.defeated then
+--             if inst.components.lootdropper then
+--                 inst.components.lootdropper:SpawnLootPrefab("blythe_unlock_skill_item_wave_beam")
+--             end
+--         end
+--     end)
+-- end)
 
 AddPrefabPostInit("forest", function(inst)
     if not TheWorld.ismastersim then
