@@ -9,51 +9,25 @@ local StarIliadBossSpyderBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
-function StarIliadBossSpyderBrain:CanSpawnChild()
-    return self.inst:GetTimeAlive() > 5
-        and not self.inst.sg:HasStateTag("busy")
-        and self.inst.components.incrementalproducer and self.inst.components.incrementalproducer:CanProduce()
+
+local function CanCharge(inst)
+    return inst.can_charge
+        and inst:InChargeRadius()
+        and not inst.components.health:IsDead()
+        and not inst.sg:HasStateTag("busy")
 end
 
-local BLOCKER_TAGS = { 'blocker' }
-local SPIDERDEN_TAGS = { "spiderden" }
-local SPIDERQUEEN_TAGS = { "spiderqueen" }
-function StarIliadBossSpyderBrain:CanPlantNest()
-    if self.inst:GetTimeAlive() > TUNING.SPIDERQUEEN_MINWANDERTIME then
-        local pt = Vector3(self.inst.Transform:GetWorldPosition())
-        local ents = TheSim:FindEntities(pt.x, pt.y, pt.z, 4, BLOCKER_TAGS)
-        local min_spacing = 3
-
-        for k, v in pairs(ents) do
-            if v ~= self.inst and v.entity:IsValid() and v.entity:IsVisible() then
-                if distsq(Vector3(v.Transform:GetWorldPosition()), pt) < min_spacing * min_spacing then
-                    return false
-                end
-            end
-        end
-
-        local den = GetClosestInstWithTag(SPIDERDEN_TAGS, self.inst, TUNING.SPIDERQUEEN_MINDENSPACING)
-        local queen = GetClosestInstWithTag(SPIDERQUEEN_TAGS, self.inst, TUNING.SPIDERQUEEN_MINDENSPACING)
-        if den or queen then
-            return false
-        end
-
-        return true
-    end
-
-    return false
+local function DoCharge(inst)
+    inst.can_charge = false
+    inst.sg:GoToState("charge_pre")
 end
-
-local MIN_FOLLOW = 10
-local MAX_FOLLOW = 20
-local MED_FOLLOW = 15
 
 function StarIliadBossSpyderBrain:OnStart()
     local root = PriorityNode(
         {
 
-            -- IfNode(function() return self:CanPlantNest() end, "can plant nest",
-            --     ActionNode(function() self.inst.sg:GoToState("makenest") end)),
+            IfNode(function() return CanCharge(self.inst) end, "CanCharge",
+                ActionNode(function() DoCharge(self.inst) end)),
 
             -- IfNode(function() return self:CanSpawnChild() end, "needs follower",
             --     ActionNode(function()
@@ -65,7 +39,7 @@ function StarIliadBossSpyderBrain:OnStart()
 
             ChaseAndAttack(self.inst, 60, 60, nil, nil, true),
             Wander(self.inst),
-        }, 2)
+        }, 0.5)
 
     self.bt = BT(self.inst, root)
 end

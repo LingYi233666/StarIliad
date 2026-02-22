@@ -51,6 +51,7 @@ MyAddStaticLayout("stariliad_spyder_hideout_large", "map/static_layouts/starilia
 })
 
 -- FUNGUSMOON
+-- si_layout("stariliad_chozo_statue_dodge")
 MyAddStaticLayout("stariliad_chozo_statue_dodge", "map/static_layouts/stariliad_chozo_statue_dodge")
 
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {

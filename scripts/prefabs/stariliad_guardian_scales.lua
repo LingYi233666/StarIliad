@@ -44,7 +44,9 @@ local function fn()
     inst.AnimState:SetBuild("stariliad_guardian_scales")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
+    MakeInventoryFloatable(inst, "small", 0.2)
+
+    inst:AddTag("shoreonsink")
 
     inst.entity:SetPristine()
 

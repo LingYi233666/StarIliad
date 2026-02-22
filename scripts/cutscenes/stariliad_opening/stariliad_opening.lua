@@ -11,6 +11,7 @@ local ImageButton = require "widgets/imagebutton"
 
 local StarIliadOpeningPart1 = require "cutscenes/stariliad_opening/part1"
 local StarIliadOpeningPart2 = require "cutscenes/stariliad_opening/part2"
+local StarIliadOpeningPart3 = require "cutscenes/stariliad_opening/part3"
 
 local StarIliadOpening = Class(Screen, function(self)
     Screen._ctor(self, "StarIliadOpening")
@@ -28,6 +29,7 @@ local StarIliadOpening = Class(Screen, function(self)
     self.parts = {
         self.root:AddChild(StarIliadOpeningPart1()),
         self.root:AddChild(StarIliadOpeningPart2()),
+        self.root:AddChild(StarIliadOpeningPart3()),
     }
 
     for k, v in pairs(self.parts) do
@@ -71,26 +73,37 @@ function StarIliadOpening:FlashBlackHover()
 end
 
 function StarIliadOpening:Play()
-    -- TheFrontEnd:GetSound():PlaySound("stariliad_music/music/cutscene_opening", "cutscene_opening")
+    TheFrontEnd:GetSound():PlaySound("stariliad_music/music/cutscene_opening", "cutscene_opening")
 
-    -- self:RemoveBlackHover()
-    -- self.parts[1]:Play()
+    self:RemoveBlackHover()
+    self.parts[1]:Play()
 
-    -- self.inst:DoTaskInTime(15.8, function()
-    --     self:FlashBlackHover()
-    -- end)
+    self.inst:DoTaskInTime(15.8, function()
+        self:FlashBlackHover()
+    end)
 
-    -- self.inst:DoTaskInTime(16.8, function()
-    --     self.parts[1]:Hide()
-    --     self.parts[2]:Show()
-    --     self.parts[2]:Play()
-    -- end)
+    self.inst:DoTaskInTime(16.8, function()
+        self.parts[1]:Hide()
+        self.parts[2]:Show()
+        self.parts[2]:Play()
+    end)
+
+    self.inst:DoTaskInTime(25, function()
+        self:FlashBlackHover()
+    end)
+
+    self.inst:DoTaskInTime(26, function()
+        self.parts[2]:Hide()
+        self.parts[3]:Show()
+        self.parts[3]:Play()
+    end)
 
     -------------------------------------------------------
-    self:RemoveBlackHover()
-    self.parts[1]:Hide()
-    self.parts[2]:Show()
-    self.parts[2]:Play()
+    -- self:RemoveBlackHover()
+    -- self.parts[1]:Hide()
+    -- self.parts[2]:Hide()
+    -- self.parts[3]:Show()
+    -- self.parts[3]:Play()
 end
 
 function StarIliadOpening:OnDestroy()

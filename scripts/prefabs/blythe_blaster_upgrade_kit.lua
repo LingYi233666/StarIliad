@@ -19,7 +19,7 @@ local function fn()
     inst.AnimState:SetBuild("blythe_blaster_upgrade_kit")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "small", 0.05, 0.8)
+    MakeInventoryFloatable(inst, "small", 0.1, { 1.2, 1, 1 })
 
     inst.entity:SetPristine()
 

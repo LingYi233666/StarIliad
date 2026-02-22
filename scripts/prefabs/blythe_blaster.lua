@@ -137,7 +137,9 @@ local function fn()
     inst.AnimState:SetBuild("blythe_blaster")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
+    -- MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 })
+    MakeInventoryFloatable(inst, "small", 0.05)
+
 
     inst:AddTag("allow_action_on_impassable")
 

@@ -69,6 +69,10 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
         end
 
         local function OnAttacked(inst, data)
+            if data == nil then
+                return
+            end
+
             local x, y, z = inst.Transform:GetWorldPosition()
             local players_nearby = FindPlayersInRange(x, y, z, 40)
             if #players_nearby <= 0 then

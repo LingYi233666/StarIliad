@@ -105,6 +105,83 @@ return {
           height = 0,
           visible = true,
           properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave",
+          shape = "rectangle",
+          x = 127,
+          y = 130,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave_double",
+          shape = "rectangle",
+          x = 239,
+          y = 151,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave_triple",
+          shape = "rectangle",
+          x = 136,
+          y = 236,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave",
+          shape = "rectangle",
+          x = 191,
+          y = 285,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave_double",
+          shape = "rectangle",
+          x = 279,
+          y = 222,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave_triple",
+          shape = "rectangle",
+          x = 222,
+          y = 91,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
+        },
+        {
+          name = "",
+          type = "flower_cave",
+          shape = "rectangle",
+          x = 86,
+          y = 186,
+          width = 0,
+          height = 0,
+          visible = true,
+          properties = {}
         }
       }
     }

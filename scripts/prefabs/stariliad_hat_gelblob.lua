@@ -29,7 +29,9 @@ local function fn()
     inst.AnimState:SetBuild("stariliad_hat_gelblob")
     inst.AnimState:PlayAnimation("idle")
 
-    MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
+    MakeInventoryFloatable(inst, "med", 0.1)
+
+    inst:AddTag("shoreonsink")
 
     inst.entity:SetPristine()
 

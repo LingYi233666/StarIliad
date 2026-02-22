@@ -62,7 +62,15 @@ local function MakeItem(data)
             inst.MiniMapEntity:SetIcon("stariliad_chozo_ability_ball.tex")
         end
 
-        MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
+        -- MakeInventoryFloatable(inst, "med", 0.05, { 1.1, 0.5, 1.1 }, true, -9)
+
+        if data.floater == nil then
+            MakeInventoryFloatable(inst, "small", 0.3)
+        elseif data.floater == false then
+
+        else
+            MakeInventoryFloatable(inst, unpack(data.floater))
+        end
 
         if should_override_name then
             if data.encrypted then
@@ -72,6 +80,7 @@ local function MakeItem(data)
             end
         end
 
+        inst:AddTag("shoreonsink")
 
         inst.entity:SetPristine()
 

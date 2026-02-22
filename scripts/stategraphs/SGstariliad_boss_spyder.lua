@@ -2,7 +2,7 @@ require("stategraphs/commonstates")
 
 local events =
 {
-    CommonHandlers.OnAttacked(),
+    CommonHandlers.OnAttacked(1),
     CommonHandlers.OnLocomote(false, true),
     CommonHandlers.OnSink(),
     CommonHandlers.OnFallInVoid(),
@@ -32,6 +32,58 @@ local function GetChargeDirection(inst, spawner, is_inverse)
     end
 
     return axis_y:Cross(vec):GetNormalized()
+end
+
+local shinny_colors = {
+    { 1, 1, 0, 1 },
+    { 1, 0, 0, 1 },
+    { 1, 0, 1, 1 },
+    { 1, 0, 0, 1 },
+}
+
+local function ShinnyTask(inst)
+    inst.AnimState:SetAddColour(unpack(shinny_colors[inst.shinny_flag]))
+
+    inst.shinny_flag = inst.shinny_flag + 1
+    if inst.shinny_flag > #shinny_colors then
+        inst.shinny_flag = 1
+    end
+end
+
+local function DoChargeAttack(inst, recent_tab)
+    local search_range = inst:GetPhysicsRadius(0) + 3
+
+    local x, y, z = inst.Transform:GetWorldPosition()
+    local ents = TheSim:FindEntities(x, y, z, search_range, nil, { "INLIMBO", "FX", "necron" })
+
+    local success_hit = false
+    local cur_time = GetTime()
+    for _, v in pairs(ents) do
+        if v:IsValid() and (recent_tab[v] == nil or cur_time - recent_tab[v] > 1) then
+            local dist = math.sqrt(inst:GetDistanceSqToInst(v))
+            if dist < inst:GetPhysicsRadius(0) + v:GetPhysicsRadius(0) + 0.3 then
+                if inst.components.combat:CanTarget(v) then
+                    v.components.combat:GetAttacked(inst, TUNING.STARILIAD_BOSS_SPYDER_CHARGE_DAMAGE)
+
+                    success_hit = true
+                    recent_tab[v] = cur_time
+                elseif v.components.workable ~= nil
+                    and v.components.workable:CanBeWorked()
+                    and v.components.workable.action ~= ACTIONS.NET then
+                    SpawnAt("collapse_small", v)
+                    v.components.workable:WorkedBy(inst, 30)
+
+                    success_hit = true
+                    recent_tab[v] = cur_time
+                end
+            end
+        end
+    end
+
+    if success_hit then
+        ShakeAllCameras(CAMERASHAKE.SIDE, .5, .05, .1, inst, 40)
+        inst.SoundEmitter:PlaySound("dontstarve/creatures/rook/explo")
+    end
 end
 
 local states =
@@ -66,18 +118,17 @@ local states =
         timeline =
         {
             TimeEvent(0 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/spiderqueen/attack")
             end),
             TimeEvent(25 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/spiderqueen/attack_grunt")
             end),
             TimeEvent(28 * FRAMES, function(inst)
-                inst:PerformBufferedAction()
                 inst.SoundEmitter:PlaySound("dontstarve/creatures/spiderqueen/swipe")
             end),
-            TimeEvent(28 * FRAMES, function(inst) inst.components.combat:DoAttack() end),
+            TimeEvent(28 * FRAMES, function(inst)
+                inst.components.combat:DoAttack()
+            end),
         },
 
         events =
@@ -88,7 +139,7 @@ local states =
 
     State {
         name = "charge_pre",
-        tags = { "attack", "busy" },
+        tags = { "attack", "busy", "charge" },
 
         onenter = function(inst)
             inst.Physics:Stop()
@@ -100,29 +151,52 @@ local states =
 
             inst.SoundEmitter:PlaySound("stariliad_sfx/character/skill/speed_burst", "speed_burst")
 
+            ---------------------------------------------------------------
+            inst.shinny_flag = 1
+            if inst.shinny_task then
+                inst.shinny_task:Cancel()
+            end
+            inst.shinny_task = inst:DoPeriodicTask(0.1, ShinnyTask)
+
+            ---------------------------------------------------------------
+            inst.sg.statemem.is_inverse = true
+
+            local spawner = inst.components.entitytracker:GetEntity("spawner")
+            if spawner and spawner:IsValid() then
+                local dir = nil
+                local target = inst.components.combat.target
+                local positive_dir = GetChargeDirection(inst, spawner, false)
+                local negative_dir = GetChargeDirection(inst, spawner, true)
+                if target and target:IsValid() then
+                    local towards = (target:GetPosition() - inst:GetPosition()):GetNormalized()
+                    local angle = StarIliadMath.AngleBetweenVectors(towards, positive_dir, true)
+                    if angle > -90 and angle < 90 then
+                        inst.sg.statemem.is_inverse = false
+                        dir = positive_dir
+                    else
+                        inst.sg.statemem.is_inverse = true
+                        dir = negative_dir
+                    end
+                else
+                    inst.sg.statemem.is_inverse = true
+                    dir = negative_dir
+                end
+
+                inst:ForceFacePoint(inst:GetPosition() + dir)
+            end
+
             inst.sg:SetTimeout(1)
         end,
 
         ontimeout = function(inst)
-            local radius = 0
-
-            local spawner = inst.components.entitytracker:GetEntity("spawner")
-            if spawner and spawner:IsValid() then
-                radius = (inst:GetPosition() - spawner:GetPosition()):Length()
-            end
-
-            if radius > TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MIN_RADIUS
-                and radius < TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MAX_RADIUS then
-                local is_inverse = true
+            local in_radius, radius = inst:InChargeRadius()
+            if in_radius then
                 inst.sg.statemem.success_charge = true
 
-                local dir = GetChargeDirection(inst, spawner, is_inverse)
-
-                inst:ForceFacePoint(inst:GetPosition() + dir)
                 inst.sg:GoToState("charge", {
                     radius = radius,
                     max_angle = 720,
-                    is_inverse = is_inverse,
+                    is_inverse = inst.sg.statemem.is_inverse,
                 })
             else
                 inst.sg:GoToState("idle", "walk_pst")
@@ -140,13 +214,19 @@ local states =
             if not inst.sg.statemem.success_charge then
                 inst.AnimState:SetDeltaTimeMultiplier(1)
                 inst.SoundEmitter:KillSound("speed_burst")
+
+                if inst.shinny_task then
+                    inst.shinny_task:Cancel()
+                    inst.shinny_task = nil
+                end
+                inst.AnimState:SetAddColour(0, 0, 0, 0)
             end
         end,
     },
 
     State {
         name = "charge",
-        tags = { "attack", "busy" },
+        tags = { "attack", "busy", "charge" },
 
         onenter = function(inst, data)
             inst.AnimState:PushAnimation("walk_loop", true)
@@ -159,6 +239,8 @@ local states =
             inst.sg.statemem.last_pos = inst:GetPosition()
 
             inst.sg.statemem.fx = inst:SpawnChild("stariliad_boss_spyder_speed_burst_particle")
+
+            inst.sg.statemem.recent_tab = {}
         end,
 
         onupdate = function(inst)
@@ -167,6 +249,8 @@ local states =
                 inst.sg:GoToState("idle", "walk_pst")
                 return
             end
+
+            DoChargeAttack(inst, inst.sg.statemem.recent_tab)
 
             local center = spawner:GetPosition()
             local cur_pos = inst:GetPosition()
@@ -195,6 +279,12 @@ local states =
         },
 
         onexit = function(inst)
+            if inst.shinny_task then
+                inst.shinny_task:Cancel()
+                inst.shinny_task = nil
+            end
+            inst.AnimState:SetAddColour(0, 0, 0, 0)
+
             inst.AnimState:SetDeltaTimeMultiplier(1)
             inst.SoundEmitter:KillSound("speed_burst")
             if inst.sg.statemem.fx and inst.sg.statemem.fx:IsValid() then
@@ -215,7 +305,14 @@ local states =
 
         events =
         {
-            EventHandler("animover", function(inst) inst.sg:GoToState("idle") end),
+            EventHandler("animover", function(inst)
+                if inst.can_charge and inst:InChargeRadius() then
+                    inst.can_charge = false
+                    inst.sg:GoToState("charge_pre")
+                else
+                    inst.sg:GoToState("idle")
+                end
+            end),
         },
     },
 

@@ -84,8 +84,9 @@ local function fn()
     -- inst.foleysound = "dontstarve/movement/foley/backpack"
     inst.foleysound = "dontstarve/movement/foley/metalarmour"
 
-    local swap_data = { bank = "blythe_backpack", anim = "idle" }
-    MakeInventoryFloatable(inst, "small", 0.2, nil, nil, nil, swap_data)
+    -- local swap_data = { bank = "blythe_backpack", anim = "idle" }
+    -- MakeInventoryFloatable(inst, "small", 0.2, nil, nil, nil, swap_data)
+    MakeInventoryFloatable(inst, "small", 0.2, { 1, 1.1, 1 })
 
     inst.entity:SetPristine()
 

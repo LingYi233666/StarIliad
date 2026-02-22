@@ -190,6 +190,8 @@ end
 function StarIliadOpeningPart2:Play()
     self.inst:DoTaskInTime(1.8, function()
         self:StartLaunchProjectiles()
+
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/glass_shaking")
     end)
 
     self.inst:DoTaskInTime(2.8, function()
@@ -204,24 +206,40 @@ function StarIliadOpeningPart2:Play()
         self.energy_container:GetAnimState():PlayAnimation("container_crack")
     end)
 
-    self.inst:DoTaskInTime(5, function()
-        self:StartContainerShaking()
-    end)
+    local crack_t = { 3.8, 4, 4.25, 4.5 }
+    for _, t in pairs(crack_t) do
+        self.inst:DoTaskInTime(t, function()
+            TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/glass_crack")
+        end)
+    end
 
-    -- TODO: glass shards
+    self.inst:DoTaskInTime(4.6, function()
+        self:StartContainerShaking()
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/glass_shaking")
+    end)
 
     self.inst:DoTaskInTime(6.1, function()
         self:StopContainerShaking()
 
         self:SpawnGlassShards(self.energy_container:GetPosition())
 
-        self.energy_container:GetAnimState():SetDeltaTimeMultiplier(1.5)
+        self.energy_container:GetAnimState():SetDeltaTimeMultiplier(2)
         self.energy_container:GetAnimState():PlayAnimation("container_break2")
+
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/glass_break")
     end)
 
-    -- self.inst:DoTaskInTime(6.8, function()
-    --     self.energy_container:GetAnimState():Pause()
-    -- end)
+    self.inst:DoTaskInTime(6.8, function()
+        self.energy_container.task = self.energy_container.inst:DoPeriodicTask(0, function()
+            if self.energy_container.flag then
+                self.energy_container:GetAnimState():SetMultColour(1, 1, 1, 0.5)
+            else
+                self.energy_container:GetAnimState():SetMultColour(1, 1, 1, 0)
+            end
+
+            self.energy_container.flag = not self.energy_container.flag
+        end)
+    end)
 end
 
 return StarIliadOpeningPart2

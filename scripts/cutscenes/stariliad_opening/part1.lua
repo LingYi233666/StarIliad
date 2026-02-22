@@ -303,23 +303,42 @@ end
 
 function StarIliadOpeningPart1:LaunchBeams()
     for k, ship in pairs(self.ships) do
-        self.inst:DoTaskInTime(GetRandomMinMax(0, 1), function()
-            local offset = Vector3(50, 0)
-            local offset2 = Vector3(math.random(300, 700), 0)
-            if k >= 9 then
-                offset = Vector3(-50, 0)
-                offset2 = Vector3(-math.random(300, 700), 0)
-            end
+        if math.random() < 0.75 then
+            self.inst:DoTaskInTime(GetRandomMinMax(0, 1), function()
+                local offset = Vector3(50, 0)
+                local offset2 = Vector3(math.random(300, 700), 0)
+                if k >= 9 then
+                    offset = Vector3(-50, 0)
+                    offset2 = Vector3(-math.random(300, 700), 0)
+                end
 
-            local start_pos = ship:GetPosition() + offset
-            local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
+                local start_pos = ship:GetPosition() + offset
+                local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
 
-            if k < 9 then
-                beam:GetAnimState():SetMultColour(0, 0, 0, 1)
-                beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
-            end
-        end)
+                if k < 9 then
+                    beam:GetAnimState():SetMultColour(0, 0, 0, 1)
+                    beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
+                end
+            end)
+        end
     end
+
+    -- local k, ship = GetRandomItemWithIndex(self.ships)
+
+    -- local offset = Vector3(50, 0)
+    -- local offset2 = Vector3(math.random(300, 700), 0)
+    -- if k >= 9 then
+    --     offset = Vector3(-50, 0)
+    --     offset2 = Vector3(-math.random(300, 700), 0)
+    -- end
+
+    -- local start_pos = ship:GetPosition() + offset
+    -- local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
+
+    -- if k < 9 then
+    --     beam:GetAnimState():SetMultColour(0, 0, 0, 1)
+    --     beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
+    -- end
 end
 
 function StarIliadOpeningPart1:StartBeamFight(delay)
@@ -495,20 +514,32 @@ function StarIliadOpeningPart1:MakePlanetShard(pos)
     -- end, 4)
 
     shard.inst:DoPeriodicTask(3, function()
-        shard:TintTo(MakeRGBA(1, 1, 1, 1), MakeRGBA(1, 1, 0, 1), 0.1, function()
-            shard:TintTo(MakeRGBA(1, 1, 0, 1), MakeRGBA(1, 0, 0, 1), 0.1, function()
-                shard:TintTo(MakeRGBA(1, 0, 0, 1), MakeRGBA(0, 0, 0, 1), 0.1, function()
-                    shard:TintTo(MakeRGBA(0, 0, 0, 1), MakeRGBA(1, 0, 0, 1), 0.1, function()
-                        shard:TintTo(MakeRGBA(1, 0, 0, 1), MakeRGBA(1, 0, 1, 1), 0.1, function()
-                            shard:TintTo(MakeRGBA(1, 0, 1, 1), MakeRGBA(1, 1, 1, 1), 0.1, function()
+        shard:TintTo(MakeRGBA(1, 1, 1, 1), MakeRGBA(1, 0, 0, 1), 0.33, function()
+            shard:TintTo(MakeRGBA(1, 0, 0, 1), MakeRGBA(1, 1, 0, 1), 0.33, function()
+                shard:TintTo(MakeRGBA(1, 1, 0, 1), MakeRGBA(1, 0, 1, 1), 0.33, function()
+                    shard:TintTo(MakeRGBA(1, 0, 1, 1), MakeRGBA(1, 1, 1, 1), 0.33, function()
 
-                            end)
-                        end)
                     end)
                 end)
             end)
         end)
     end, 4)
+
+    -- shard.inst:DoPeriodicTask(3, function()
+    --     shard:TintTo(MakeRGBA(1, 1, 1, 1), MakeRGBA(1, 1, 0, 1), 0.1, function()
+    --         shard:TintTo(MakeRGBA(1, 1, 0, 1), MakeRGBA(1, 0, 0, 1), 0.1, function()
+    --             shard:TintTo(MakeRGBA(1, 0, 0, 1), MakeRGBA(0, 0, 0, 1), 0.1, function()
+    --                 shard:TintTo(MakeRGBA(0, 0, 0, 1), MakeRGBA(1, 0, 0, 1), 0.1, function()
+    --                     shard:TintTo(MakeRGBA(1, 0, 0, 1), MakeRGBA(1, 0, 1, 1), 0.1, function()
+    --                         shard:TintTo(MakeRGBA(1, 0, 1, 1), MakeRGBA(1, 1, 1, 1), 0.1, function()
+
+    --                         end)
+    --                     end)
+    --                 end)
+    --             end)
+    --         end)
+    --     end)
+    -- end, 4)
 
     return shard
 end

@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/spider_queen_build.zip"),
     Asset("ANIM", "anim/spider_queen.zip"),
     Asset("ANIM", "anim/spider_queen_2.zip"),
+    Asset("ANIM", "anim/wagboss_leg.zip"),
     --Asset("ANIM", "anim/spider_queen_3.zip"),
     --Asset("SOUND", "sound/spider.fsb"),
 }
@@ -37,6 +38,14 @@ local function OnAttacked(inst, data)
     if data.attacker ~= nil then
         inst.components.combat:SetTarget(data.attacker)
     end
+
+    if not inst.sg:HasStateTag("charge") then
+        inst.damage_schedule = inst.damage_schedule + data.damage
+        if inst.damage_schedule >= TUNING.STARILIAD_BOSS_SPYDER_HURT_TO_CHARGE then
+            inst.damage_schedule = 0
+            inst.can_charge = true
+        end
+    end
 end
 
 local function OnNewCombatTarget(inst, data)
@@ -61,6 +70,19 @@ local function OnDroppedTarget(inst, data)
         inst:SetMusicLevel(1)
         inst.loss_target_task = nil
     end)
+end
+
+local function InChargeRadius(inst)
+    local spawner = inst.components.entitytracker:GetEntity("spawner")
+    if spawner and spawner:IsValid() then
+        local radius = (inst:GetPosition() - spawner:GetPosition()):Length()
+        if radius > TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MIN_RADIUS
+            and radius < TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MAX_RADIUS then
+            return true, radius
+        end
+    end
+
+    return false
 end
 
 local function fn()
@@ -97,7 +119,10 @@ local function fn()
         return inst
     end
 
+    inst.damage_schedule = 0
     inst.override_combat_fx_size = "med"
+
+    inst.InChargeRadius = InChargeRadius
 
     inst:AddComponent("entitytracker")
 
@@ -186,6 +211,31 @@ local function spawner_fn()
 
     return inst
 end
+
+-- local function charge_fx_fn()
+--     local inst = CreateEntity()
+
+--     inst.entity:AddTransform()
+--     inst.entity:AddAnimState()
+--     inst.entity:AddNetwork()
+
+--     inst:AddTag("FX")
+--     inst:AddTag("NOCLICK")
+--     inst:AddTag("NOBLOCK")
+
+--     inst.AnimState:SetBank("spider_queen")
+--     inst.AnimState:SetBuild("spider_queen_build")
+--     inst.AnimState:PlayAnimation("idle", true)
+
+--     inst.entity:SetPristine()
+
+--     if not TheWorld.ismastersim then
+--         return inst
+--     end
+
+
+--     return inst
+-- end
 
 return Prefab("stariliad_boss_spyder", fn, assets),
     Prefab("stariliad_boss_spyder_spawner", spawner_fn, assets)
