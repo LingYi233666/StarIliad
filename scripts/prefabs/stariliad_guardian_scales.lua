@@ -14,7 +14,9 @@ local function OnActive(inst, owner)
         local x, y, z = owner.Transform:GetWorldPosition()
         local ents = TheSim:FindEntities(x, y, z, owner:GetPhysicsRadius(0) + 2, nil, { "INLIMBO", "FX" })
         for k, v in pairs(ents) do
-            if owner.components.combat and owner.components.combat:CanTarget(v) then
+            if owner.components.combat
+                and owner.components.combat:CanTarget(v)
+                and not owner.components.combat:IsAlly(v) then
                 v.components.combat:GetAttacked(owner, 0, nil, nil, {
                     planar = TUNING.STARILIAD_GUARDIAN_SCALES_DAMAGE,
                 })
