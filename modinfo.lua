@@ -1,7 +1,7 @@
 name = "恩苏计划：星辰史诗外传" ---mod名字
 description = "星际游侠迷失于行星SR114！" --mod描述
 author = "灵衣女王的鬼铠" --作者
-version = "0.0.4" -- mod版本 上传mod需要两次的版本不一样
+version = "0.0.5" -- mod版本 上传mod需要两次的版本不一样
 
 forumthread = ""
 

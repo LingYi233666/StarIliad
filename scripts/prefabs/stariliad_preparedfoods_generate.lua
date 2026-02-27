@@ -5,6 +5,9 @@ local function MakePreparedFood(data)
     {
         Asset("ANIM", "anim/cook_pot_food.zip"),
         Asset("ANIM", "anim/stariliad_preparedfoods.zip"),
+
+        Asset("IMAGE", "images/ui/cookbook_images/" .. data.name .. ".tex"),
+        Asset("ATLAS", "images/ui/cookbook_images/" .. data.name .. ".xml"),
     }
 
     local inv_path = "images/inventoryimages/" .. data.name .. ".xml"
