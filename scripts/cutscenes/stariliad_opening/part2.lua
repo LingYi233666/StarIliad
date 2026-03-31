@@ -21,6 +21,8 @@ local StarIliadOpeningPart2 = Class(Widget, function(self)
     self.bg:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.bg:SetTint(0, 0, 0, 1)
 
+    self.sin_cos_energy_root1 = self:AddChild(Widget())
+
     self.energy = self:AddChild(UIAnim())
     self.energy:GetAnimState():SetBank("archive_security_pulse")
     self.energy:GetAnimState():SetBuild("archive_security_pulse")
@@ -28,14 +30,16 @@ local StarIliadOpeningPart2 = Class(Widget, function(self)
     self.energy:SetScale(0.5)
     self.energy:SetPosition(0, -135)
 
+    self.sin_cos_energy_root2 = self:AddChild(Widget())
+
     self.energy_container = self:AddChild(UIAnim())
     self.energy_container:GetAnimState():SetBank("stariliad_cutscene_opening")
     self.energy_container:GetAnimState():SetBuild("stariliad_cutscene_opening")
-    self.energy_container:GetAnimState():PlayAnimation("container", true)
+    self.energy_container:GetAnimState():PlayAnimation("container2", true)
     self.energy_container:GetAnimState():UsePointFiltering(true)
     -- self.energy_container:GetAnimState():SetMultColour(0, 0.7, 1, 1)
     self.energy_container:SetPosition(0, 0)
-    self.energy_container:SetScale(2.6)
+    self.energy_container:SetScale(0.6)
 
     -- projectile data
     -- bank: shadow_thrall_projectile_fx
@@ -47,8 +51,70 @@ local StarIliadOpeningPart2 = Class(Widget, function(self)
     self.text:SetVAnchor(ANCHOR_BOTTOM)
     self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[2], 99999, 900)
     self.text:SetPosition(0, 100)
+
+    self:StartEmittingEnergy()
 end)
 
+function StarIliadOpeningPart2:StartEmittingEnergy()
+    local duration = 1
+    local min_y = -106
+    local max_y = 103
+    local colours = {
+        { 1, 1, 1, 1 },
+        { 0, 1, 1, 1 },
+        { 0, 0, 1, 1 },
+        { 1, 1, 0, 1 },
+    }
+
+    self.start_emitting_energy_time = GetStaticTime()
+    self.emit_energy_alpha = 1
+
+    local function MakeTask(x_offset, x_range, angle_fn)
+        return self.inst:DoPeriodicTask(0.01, function()
+            local circle = self.sin_cos_energy_root2:AddChild(Image("images/ui/stariliad_circle2.xml",
+                "stariliad_circle2.tex"))
+            circle:SetSize(32, 32)
+
+            local r, g, b, a = unpack(GetRandomItem(colours))
+            circle:SetTint(r, g, b, self.emit_energy_alpha)
+            circle.start_time = GetStaticTime()
+            circle:Hide()
+
+
+            circle.fade_task = circle.inst:DoPeriodicTask(0, function()
+                local dt = GetStaticTime() - circle.start_time
+                local dt2 = GetStaticTime() - self.start_emitting_energy_time
+                if dt >= duration then
+                    circle:Kill()
+                else
+                    local y = Remap(dt, 0, duration, min_y, max_y)
+                    local x = angle_fn(y * 0.03 + dt2 * 10) * x_range + x_offset
+
+                    if circle.last_x then
+                        if circle.last_x < x then
+                            self.sin_cos_energy_root2:AddChild(circle)
+                        else
+                            self.sin_cos_energy_root1:AddChild(circle)
+                        end
+                    end
+
+                    circle.last_x = x
+
+                    circle:SetPosition(x, y)
+                    circle:Show()
+                end
+            end)
+        end)
+    end
+
+    MakeTask(0, 60, math.sin)
+    -- MakeTask(25, 25, function(v)
+    --     return -math.sin(v)
+    -- end)
+    MakeTask(0, 60, function(v)
+        return math.sin(v + PI * 1.5)
+    end)
+end
 
 function StarIliadOpeningPart2:MakeSmallExplode(pos, rot)
     local explode = self:AddChild(UIAnim())
@@ -123,6 +189,7 @@ function StarIliadOpeningPart2:EnergyFadeOut(duration)
         local cur_a = easing.linear(cur_t, 1, -1, duration)
 
         self.energy:GetAnimState():SetMultColour(1, 1, 1, cur_a)
+        self.emit_energy_alpha = cur_a
 
         if cur_t >= duration then
             self.energy.task:Cancel()
@@ -163,11 +230,11 @@ function StarIliadOpeningPart2:SpawnGlassShards(center)
         local shard = self:AddChild(UIAnim())
         shard:GetAnimState():SetBank("stariliad_cutscene_opening")
         shard:GetAnimState():SetBuild("stariliad_cutscene_opening")
-        shard:GetAnimState():PlayAnimation("glass_shard", true)
+        shard:GetAnimState():PlayAnimation("glass_shard" .. math.random(2, 4), true)
         shard:GetAnimState():UsePointFiltering(true)
         shard:SetRotation(math.random() * 360)
         shard:SetPosition(pos)
-        shard:SetScale(1.5)
+        -- shard:SetScale(1.5)
 
         shard.start_time = GetStaticTime()
         shard.task = shard.inst:DoPeriodicTask(0, function()
@@ -203,7 +270,7 @@ function StarIliadOpeningPart2:Play()
     end)
 
     self.inst:DoTaskInTime(3.8, function()
-        self.energy_container:GetAnimState():PlayAnimation("container_crack")
+        self.energy_container:GetAnimState():PlayAnimation("container_crack2")
     end)
 
     local crack_t = { 3.8, 4, 4.25, 4.5 }
@@ -224,7 +291,7 @@ function StarIliadOpeningPart2:Play()
         self:SpawnGlassShards(self.energy_container:GetPosition())
 
         self.energy_container:GetAnimState():SetDeltaTimeMultiplier(2)
-        self.energy_container:GetAnimState():PlayAnimation("container_break2")
+        self.energy_container:GetAnimState():PlayAnimation("container_break3")
 
         TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/glass_break")
     end)
@@ -232,7 +299,7 @@ function StarIliadOpeningPart2:Play()
     self.inst:DoTaskInTime(6.8, function()
         self.energy_container.task = self.energy_container.inst:DoPeriodicTask(0, function()
             if self.energy_container.flag then
-                self.energy_container:GetAnimState():SetMultColour(1, 1, 1, 0.5)
+                self.energy_container:GetAnimState():SetMultColour(1, 1, 1, 1)
             else
                 self.energy_container:GetAnimState():SetMultColour(1, 1, 1, 0)
             end

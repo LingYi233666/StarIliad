@@ -3,6 +3,7 @@ local assets =
     Asset("ANIM", "anim/spider_queen_build.zip"),
     Asset("ANIM", "anim/spider_queen.zip"),
     Asset("ANIM", "anim/spider_queen_2.zip"),
+    Asset("ANIM", "anim/stariliad_boss_spyder.zip"),
     Asset("ANIM", "anim/wagboss_leg.zip"),
     --Asset("ANIM", "anim/spider_queen_3.zip"),
     --Asset("SOUND", "sound/spider.fsb"),
@@ -108,7 +109,7 @@ local function fn()
     inst:AddTag("necron") -- 太空死灵种族
 
     inst.AnimState:SetBank("spider_queen")
-    inst.AnimState:SetBuild("spider_queen_build")
+    inst.AnimState:SetBuild("stariliad_boss_spyder")
     inst.AnimState:PlayAnimation("idle", true)
 
     StarIliadBasic.AddTriggeredEventMusic(inst, "stariliad_boss_spyder")

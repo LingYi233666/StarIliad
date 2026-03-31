@@ -15,6 +15,7 @@ local star_colours = {
     { 0,         0,        1,        1 },
     { 1,         1,        0,        1 },
     { 154 / 255, 80 / 255, 49 / 255, 1 },
+    { 1,         0,        0,        1 },
 }
 
 local StarIliadOpeningPart3 = Class(Widget, function(self)

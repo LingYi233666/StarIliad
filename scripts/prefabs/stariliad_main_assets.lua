@@ -56,6 +56,9 @@ local assets =
     Asset("IMAGE", "images/ui/stariliad_circle.tex"),
     Asset("ATLAS", "images/ui/stariliad_circle.xml"),
 
+    Asset("IMAGE", "images/ui/stariliad_circle2.tex"),
+    Asset("ATLAS", "images/ui/stariliad_circle2.xml"),
+
     Asset("IMAGE", "images/ui/stariliad_square.tex"),
     Asset("ATLAS", "images/ui/stariliad_square.xml"),
 

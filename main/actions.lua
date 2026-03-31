@@ -23,13 +23,16 @@ ACTIONS.STARILIAD_SHOOT_AT.distance = math.huge
 
 
 AddComponentAction("POINT", "stariliad_pistol", function(inst, doer, pos, actions, right, target)
-    if right and not (doer.replica.rider and doer.replica.rider:IsRiding()) then
+    if right
+        and not inst:HasTag("stariliad_no_shoot_at")
+        and not (doer.replica.rider and doer.replica.rider:IsRiding()) then
         table.insert(actions, ACTIONS.STARILIAD_SHOOT_AT)
     end
 end)
 
 AddComponentAction("EQUIPPED", "stariliad_pistol", function(inst, doer, target, actions, right)
     if right
+        and not inst:HasTag("stariliad_no_shoot_at")
         and not (doer.replica.rider and doer.replica.rider:IsRiding())
         and target
         and target ~= doer then

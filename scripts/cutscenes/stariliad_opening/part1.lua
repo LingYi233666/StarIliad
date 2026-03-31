@@ -20,27 +20,48 @@ local function MakeCutsceneObject(anim)
 end
 
 local ships_data = {
-    { Vector3(-300, 150),  "ships1_0", 0.6 },
-    { Vector3(-350, -50),  "ships1_1", 0.3 },
+    -- { Vector3(-300, 150),  "ships1_0", 0.6 },
+    -- { Vector3(-350, -50),  "ships1_1", 0.3 },
 
-    { Vector3(-250, 0),    "ships1_2", 0.66 },
-    { Vector3(-270, 250),  "ships1_2", 0.66 },
-    { Vector3(-450, 190),  "ships1_2", 0.66 },
-    { Vector3(-440, 70),   "ships1_2", 0.66 },
-    { Vector3(-460, -120), "ships1_2", 0.66 },
-    { Vector3(-260, -170), "ships1_2", 0.66 },
+    -- { Vector3(-250, 0),    "ships1_2", 0.66 },
+    -- { Vector3(-270, 250),  "ships1_2", 0.66 },
+    -- { Vector3(-450, 190),  "ships1_2", 0.66 },
+    -- { Vector3(-440, 70),   "ships1_2", 0.66 },
+    -- { Vector3(-460, -120), "ships1_2", 0.66 },
+    -- { Vector3(-260, -170), "ships1_2", 0.66 },
+
+    -- { Vector3(300, 150),   "ships2_0" },
+    -- { Vector3(350, -50),   "ships2_0" },
+
+    -- { Vector3(250, 0),     "ships2_0", 0.8 },
+    -- { Vector3(270, 250),   "ships2_0", 0.8 },
+    -- { Vector3(450, 190),   "ships2_0", 0.8 },
+    -- { Vector3(440, 70),    "ships2_0", 0.8 },
+    -- { Vector3(460, -120),  "ships2_0", 0.8 },
+    -- { Vector3(260, -170),  "ships2_0", 0.8 },
+
+
+    { Vector3(-300, 150),  "ships1_4", 0.6 },
+    { Vector3(-350, -50),  "ships1_4", 0.6 },
+
+    { Vector3(-250, 0),    "ships1_3", 0.6 },
+    { Vector3(-270, 250),  "ships1_3", 0.6 },
+    { Vector3(-450, 190),  "ships1_3", 0.6 },
+    { Vector3(-440, 70),   "ships1_3", 0.6 },
+    { Vector3(-460, -120), "ships1_3", 0.6 },
+    { Vector3(-260, -170), "ships1_3", 0.6 },
 
     -------------------------------------------
 
-    { Vector3(300, 150),   "ships2_0" },
-    { Vector3(350, -50),   "ships2_0" },
+    { Vector3(300, 150),   "ships2_2", 0.6 },
+    { Vector3(350, -50),   "ships2_2", 0.6 },
 
-    { Vector3(250, 0),     "ships2_0", 0.8 },
-    { Vector3(270, 250),   "ships2_0", 0.8 },
-    { Vector3(450, 190),   "ships2_0", 0.8 },
-    { Vector3(440, 70),    "ships2_0", 0.8 },
-    { Vector3(460, -120),  "ships2_0", 0.8 },
-    { Vector3(260, -170),  "ships2_0", 0.8 },
+    { Vector3(250, 0),     "ships2_1", 0.6 },
+    { Vector3(270, 250),   "ships2_1", 0.6 },
+    { Vector3(450, 190),   "ships2_1", 0.6 },
+    { Vector3(440, 70),    "ships2_1", 0.6 },
+    { Vector3(460, -120),  "ships2_1", 0.6 },
+    { Vector3(260, -170),  "ships2_1", 0.6 },
 }
 
 local star_colours = {
@@ -131,13 +152,46 @@ local StarIliadOpeningPart1 = Class(Widget, function(self)
     -- self.weapon:SetPosition(0, 500)
     -- self.weapon:SetScale(3.2, 3.2)
 
-    self.weapon = self:AddChild(UIAnim())
-    self.weapon:GetAnimState():SetBank("alterguardian_phase3")
-    self.weapon:GetAnimState():SetBuild("alterguardian_phase3")
-    self.weapon:GetAnimState():PlayAnimation("idle", true)
-    self.weapon:GetAnimState():UsePointFiltering(true)
+    -- self.weapon = self:AddChild(UIAnim())
+    -- self.weapon:GetAnimState():SetBank("alterguardian_phase3")
+    -- self.weapon:GetAnimState():SetBuild("alterguardian_phase3")
+    -- self.weapon:GetAnimState():PlayAnimation("idle", true)
+    -- self.weapon:GetAnimState():UsePointFiltering(true)
+    -- self.weapon:SetScale(0.2)
+
+    local weapon_circle_size = StarIliadDebug.circle_sz or 135
+    self.weapon = self:AddChild(MakeCutsceneObject("weapon1"))
+    self.weapon:SetScale(0.6)
     self.weapon:SetPosition(0, 500)
-    self.weapon:SetScale(0.2)
+    self.weapon.circle = self.weapon:AddChild(Image("images/ui/stariliad_circle.xml", "stariliad_circle.tex"))
+    self.weapon.circle:SetSize(weapon_circle_size, weapon_circle_size)
+    self.weapon.circle:SetTint(92 / 255, 176 / 255, 214 / 255, 1)
+    self.weapon.circle:SetPosition(0, StarIliadDebug.circle_y or 10)
+    self.weapon.circle:MoveToBack()
+
+    self.weapon.emit_circle_task = self.weapon.inst:DoPeriodicTask(0.5, function()
+        local duration = 0.6
+        local fade_duration = 0.7 * duration
+        local r, g, b = 1, 1, 1
+        local circle2 = self.weapon.circle:AddChild(Image("images/ui/stariliad_circle.xml", "stariliad_circle.tex"))
+        circle2:SetSize(1, 1)
+        circle2:SetTint(r, g, b, 1)
+        circle2.start_time = GetStaticTime()
+        circle2.fade_task = circle2.inst:DoPeriodicTask(0, function()
+            local dt = GetStaticTime() - circle2.start_time
+            if dt >= duration then
+                circle2:Kill()
+            else
+                local sz = Remap(dt, 0, duration, 1, weapon_circle_size)
+                circle2:SetSize(sz, sz)
+
+                if dt >= fade_duration then
+                    local alpha = Remap(dt, fade_duration, duration, 1, 0)
+                    circle2:SetTint(r, g, b, alpha)
+                end
+            end
+        end)
+    end)
 
     self.flash = self:AddChild(Image("images/global.xml", "square.tex"))
     self.flash:SetVRegPoint(ANCHOR_MIDDLE)
@@ -162,9 +216,13 @@ function StarIliadOpeningPart1:Play()
     -- end)
 
     self.inst:DoTaskInTime(3.67, function()
-        self:StopBeamFight()
+        -- self:StopBeamFight()
         -- self:LaunchSweepBeam(35, -35, 1.7)
         self:LaunchSweepBeam(15, -50, 1.7)
+    end)
+
+    self.inst:DoTaskInTime(5, function()
+        self:StopBeamFight()
     end)
 
     self.inst:DoTaskInTime(5.47, function()
@@ -303,8 +361,11 @@ end
 
 function StarIliadOpeningPart1:LaunchBeams()
     for k, ship in pairs(self.ships) do
-        if math.random() < 0.75 then
+        if math.random() < 0.8 then
             self.inst:DoTaskInTime(GetRandomMinMax(0, 1), function()
+                if not ship.shown then
+                    return
+                end
                 local offset = Vector3(50, 0)
                 local offset2 = Vector3(math.random(300, 700), 0)
                 if k >= 9 then
@@ -652,7 +713,7 @@ end
 function StarIliadOpeningPart1:WeaponSlideIn(duration)
     -- local start_y = 500
     -- local stop_y = -500
-    local start_y = 350
+    local start_y = self.weapon:GetPosition().y
     -- local stop_y = -100
     local stop_y = -350
 

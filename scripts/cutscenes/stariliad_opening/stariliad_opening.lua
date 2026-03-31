@@ -12,6 +12,8 @@ local ImageButton = require "widgets/imagebutton"
 local StarIliadOpeningPart1 = require "cutscenes/stariliad_opening/part1"
 local StarIliadOpeningPart2 = require "cutscenes/stariliad_opening/part2"
 local StarIliadOpeningPart3 = require "cutscenes/stariliad_opening/part3"
+local StarIliadOpeningPart4 = require "cutscenes/stariliad_opening/part4"
+local StarIliadOpeningPart5 = require "cutscenes/stariliad_opening/part5"
 
 local StarIliadOpening = Class(Screen, function(self)
     Screen._ctor(self, "StarIliadOpening")
@@ -30,6 +32,8 @@ local StarIliadOpening = Class(Screen, function(self)
         self.root:AddChild(StarIliadOpeningPart1()),
         self.root:AddChild(StarIliadOpeningPart2()),
         self.root:AddChild(StarIliadOpeningPart3()),
+        self.root:AddChild(StarIliadOpeningPart4()),
+        self.root:AddChild(StarIliadOpeningPart5()),
     }
 
     for k, v in pairs(self.parts) do
@@ -98,12 +102,39 @@ function StarIliadOpening:Play()
         self.parts[3]:Play()
     end)
 
+    self.inst:DoTaskInTime(32, function()
+        self:FlashBlackHover()
+    end)
+
+    self.inst:DoTaskInTime(33, function()
+        self.parts[3]:Hide()
+        self.parts[4]:Show()
+        self.parts[4]:Play()
+    end)
+
+    self.inst:DoTaskInTime(39, function()
+        self:FlashBlackHover()
+    end)
+
+    self.inst:DoTaskInTime(40, function()
+        self.parts[4]:Hide()
+        self.parts[5]:Show()
+        self.parts[5]:Play()
+    end)
+
     -------------------------------------------------------
     -- self:RemoveBlackHover()
     -- self.parts[1]:Hide()
     -- self.parts[2]:Hide()
-    -- self.parts[3]:Show()
-    -- self.parts[3]:Play()
+    -- self.parts[3]:Hide()
+    -- self.parts[4]:Hide()
+    -- self.parts[5]:Show()
+    -- self.parts[5]:Play()
+
+    -- self.parts[2]:Show()
+    -- -- self.parts[2]:Play()
+    -- self.parts[3]:Hide()
+    -- -- self.parts[3]:Play()
 end
 
 function StarIliadOpening:OnDestroy()
