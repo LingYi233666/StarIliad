@@ -9,6 +9,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- castaoe_sg = "blythe_shoot_beam_castaoe",
         -- repeat_cast = true,
         attackwear = 1,
+        attackperiod = 10 * FRAMES,
     },
 
     {
@@ -52,6 +53,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         -- enable_shoot_at = true, -- enable shoot at certain target, not attack
         attackwear = 1,
+        attackperiod = 10 * FRAMES,
     },
 
     {
@@ -67,6 +69,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         -- enable_shoot_at = true, -- enable shoot at certain target, not attack
         attackwear = 1,
+        attackperiod = 10 * FRAMES,
     },
 
     {

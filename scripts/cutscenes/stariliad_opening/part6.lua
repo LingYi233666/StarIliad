@@ -1,0 +1,128 @@
+local TEMPLATES = require "widgets/redux/templates"
+local easing = require("easing")
+
+local Widget = require "widgets/widget"
+local Screen = require "widgets/screen"
+local Image = require "widgets/image"
+local Grid = require "widgets/grid"
+local Text = require "widgets/text"
+local UIAnim = require "widgets/uianim"
+local ImageButton = require "widgets/imagebutton"
+
+local function MakeCutsceneObject(anim)
+    local obj = UIAnim()
+    obj:GetAnimState():SetBank("stariliad_cutscene_opening")
+    obj:GetAnimState():SetBuild("stariliad_cutscene_opening")
+    obj:GetAnimState():PlayAnimation(anim)
+    obj:GetAnimState():UsePointFiltering(true)
+
+    return obj
+end
+
+local function MakeShipRoot()
+    local ship_root = Widget()
+
+    ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship"))
+
+    ship_root.flame1 = ship_root:AddChild(UIAnim())
+    ship_root.flame1:GetAnimState():SetBank("coldfire_fire")
+    ship_root.flame1:GetAnimState():SetBuild("coldfire_fire")
+    ship_root.flame1:GetAnimState():PlayAnimation("level1", true)
+    -- ship_root.flame:GetAnimState():SetBank("warg_mutated_breath_fx")
+    -- ship_root.flame:GetAnimState():SetBuild("warg_mutated_breath_fx")
+    -- ship_root.flame:GetAnimState():PlayAnimation("flame1_loop", true)
+    ship_root.flame1:SetPosition(0, 0)
+    ship_root.flame1:SetRotation(90)
+    ship_root.flame1:SetScale(0.5, 1)
+
+    ship_root.tail_task = ship_root.inst:DoPeriodicTask(0, function()
+        local tail = ship_root:AddChild(UIAnim())
+        tail:GetAnimState():SetBank("lavaarena_blowdart_attacks")
+        tail:GetAnimState():SetBuild("lavaarena_blowdart_attacks")
+        tail:GetAnimState():PlayAnimation("attack3", true)
+        tail:GetAnimState():SetAddColour(1, 1, 1, 1)
+        tail:SetScale(0.4, 0.1)
+
+        local start_pos = Vector3(0, 0)
+        tail:SetPosition(start_pos)
+        tail:MoveTo(start_pos, start_pos - Vector3(500, 0), 1)
+    end)
+
+    return ship_root
+end
+
+
+local star_colours = {
+    { 1, 1, 1, 1 },
+    { 0, 1, 1, 1 },
+    { 0, 0, 1, 1 },
+    { 1, 1, 0, 1 },
+    { 1, 0, 0, 1 },
+}
+
+local StarIliadOpeningPart6 = Class(Widget, function(self)
+    Widget._ctor(self, "StarIliadOpeningPart6")
+
+    self.cosmic = self:AddChild(Image("images/global.xml", "square.tex"))
+    self.cosmic:SetVRegPoint(ANCHOR_MIDDLE)
+    self.cosmic:SetHRegPoint(ANCHOR_MIDDLE)
+    self.cosmic:SetVAnchor(ANCHOR_MIDDLE)
+    self.cosmic:SetHAnchor(ANCHOR_MIDDLE)
+    self.cosmic:SetScaleMode(SCALEMODE_FILLSCREEN)
+    self.cosmic:SetTint(0, 0, 0, 1)
+
+    self.stars_layout = self:AddChild(Widget("stars_layout"))
+
+    self.blythe_ship = self:AddChild(MakeShipRoot())
+    self.blythe_ship:SetPosition(-800, 0)
+    self.blythe_ship:SetScale(0.66)
+
+    self.text = self:AddChild(Text(TALKINGFONT, 68))
+    self.text:SetHAnchor(ANCHOR_MIDDLE)
+    self.text:SetVAnchor(ANCHOR_BOTTOM)
+    self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[6], 99999, 900)
+    self.text:SetPosition(0, 100)
+end)
+
+function StarIliadOpeningPart6:EmitStar(start_pos, stop_pos, duration)
+    local star = self.stars_layout:AddChild(Image("images/global.xml", "square.tex"))
+    local sz = math.random(1, 5)
+    local r, g, b, a = unpack(GetRandomItem(star_colours))
+    a = math.random()
+    star:SetTint(r, g, b, a)
+    star:SetSize(sz, sz)
+
+    star:SetPosition(start_pos)
+
+    star.start_time = GetStaticTime()
+
+    local delta_pos = stop_pos - start_pos
+
+    star.inst:DoPeriodicTask(0, function()
+        local cur_t = GetStaticTime() - star.start_time
+
+        if cur_t <= duration then
+            star:SetPosition(start_pos + delta_pos * (cur_t / duration))
+        else
+            star:Kill()
+        end
+    end)
+end
+
+function StarIliadOpeningPart6:Play()
+    local ship_start_pos = self.blythe_ship:GetPosition()
+    local ship_stop_pos = Vector3(0, 0)
+    self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 3)
+
+    self.inst:DoPeriodicTask(0, function()
+        for i = 1, 2 do
+            local start_pos = Vector3(640, math.random(-500, 500))
+            local stop_pos = Vector3(-start_pos.x, start_pos.y)
+            local duration = GetRandomMinMax(1, 2)
+
+            self:EmitStar(start_pos, stop_pos, duration)
+        end
+    end)
+end
+
+return StarIliadOpeningPart6

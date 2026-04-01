@@ -51,7 +51,14 @@ local function OnHit(inst, attacker, target)
                     v:AddDebuff("stariliad_debuff_shock_wave", "stariliad_debuff_shock_wave")
                 end
             elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
+                -- I think this is not compatible with many mods which give player toughworker tag
+                if inst.tough_work then
+                    attacker:AddTag("toughworker")
+                end
+
                 v.components.workable:WorkedBy(attacker, inst.work_damage)
+
+                attacker:RemoveTag("toughworker")
             end
         end
     end
@@ -152,7 +159,8 @@ local function MakeMissile(prefab,
                            explode_range,
                            normal_damage,
                            damage,
-                           work_damage)
+                           work_damage,
+                           tough_work)
     local function fn()
         local inst = CreateEntity()
 
@@ -184,6 +192,7 @@ local function MakeMissile(prefab,
 
         inst.explode_range = explode_range
         inst.work_damage = work_damage
+        inst.tough_work = tough_work
 
         inst.Physics:SetCollisionCallback(CollisionCallback)
 
@@ -273,7 +282,8 @@ return
         TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE,
         0,
         TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
-        TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE),
+        TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE,
+        true),
     MakeMissile("stariliad_hexa_ghost_missile",
         "blythe_missile_anim_normal",
         nil,

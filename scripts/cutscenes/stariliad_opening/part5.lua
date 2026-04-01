@@ -34,30 +34,13 @@ local StarIliadOpeningPart5 = Class(Widget, function(self)
     self.cosmic = self:AddChild(Image("images/global.xml", "square.tex"))
     self.cosmic:SetVRegPoint(ANCHOR_MIDDLE)
     self.cosmic:SetHRegPoint(ANCHOR_MIDDLE)
-
     self.cosmic:SetVAnchor(ANCHOR_MIDDLE)
     self.cosmic:SetHAnchor(ANCHOR_MIDDLE)
     self.cosmic:SetScaleMode(SCALEMODE_FILLSCREEN)
     self.cosmic:SetTint(0, 0, 0, 1)
 
-    -- self.stars = {}
-    -- for i = 1, 100 do
-    --     local star = self:AddChild(Image("images/global.xml", "square.tex"))
-    --     local sz = math.random(1, 5)
-    --     local r, g, b, a = unpack(GetRandomItem(star_colours))
-    --     a = math.random()
-    --     star:SetTint(r, g, b, a)
-    --     star:SetSize(sz, sz)
-    --     star:SetPosition(math.random(-700, 700), math.random(-250, 540))
-
-    --     table.insert(self.stars, star)
-    -- end
-
-    -- self.stars_region = { 800, 600 }
-    self.stars_region = { 1280, 1000 }
-
-
     self.stars_layout = self:AddChild(Widget("stars_layout"))
+    self.stars_region = { 1280, 1000 }
 
     self.enemy_ships = self:AddChild(MakeCutsceneObject("enemy_ships"))
     self.enemy_ships:SetPosition(0, 0)
@@ -79,8 +62,21 @@ function StarIliadOpeningPart5:EmitStar(start_pos, stop_pos, duration)
     star:SetSize(sz, sz)
 
     star:SetPosition(start_pos)
-    star:MoveTo(start_pos, stop_pos, duration, function()
-        star:Kill()
+    -- star:MoveTo(start_pos, stop_pos, duration, function()
+    --     star:Kill()
+    -- end)
+    star.start_time = GetStaticTime()
+
+    local delta_pos = stop_pos - start_pos
+
+    star.inst:DoPeriodicTask(0, function()
+        local cur_t = GetStaticTime() - star.start_time
+
+        if cur_t <= duration then
+            star:SetPosition(start_pos + delta_pos * (cur_t / duration))
+        else
+            star:Kill()
+        end
     end)
 end
 
