@@ -14,6 +14,8 @@ local StarIliadOpeningPart2 = require "cutscenes/stariliad_opening/part2"
 local StarIliadOpeningPart3 = require "cutscenes/stariliad_opening/part3"
 local StarIliadOpeningPart4 = require "cutscenes/stariliad_opening/part4"
 local StarIliadOpeningPart5 = require "cutscenes/stariliad_opening/part5"
+local StarIliadOpeningPart6 = require "cutscenes/stariliad_opening/part6"
+local StarIliadOpeningPart7 = require "cutscenes/stariliad_opening/part7"
 
 local StarIliadOpening = Class(Screen, function(self)
     Screen._ctor(self, "StarIliadOpening")
@@ -34,6 +36,8 @@ local StarIliadOpening = Class(Screen, function(self)
         self.root:AddChild(StarIliadOpeningPart3()),
         self.root:AddChild(StarIliadOpeningPart4()),
         self.root:AddChild(StarIliadOpeningPart5()),
+        self.root:AddChild(StarIliadOpeningPart6()),
+        self.root:AddChild(StarIliadOpeningPart7()),
     }
 
     for k, v in pairs(self.parts) do
@@ -122,14 +126,36 @@ function StarIliadOpening:Play()
         self.parts[5]:Play()
     end)
 
+    self.inst:DoTaskInTime(46, function()
+        self:FlashBlackHover()
+    end)
+
+    self.inst:DoTaskInTime(47, function()
+        self.parts[5]:Hide()
+        self.parts[6]:Show()
+        self.parts[6]:Play()
+    end)
+
+    self.inst:DoTaskInTime(56, function()
+        self:FlashBlackHover()
+    end)
+
+    self.inst:DoTaskInTime(57, function()
+        self.parts[6]:Hide()
+        self.parts[7]:Show()
+        self.parts[7]:Play()
+    end)
+
     -------------------------------------------------------
     -- self:RemoveBlackHover()
     -- self.parts[1]:Hide()
     -- self.parts[2]:Hide()
     -- self.parts[3]:Hide()
     -- self.parts[4]:Hide()
-    -- self.parts[5]:Show()
-    -- self.parts[5]:Play()
+    -- self.parts[5]:Hide()
+    -- self.parts[6]:Hide()
+    -- self.parts[7]:Show()
+    -- self.parts[7]:Play()
 
     -- self.parts[2]:Show()
     -- -- self.parts[2]:Play()

@@ -22,8 +22,36 @@ end
 local function MakeShipRoot()
     local ship_root = Widget()
 
-    ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship"))
+    ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship2"))
 
+    local flame_pos_list = {
+        Vector3(-60, -20),
+        Vector3(60, -20),
+        Vector3(0, -50),
+    }
+
+    local tint1 = { 129 / 255, 197 / 255, 248 / 255, 1.0 }
+    local tint1_1 = { 129 / 255, 197 / 255, 248 / 255, 0.5 }
+    -- local tint2 = { 57 / 255, 124 / 255, 182 / 255, 0.9 }
+
+    -- local tint1 = { 1, 1, 1, 1 }
+    -- local tint1_1 = { 129 / 255, 197 / 255, 248 / 255, 1 }
+
+    for _, pos in pairs(flame_pos_list) do
+        local flame = ship_root:AddChild(Image("images/ui/stariliad_circle2.xml",
+            "stariliad_circle2.tex"))
+        flame:SetPosition(pos)
+        flame:SetSize(128, 128)
+        flame:SetTint(unpack(tint1))
+        flame.inst:DoPeriodicTask(0, function()
+            if flame.flag then
+                flame:SetTint(unpack(tint1))
+            else
+                flame:SetTint(unpack(tint1_1))
+            end
+            flame.flag = not flame.flag
+        end)
+    end
     -- ship_root.flame1 = ship_root:AddChild(UIAnim())
     -- ship_root.flame1:GetAnimState():SetBank("coldfire_fire")
     -- ship_root.flame1:GetAnimState():SetBuild("coldfire_fire")
@@ -73,11 +101,11 @@ local StarIliadOpeningPart7 = Class(Widget, function(self)
     end
 
     self.planet = self:AddChild(MakeCutsceneObject("planet4"))
-    self.planet:SetPosition(-50, 0)
+    self.planet:SetPosition(150, 0)
     self.planet:SetScale(0.7)
 
     self.moon = self:AddChild(MakeCutsceneObject("moon"))
-    self.moon:SetPosition(400, 110)
+    self.moon:SetPosition(600, 110)
     self.moon:SetScale(0.4)
 
     self.blythe_ship = self:AddChild(MakeShipRoot())
@@ -88,7 +116,7 @@ local StarIliadOpeningPart7 = Class(Widget, function(self)
     self.text = self:AddChild(Text(TALKINGFONT, 68))
     self.text:SetHAnchor(ANCHOR_MIDDLE)
     self.text:SetVAnchor(ANCHOR_BOTTOM)
-    self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[7], 99999, 900)
+    self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[7], 99999, 1000)
     self.text:SetPosition(0, 100)
 end)
 
@@ -102,12 +130,13 @@ local function SolveAC(p1, p2)
 end
 
 function StarIliadOpeningPart7:Play()
-    local start_pos = Vector3(-800, -200)
-    local stop_pos = Vector3(-50, 70)
+    local start_pos = Vector3(-1000, -200)
+    local stop_pos = Vector3(200, 70)
+    -- local start_pos = Vector3(-1000, -300)
+    -- local stop_pos = Vector3(150, 100)
 
-    local start_scale = 1
-    local stop_scale = start_scale * 0.1
-
+    local start_scale = 2
+    local stop_scale = 0.01
     local duration = 4
 
 
@@ -118,15 +147,15 @@ function StarIliadOpeningPart7:Play()
         self.fly_task = self.inst:DoPeriodicTask(0, function()
             local t1 = GetStaticTime() - start_time
             if t1 <= duration then
-                local x = easing.inOutBounce(t1, start_pos.x, stop_pos.x - start_pos.x, duration)
+                local x = easing.inQuad(t1, start_pos.x, stop_pos.x - start_pos.x, duration)
                 local y = a * x * x + c;
 
                 self.blythe_ship:SetPosition(x, y)
 
-                local degree = easing.inOutBounce(t1, 45, 43, duration)
+                local degree = easing.inQuad(t1, 30, 53, duration)
                 self.blythe_ship:SetRotation(degree)
 
-                local scale = easing.inOutBounce(t1, start_scale, stop_scale - start_scale, duration)
+                local scale = easing.inQuad(t1, start_scale, stop_scale - start_scale, duration)
                 self.blythe_ship:SetScale(scale)
 
                 if not self.blythe_ship.shown then
@@ -139,6 +168,7 @@ function StarIliadOpeningPart7:Play()
                 fx:GetAnimState():SetBank("crab_king_shine")
                 fx:GetAnimState():SetBuild("crab_king_shine")
                 fx:GetAnimState():PlayAnimation("shine")
+                fx:SetScale(0.2)
                 fx:SetPosition(pos)
                 fx.inst:ListenForEvent("animover", function()
                     fx:Kill()

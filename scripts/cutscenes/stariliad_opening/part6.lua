@@ -22,18 +22,20 @@ end
 local function MakeShipRoot()
     local ship_root = Widget()
 
-    ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship"))
+    ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship1"))
 
     ship_root.flame1 = ship_root:AddChild(UIAnim())
     ship_root.flame1:GetAnimState():SetBank("coldfire_fire")
     ship_root.flame1:GetAnimState():SetBuild("coldfire_fire")
     ship_root.flame1:GetAnimState():PlayAnimation("level1", true)
+    ship_root.flame1:GetAnimState():SetDeltaTimeMultiplier(1.5)
     -- ship_root.flame:GetAnimState():SetBank("warg_mutated_breath_fx")
     -- ship_root.flame:GetAnimState():SetBuild("warg_mutated_breath_fx")
     -- ship_root.flame:GetAnimState():PlayAnimation("flame1_loop", true)
-    ship_root.flame1:SetPosition(0, 0)
-    ship_root.flame1:SetRotation(90)
-    ship_root.flame1:SetScale(0.5, 1)
+    ship_root.flame1:SetPosition(-130, -65)
+    ship_root.flame1:SetRotation(-90)
+    ship_root.flame1:SetScale(2, 0.5)
+    -- ship_root.flame1:MoveToBack()
 
     ship_root.tail_task = ship_root.inst:DoPeriodicTask(0, function()
         local tail = ship_root:AddChild(UIAnim())
@@ -74,7 +76,7 @@ local StarIliadOpeningPart6 = Class(Widget, function(self)
     self.stars_layout = self:AddChild(Widget("stars_layout"))
 
     self.blythe_ship = self:AddChild(MakeShipRoot())
-    self.blythe_ship:SetPosition(-800, 0)
+    self.blythe_ship:SetPosition(-880, 0)
     self.blythe_ship:SetScale(0.66)
 
     self.text = self:AddChild(Text(TALKINGFONT, 68))
@@ -86,7 +88,7 @@ end)
 
 function StarIliadOpeningPart6:EmitStar(start_pos, stop_pos, duration)
     local star = self.stars_layout:AddChild(Image("images/global.xml", "square.tex"))
-    local sz = math.random(1, 5)
+    local sz = math.random(1, 3)
     local r, g, b, a = unpack(GetRandomItem(star_colours))
     a = math.random()
     star:SetTint(r, g, b, a)
@@ -107,21 +109,36 @@ function StarIliadOpeningPart6:EmitStar(start_pos, stop_pos, duration)
             star:Kill()
         end
     end)
+
+    return star
 end
 
 function StarIliadOpeningPart6:Play()
-    local ship_start_pos = self.blythe_ship:GetPosition()
-    local ship_stop_pos = Vector3(0, 0)
-    self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 3)
+    self.inst:DoTaskInTime(3, function()
+        local ship_start_pos = self.blythe_ship:GetPosition()
+        local ship_stop_pos = Vector3(0, 0)
+        self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 5)
+    end)
+
+
+    local half_w = 680
+    local half_h = 500
+
+    for i = 1, 100 do
+        local start_pos = Vector3(half_w, math.random(-half_h, half_h))
+        local stop_pos = Vector3(-start_pos.x, start_pos.y)
+        local duration = GetRandomMinMax(1, 2)
+
+        local star = self:EmitStar(start_pos, stop_pos, duration)
+        star.start_time = star.start_time - GetRandomMinMax(1, 2)
+    end
 
     self.inst:DoPeriodicTask(0, function()
-        for i = 1, 2 do
-            local start_pos = Vector3(640, math.random(-500, 500))
-            local stop_pos = Vector3(-start_pos.x, start_pos.y)
-            local duration = GetRandomMinMax(1, 2)
+        local start_pos = Vector3(half_w, math.random(-half_h, half_h))
+        local stop_pos = Vector3(-start_pos.x, start_pos.y)
+        local duration = GetRandomMinMax(1, 2)
 
-            self:EmitStar(start_pos, stop_pos, duration)
-        end
+        self:EmitStar(start_pos, stop_pos, duration)
     end)
 end
 

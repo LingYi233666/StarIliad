@@ -78,30 +78,42 @@ function StarIliadOpeningPart5:EmitStar(start_pos, stop_pos, duration)
             star:Kill()
         end
     end)
+
+    return star
 end
 
 function StarIliadOpeningPart5:Play()
     local theta = 45 * DEGREES
     local direction = Vector3(-math.cos(theta), math.sin(theta))
 
+    local function emit_fn()
+        local width, height = unpack(self.stars_region)
+        local dist = math.sqrt(width * width + height * height) * 0.8
+        local duration = GetRandomMinMax(1.5, 2)
+
+        local rand_value = math.random() * (width + height)
+        if rand_value > width then
+            local start_pos = Vector3(width * 0.5, rand_value - width - height * 0.5)
+            local stop_pos = start_pos + direction * dist
+
+            return self:EmitStar(start_pos, stop_pos, duration)
+        else
+            local start_pos = Vector3(rand_value - 0.5 * width, -0.5 * height)
+            local stop_pos = start_pos + direction * dist
+
+            return self:EmitStar(start_pos, stop_pos, duration)
+        end
+    end
+
+
+    for i = 1, 100 do
+        local star = emit_fn()
+        star.start_time = star.start_time - GetRandomMinMax(1.5, 2)
+    end
+
     self.inst:DoPeriodicTask(0, function()
         for i = 1, 2 do
-            local width, height = unpack(self.stars_region)
-            local dist = math.sqrt(width * width + height * height) * 0.8
-            local duration = GetRandomMinMax(2, 2.5)
-
-            local rand_value = math.random() * (width + height)
-            if rand_value > width then
-                local start_pos = Vector3(width * 0.5, rand_value - width - height * 0.5)
-                local stop_pos = start_pos + direction * dist
-
-                self:EmitStar(start_pos, stop_pos, duration)
-            else
-                local start_pos = Vector3(rand_value - 0.5 * width, -0.5 * height)
-                local stop_pos = start_pos + direction * dist
-
-                self:EmitStar(start_pos, stop_pos, duration)
-            end
+            emit_fn()
         end
     end)
 end
