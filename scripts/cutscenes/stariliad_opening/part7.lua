@@ -144,21 +144,24 @@ function StarIliadOpeningPart7:Play()
     local start_scale = 2
     local stop_scale = 0.01
 
-    local tail_time = 3
+    local tail_time = 3.5
     local duration = 4
 
 
-    self.inst:DoTaskInTime(3, function()
+    self.inst:DoTaskInTime(1, function()
         local start_time = GetStaticTime()
         local a, c = SolveAC(start_pos, stop_pos)
 
+        local last_ship_pos = nil
+        local last_ship_t = nil
         self.fly_task = self.inst:DoPeriodicTask(0, function()
             local t1 = GetStaticTime() - start_time
             if t1 <= duration then
                 local x = easing.inQuad(t1, start_pos.x, stop_pos.x - start_pos.x, duration)
                 local y = a * x * x + c;
+                local ship_pos = Vector3(x, y)
 
-                self.blythe_ship:SetPosition(x, y)
+                self.blythe_ship:SetPosition(ship_pos)
 
                 local degree = easing.inQuad(t1, start_degree, stop_degree - start_degree, duration)
                 self.blythe_ship:SetRotation(degree)
@@ -170,37 +173,56 @@ function StarIliadOpeningPart7:Play()
                     self.blythe_ship:Show()
                 end
 
-                if t1 >= tail_time then
-                    local start_sz = 32
+                if t1 >= tail_time and last_ship_pos ~= nil then
+                    local start_sz = 16
                     local stop_sz = 3
 
                     local start_tint = { 1, 1, 1, 1 }
                     local stop_tint = { 1, 1, 1, 0 }
+                    -- local start_tint = { 129 / 255, 197 / 255, 248 / 255, 1.0 }
+                    -- local stop_tint = { 129 / 255, 197 / 255, 248 / 255, 0 }
 
-                    local flame_duration = 2
+                    local flame_duration = 0.5
 
-                    local flame = self:AddChild(Image("images/ui/stariliad_circle2.xml",
-                        "stariliad_circle2.tex"))
-                    flame:SetPosition(x, y)
-                    flame:SetSize(start_sz, start_sz)
-                    flame:SetTint(unpack(start_tint))
-                    flame.start_time = GetStaticTime()
+                    local time_delta = t1 - last_ship_t
 
-                    flame.inst:DoPeriodicTask(0, function()
-                        local cur_t = GetStaticTime() - flame.start_time
-                        if cur_t <= flame_duration then
-                            local sz = easing.linear(cur_t, start_sz, stop_sz - start_sz, flame_duration)
-                            local tint = { 0, 0, 0, 0 }
+                    local pos_delta = ship_pos - last_ship_pos
+                    local delta_len = pos_delta:Length()
+                    local pos_delta_norm = pos_delta / delta_len
+                    local step_len = 1
+                    local num_steps = math.floor(delta_len / step_len)
+                    step_len = delta_len / num_steps
 
-                            for i = 1, 4 do
-                                tint
+                    for i = 0, num_steps do
+                        local flame = self:AddChild(Image("images/ui/stariliad_circle2.xml",
+                            "stariliad_circle2.tex"))
+                        flame:SetPosition(last_ship_pos + pos_delta_norm * i * step_len)
+                        flame:SetSize(start_sz, start_sz)
+                        flame:SetTint(unpack(start_tint))
+                        flame.start_time = GetStaticTime()
+
+                        flame.inst:DoPeriodicTask(0, function()
+                            local cur_t = GetStaticTime() - flame.start_time + (num_steps - i) * time_delta / num_steps
+                            if cur_t <= flame_duration then
+                                local sz = easing.linear(cur_t, start_sz, stop_sz - start_sz, flame_duration)
+                                local tint = { 0, 0, 0, 0 }
+
+                                for i = 1, 4 do
+                                    tint[i] = easing.linear(cur_t, start_tint[i], stop_tint[i] - start_tint[i],
+                                        flame_duration)
+                                end
+
+                                flame:SetSize(sz, sz)
+                                flame:SetTint(unpack(tint))
+                            else
+                                flame:Kill()
                             end
-                            easing.linear(cur_t, start_sz, stop_sz - start_sz, flame_duration)
-                        else
-                            flame:Kill()
-                        end
-                    end)
+                        end)
+                    end
                 end
+
+                last_ship_pos = Vector3(x, y)
+                last_ship_t = t1
             else
                 local pos = self.blythe_ship:GetPosition()
 

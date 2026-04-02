@@ -106,9 +106,9 @@ function StarIliadOpeningPart5:Play()
     end
 
 
-    for i = 1, 100 do
+    for i = 1, 200 do
         local star = emit_fn()
-        star.start_time = star.start_time - GetRandomMinMax(1.5, 2)
+        star.start_time = star.start_time - GetRandomMinMax(0, 2)
     end
 
     self.inst:DoPeriodicTask(0, function()

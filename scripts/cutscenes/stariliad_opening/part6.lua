@@ -25,17 +25,27 @@ local function MakeShipRoot()
     ship_root.ship = ship_root:AddChild(MakeCutsceneObject("blythe_ship1"))
 
     ship_root.flame1 = ship_root:AddChild(UIAnim())
-    ship_root.flame1:GetAnimState():SetBank("coldfire_fire")
-    ship_root.flame1:GetAnimState():SetBuild("coldfire_fire")
+    ship_root.flame1:GetAnimState():SetBank("fire")
+    ship_root.flame1:GetAnimState():SetBuild("fire")
     ship_root.flame1:GetAnimState():PlayAnimation("level1", true)
-    ship_root.flame1:GetAnimState():SetDeltaTimeMultiplier(1.5)
+    ship_root.flame1:GetAnimState():SetDeltaTimeMultiplier(1.33)
     -- ship_root.flame:GetAnimState():SetBank("warg_mutated_breath_fx")
     -- ship_root.flame:GetAnimState():SetBuild("warg_mutated_breath_fx")
     -- ship_root.flame:GetAnimState():PlayAnimation("flame1_loop", true)
-    ship_root.flame1:SetPosition(-130, -65)
+    ship_root.flame1:SetPosition(-220, -65)
     ship_root.flame1:SetRotation(-90)
-    ship_root.flame1:SetScale(2, 0.5)
+    ship_root.flame1:SetScale(1, 0.35)
     -- ship_root.flame1:MoveToBack()
+
+    ship_root.flame2 = ship_root:AddChild(UIAnim())
+    ship_root.flame2:GetAnimState():SetBank("coldfire_fire")
+    ship_root.flame2:GetAnimState():SetBuild("coldfire_fire")
+    ship_root.flame2:GetAnimState():PlayAnimation("level1", true)
+    ship_root.flame2:GetAnimState():SetDeltaTimeMultiplier(1.5)
+    ship_root.flame2:SetPosition(-130, -65)
+    ship_root.flame2:SetRotation(-90)
+    ship_root.flame2:SetScale(2, 0.5)
+    ship_root.flame2:Hide()
 
     ship_root.tail_task = ship_root.inst:DoPeriodicTask(0, function()
         local tail = ship_root:AddChild(UIAnim())
@@ -114,12 +124,43 @@ function StarIliadOpeningPart6:EmitStar(start_pos, stop_pos, duration)
 end
 
 function StarIliadOpeningPart6:Play()
-    self.inst:DoTaskInTime(3, function()
+    self.inst:DoTaskInTime(2, function()
         local ship_start_pos = self.blythe_ship:GetPosition()
         local ship_stop_pos = Vector3(0, 0)
-        self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 5)
+        self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 3)
     end)
 
+    -- StarIliadDebug.CUTSCENE.parts[6].blythe_ship.flame1:SetPosition(-130, -65)
+    self.inst:DoTaskInTime(6, function()
+        local ship_start_pos = self.blythe_ship:GetPosition()
+        local ship_stop_pos = Vector3(-100, 0)
+        self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 1)
+    end)
+
+    self.inst:DoTaskInTime(7.5, function()
+        local ship_pos = self.blythe_ship:GetPosition()
+        local ship_stop_pos = Vector3(1800, 0)
+
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/ship_fly")
+
+        -- self.blythe_ship.flame3:GetAnimState():PlayAnimation("puff_" .. math.random(1, 3))
+
+        local flame3 = self:AddChild(UIAnim())
+        flame3:GetAnimState():SetBank("halloween_embers_cold")
+        flame3:GetAnimState():SetBuild("halloween_embers_cold")
+        flame3:GetAnimState():PlayAnimation("puff_" .. math.random(1, 3))
+        flame3:SetPosition(ship_pos.x, ship_pos.y - 50)
+        flame3:SetRotation(-90)
+        flame3:SetScale(1, 0.2)
+
+        self.inst:DoTaskInTime(0.1, function()
+            self.blythe_ship.flame1:Hide()
+            self.blythe_ship.flame2:Show()
+        end)
+
+
+        self.blythe_ship:MoveTo(ship_pos, ship_stop_pos, 2)
+    end)
 
     local half_w = 680
     local half_h = 500

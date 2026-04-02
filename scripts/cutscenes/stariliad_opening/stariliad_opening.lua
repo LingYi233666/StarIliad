@@ -28,7 +28,7 @@ local StarIliadOpening = Class(Screen, function(self)
     self.black:SetVAnchor(ANCHOR_MIDDLE)
     self.black:SetHAnchor(ANCHOR_MIDDLE)
     self.black:SetScaleMode(SCALEMODE_FILLSCREEN)
-    self.black:SetTint(0, 0, 0, 1)
+    self.black:SetTint(0, 0, 0, 0)
 
     self.parts = {
         self.root:AddChild(StarIliadOpeningPart1()),
@@ -41,9 +41,7 @@ local StarIliadOpening = Class(Screen, function(self)
     }
 
     for k, v in pairs(self.parts) do
-        if k ~= 1 then
-            v:Hide()
-        end
+        v:Hide()
     end
 
     ---------------------------------------------------------------
@@ -63,15 +61,20 @@ local StarIliadOpening = Class(Screen, function(self)
     SetAutopaused(true)
     ---------------------------------------------------------------
 
-    self:Play()
+    TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/ding")
+    self:AddBlackHover(2)
+
+    self.inst:DoTaskInTime(2.5, function()
+        self:Play()
+    end)
 end)
 
-function StarIliadOpening:AddBlackHover()
-    self.black:TintTo({ r = 0, g = 0, b = 0, a = 0 }, { r = 0, g = 0, b = 0, a = 1 }, 1)
+function StarIliadOpening:AddBlackHover(duration)
+    self.black:TintTo({ r = 0, g = 0, b = 0, a = 0 }, { r = 0, g = 0, b = 0, a = 1 }, duration or 1)
 end
 
-function StarIliadOpening:RemoveBlackHover()
-    self.black:TintTo({ r = 0, g = 0, b = 0, a = 1 }, { r = 0, g = 0, b = 0, a = 0 }, 1)
+function StarIliadOpening:RemoveBlackHover(duration)
+    self.black:TintTo({ r = 0, g = 0, b = 0, a = 1 }, { r = 0, g = 0, b = 0, a = 0 }, duration or 1)
 end
 
 function StarIliadOpening:FlashBlackHover()
@@ -84,6 +87,7 @@ function StarIliadOpening:Play()
     TheFrontEnd:GetSound():PlaySound("stariliad_music/music/cutscene_opening", "cutscene_opening")
 
     self:RemoveBlackHover()
+    self.parts[1]:Show()
     self.parts[1]:Play()
 
     self.inst:DoTaskInTime(15.8, function()
@@ -153,9 +157,9 @@ function StarIliadOpening:Play()
     -- self.parts[3]:Hide()
     -- self.parts[4]:Hide()
     -- self.parts[5]:Hide()
-    -- self.parts[6]:Hide()
-    -- self.parts[7]:Show()
-    -- self.parts[7]:Play()
+    -- self.parts[6]:Show()
+    -- self.parts[7]:Hide()
+    -- self.parts[6]:Play()
 
     -- self.parts[2]:Show()
     -- -- self.parts[2]:Play()
