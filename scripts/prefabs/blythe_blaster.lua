@@ -37,7 +37,7 @@ local function OnProjectilePrefabChange(inst, new_prefab, old_prefab)
         owner = inst.components.inventoryitem.owner
     end
     TryChangeSwapBuild(inst, owner)
-    TryChangeAttackPeriod(inst, owner)
+    -- TryChangeAttackPeriod(inst, owner)
 end
 
 local function OnEquip(inst, owner)
@@ -47,8 +47,8 @@ local function OnEquip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
-    -- owner.components.combat:SetAttackPeriod(FRAMES)
-    TryChangeAttackPeriod(inst, owner)
+    owner.components.combat:SetAttackPeriod(FRAMES)
+    -- TryChangeAttackPeriod(inst, owner)
 end
 
 local function OnUnequip(inst, owner)
