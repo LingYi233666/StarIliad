@@ -133,6 +133,22 @@ function StarIliadOpeningPart2:MakeSmallExplode(pos, rot)
     return explode
 end
 
+-- function StarIliadOpeningPart2:MakeBigExplode(pos)
+--     local explode = self:AddChild(UIAnim())
+--     explode:GetAnimState():SetBank("shadow_thrall_projectile_fx")
+--     explode:GetAnimState():SetBuild("shadow_thrall_projectile_fx")
+--     explode:GetAnimState():PlayAnimation("projectile_impact")
+--     explode:GetAnimState():UsePointFiltering(true)
+--     explode:SetPosition(pos)
+--     explode:SetScale(0.5)
+
+--     explode.inst:ListenForEvent("animover", function()
+--         explode:Kill()
+--     end)
+
+--     return explode
+-- end
+
 function StarIliadOpeningPart2:LaunchProjectile(start_pos, end_pos, speed)
     local proj = self:AddChild(UIAnim())
     proj:GetAnimState():SetBank("shadow_thrall_projectile_fx")

@@ -360,29 +360,79 @@ function StarIliadOpeningPart1:LaunchBeam(start_pos, end_pos, speed, emit_explod
 end
 
 function StarIliadOpeningPart1:LaunchBeams()
-    for k, ship in pairs(self.ships) do
-        if math.random() < 0.8 then
-            self.inst:DoTaskInTime(GetRandomMinMax(0, 1), function()
-                if not ship.shown then
-                    return
-                end
-                local offset = Vector3(50, 0)
-                local offset2 = Vector3(math.random(300, 700), 0)
-                if k >= 9 then
-                    offset = Vector3(-50, 0)
-                    offset2 = Vector3(-math.random(300, 700), 0)
-                end
+    local indices_1 = {}
+    local indices_2 = {}
+    local indices_select = {}
 
-                local start_pos = ship:GetPosition() + offset
-                local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
-
-                if k < 9 then
-                    beam:GetAnimState():SetMultColour(0, 0, 0, 1)
-                    beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
-                end
-            end)
+    for k, _ in pairs(self.ships) do
+        if k < 9 then
+            table.insert(indices_1, k)
+        else
+            table.insert(indices_2, k)
         end
     end
+
+    shuffleArray(indices_1)
+    shuffleArray(indices_2)
+
+    local stop_id_1 = GetRandomMinMax(0.6, 1) * #indices_1
+    local stop_id_2 = GetRandomMinMax(0.6, 1) * #indices_2
+
+    for i = 1, stop_id_1 do
+        table.insert(indices_select, indices_1[i])
+    end
+    for i = 1, stop_id_2 do
+        table.insert(indices_select, indices_2[i])
+    end
+
+    for _, k in pairs(indices_select) do
+        local ship = self.ships[k]
+
+        self.inst:DoTaskInTime(GetRandomMinMax(0, 0.75), function()
+            if not ship.shown then
+                return
+            end
+
+            local offset = Vector3(50, 0)
+            local offset2 = Vector3(math.random(300, 700), 0)
+            if k >= 9 then
+                offset = Vector3(-50, 0)
+                offset2 = Vector3(-math.random(300, 700), 0)
+            end
+
+            local start_pos = ship:GetPosition() + offset
+            local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
+
+            if k < 9 then
+                beam:GetAnimState():SetMultColour(0, 0, 0, 1)
+                beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
+            end
+        end)
+    end
+
+    -- for k, ship in pairs(self.ships) do
+    --     if math.random() < 0.8 then
+    --         self.inst:DoTaskInTime(GetRandomMinMax(0, 1), function()
+    --             if not ship.shown then
+    --                 return
+    --             end
+    --             local offset = Vector3(50, 0)
+    --             local offset2 = Vector3(math.random(300, 700), 0)
+    --             if k >= 9 then
+    --                 offset = Vector3(-50, 0)
+    --                 offset2 = Vector3(-math.random(300, 700), 0)
+    --             end
+
+    --             local start_pos = ship:GetPosition() + offset
+    --             local beam = self:LaunchBeam(start_pos, start_pos + offset2, 2500, math.random() < 0.66)
+
+    --             if k < 9 then
+    --                 beam:GetAnimState():SetMultColour(0, 0, 0, 1)
+    --                 beam:GetAnimState():SetAddColour(0, 245 / 255, 211 / 255, 1)
+    --             end
+    --         end)
+    --     end
+    -- end
 
     -- local k, ship = GetRandomItemWithIndex(self.ships)
 
@@ -402,7 +452,7 @@ function StarIliadOpeningPart1:LaunchBeams()
     -- end
 end
 
-function StarIliadOpeningPart1:StartBeamFight(delay)
+function StarIliadOpeningPart1:StartBeamFight()
     -- self.beam_fight_task = self.inst:DoTaskInTime(delay or GetRandomMinMax(0.5, 1), function()
     --     self:LaunchBeams()
 
@@ -411,7 +461,7 @@ function StarIliadOpeningPart1:StartBeamFight(delay)
     -- end)
 
     self:LaunchBeams()
-    self.beam_fight_task = self.inst:DoTaskInTime(delay or 1, function()
+    self.beam_fight_task = self.inst:DoTaskInTime(0.75, function()
         if self.beam_fight_task then
             self.beam_fight_task:Cancel()
         end

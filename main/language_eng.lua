@@ -3,10 +3,10 @@ STRINGS.CHARACTER_TITLES.blythe = "The Star Ranger"
 STRINGS.CHARACTER_NAMES.blythe = "Blythe"
 STRINGS.CHARACTER_DESCRIPTIONS.blythe =
 "* Skilled in Marksmanship and Magic\n* Passionate about studying Alien Relics\n* Despises crude and primitive tools"
-STRINGS.CHARACTER_QUOTES.blythe = "\"A true Star Ranger wishlist the 'Star Iliad' on Steam!\""
+STRINGS.CHARACTER_QUOTES.blythe = "\"A true Star Ranger wishlists 'Star Iliad' on Steam!\""
 
 -- Custom speech strings
-STRINGS.CHARACTERS.BLYTHE = require "speech_blythe_eng"
+STRINGS.CHARACTERS.BLYTHE = require "speech_blythe"
 
 -- The character's name as appears in-game
 STRINGS.NAMES.BLYTHE = "Blythe"
@@ -69,6 +69,11 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_BOSS_GORGOROTH = "Absolutely hideo
 STRINGS.NAMES.STARILIAD_BOSS_GUARDIAN = "Sanctuary Guardian"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_BOSS_GUARDIAN = "It's a powerful protector."
 
+STRINGS.NAMES.STARILIAD_BOSS_SPYDER = "Tomb Spyder"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_BOSS_SPYDER = "I've never seen a spider made of iron!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_BOSS_SPYDER = "No, you're not our mom..."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_BOSS_SPYDER = "From a dynasty that has long since fallen."
+
 STRINGS.NAMES.STARILIAD_BOSS_HEXA_GHOST = "Hexaghost"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_BOSS_HEXA_GHOST = "It looks quite hot."
 
@@ -106,18 +111,20 @@ STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = {
 }
 
 STRINGS.ACTIONS.CASTAOE.BLYTHE_BLASTER = "Shoot"
+
 STRINGS.ACTIONS.BLYTHE_UNLOCK_SKILL = "Decrypt"
 
 STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BLYTHE_UNLOCK_SKILL = {
     LEARNED = "I already know this skill.",
-    MISSILE_THRESHOLD = "Missile capacity has reached its limit.",
-    SUPER_MISSILE_THRESHOLD = "Super Missile capacity has reached its limit.",
+    MISSILE_THRESHOLD = "Missile capacity has reached its limit and cannot be increased further.",
+    SUPER_MISSILE_THRESHOLD = "Super Missile capacity has reached its limit and cannot be increased further.",
 }
 
 --------------------- HUD ------------------------
 STRINGS.UI.COOKBOOK.FOOD_EFFECTS_HUNGER_UPGRADE = "Increases Blythe's maximum Hunger."
 
 STRINGS.STARILIAD_UI = {}
+
 STRINGS.STARILIAD_UI.MAIN_MENU = {
     CALLER_TEXT = "Menu",
     SUB_TITLES = {
@@ -134,9 +141,10 @@ STRINGS.STARILIAD_UI.MAGIC_TAB = {
 STRINGS.STARILIAD_UI.KEY_CONFIG_DIALOG = {
     TITLE = "Keybind Settings",
     TEXT_BEFORE = "Press a key and then click Confirm to finish.\nMiddle mouse and side buttons are also supported!",
-    TEXT_AFTER = "Current key: %s. Click Confirm or choose another key.",
+    TEXT_AFTER = "Current key: %s. Click Confirm to apply, or choose another key.",
+
     DO_SET_SKILL_KEY = "Confirm",
-    CLEAR_SKILL_KEY = "Clear",
+    CLEAR_SKILL_KEY = "Clear Key",
     SET_KEY_CANCEL = "Cancel"
 }
 
@@ -182,79 +190,98 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
         NAME = "Beam",
         DESC = "Fires a beam from the Magic Blaster, dealing moderate damage. Powerful creatures are resistant to beams.",
     },
+
     ICE_FOG = {
         NAME = "Ice Fog",
-        DESC = "Continuously sprays cryo-gas to freeze enemies.",
+        DESC = "Continuously sprays cryo-gas from the Magic Blaster to freeze enemies.",
     },
+
     WIDE_BEAM = {
         NAME = "Wide Beam",
         DESC =
-        "Fires two extra sub-beams. Each deals 25% of the main beam's damage. (Can be toggled in the config wheel).",
+        "Your beam attack fires two additional sub-beams (can be toggled in the Configure Gear wheel). Each sub-beam deals 25% of the main beam's damage.",
     },
+
     WAVE_BEAM = {
         NAME = "Wave Beam",
         DESC =
-        "Infuses beams with otherworldly energy, allowing them to pass through obstacles. Permanently increases Planar Damage.",
+        "Infuses your beam with pure otherworldly energy, allowing it to pass through obstacles (can be toggled in the Configure Gear wheel). Also permanently increases the beam's planar damage.",
     },
+
     PLASMA_BEAM = {
         NAME = "Plasma Beam",
-        DESC = "Infuses beams with plasma, allowing them to pierce through enemies. Permanently increases attack damage.",
+        DESC =
+        "Infuses your beam with powerful plasma, allowing it to pierce through enemies (can be toggled in the Configure Gear wheel). Also permanently increases the beam's attack damage.",
     },
+
     USURPER_SHOT = {
         NAME = "Usurper Shot",
         DESC =
-        "Fires non-lethal beams. 'Grasp' pulls creatures or items toward you. 'Swap' exchanges positions with the target.",
+        "Fires special non-lethal beams from the Magic Blaster. 'Usurper: Grasp' pulls distant creatures or items toward you. 'Usurper: Swap' exchanges your position with the target.",
     },
+
     MISSILE = {
         NAME = "Missile",
         DESC =
-        "Fires a missile that causes high-damage small explosions and destroys structures. Capacity can be increased with Missile Tanks.",
+        "Fires a missile that causes a high-damage, small-scale explosion, destroying surrounding structures. Current ammo and maximum capacity are displayed in the top right corner. Capacity can be increased with Missile Tanks.",
     },
+
     SUPER_MISSILE = {
         NAME = "Super Missile",
         DESC =
-        "Fires a super missile causing massive mid-range explosions. Capacity can be increased with Super Missile Tanks.",
+        "Fires a super missile that causes a massive, mid-range explosion, destroying surrounding structures. Current ammo and maximum capacity are displayed in the top right corner. Capacity can be increased with Super Missile Tanks.",
     },
+
     SPEED_BURST = {
         NAME = "Speed Booster",
         DESC =
-        "Sprint after running in one direction for 3 seconds. Deals massive damage to creatures and objects in your path.",
+        "Sprint continuously in one direction for 3 seconds without being slowed to enter a dash state, dealing massive damage to creatures and objects you crash into. The Speed Booster can be toggled in the Configure Gear wheel.",
     },
+
     SHOCK_WAVE = {
         NAME = "Shockwave",
         DESC = "Missiles and Super Missiles now slow down targets.",
     },
+
     GRAVITY_CONTROL = {
         NAME = "Gravity Controller",
-        DESC =
-        "Manipulates gravity to reduce damage taken, grant knockback resistance, and allow free movement in water.",
+        DESC = "Manipulate gravity to reduce damage taken, grant knockback resistance, and allow free movement in water.",
     },
+
     CONFIGURE_POWERSUIT = {
         NAME = "Configure Gear",
         DESC = "Opens a wheel to switch ammo types or toggle special abilities.",
     },
+
     PARRY = {
         NAME = "Melee Parry",
         DESC =
-        "Perform a quick block. A successful parry allows an immediate powerful counter-attack. Countered enemies drop missile refills.",
+        "Perform a quick block with your weapon. A successful parry allows you to immediately fire a powerful counter-attack with the Magic Blaster.\n*Countered enemies drop missile refills.",
     },
+
     HEAL = {
         NAME = "Mermaid's Heart",
-        DESC = "Consumes Hunger to channel mermaid magic, healing yourself and nearby allies.",
+        DESC = "Consumes a small amount of Hunger to channel mermaid magic, healing yourself and nearby allies.",
     },
+
     STEALTH = {
         NAME = "Phantom Cloak",
-        DESC = "Become invisible to evade enemies. Consumes Hunger over time. Attacking or working briefly reveals you.",
+        DESC =
+        "Enter stealth to evade enemies, consuming Hunger continuously while active. Attacking or performing other tasks while invisible will briefly reveal you and drain additional Hunger.",
     },
+
     DODGE = {
         NAME = "Flash Shift",
-        DESC = "Consumes Hunger to dash a short distance. Can be used twice in a row. Cannot be used while slowed.",
-    },
-    SCAN = {
-        NAME = "Stellar Vision",
         DESC =
-        "Consumes Hunger to scan terrain, revealing the map and highlighting key structures for 10s. Also reveals invisible creatures.",
+        "Consumes a small amount of Hunger to dash a short distance toward the cursor, enveloped in magical light. Can be used twice in succession.\n*Cannot be used while slowed.",
     },
+
+    SCAN = {
+        NAME = "Starry Insight",
+        DESC =
+        "Consumes a small amount of Hunger to scan the surrounding terrain with magic waves, periodically revealing the map and highlighting the direction of key structures on the screen for 10 seconds.\n*Magic waves can force invisible creatures to reveal themselves.",
+    },
+
     UNKNOWN = {
         NAME = "Unknown Skill",
         DESC = "You must discover this skill yourself.",
@@ -269,11 +296,28 @@ STRINGS.STARILIAD_UI.TIPS = {
 
 STRINGS.STARILIAD_UI.CUTSCENES = {
     INTRO = {
-        "A long time ago, the star-destroying weapon 'En-Zu' brought galactic civilization to the brink of extinction...",
+        "Long ago, the star-destroying weapons known as 'En-Zu' brought galactic civilization to the brink of extinction...",
         "En-Zu was far too dangerous to exist. Thus, the ancients destroyed almost every trace of them.",
         "However, in the vastness of the universe, some En-Zu remained perfectly preserved.",
+        "Rumor has it that an En-Zu is sealed near Planet SR114.",
+        "As a result, pirates, warlords, and opportunists have flocked to Planet SR114.",
+        "I am Blythe, a Star Ranger, and the En-Zu is my target as well.",
+        "This dangerous weapon must never resurface. It must be destroyed!",
     },
 }
+
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_ENZU_RECORDING =
+"The ancients erased almost everything about the En-Zu; not even records of its appearance survived."
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SR114_AND_SR514 =
+"Planet SR114 and its moon, SR514, together form what ordinary survivors know as the Constant."
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SR114_1 =
+"Multiple alien civilizations have settled, flourished, and perished on Planet SR114 over the ages."
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_GALAXY_ASTRAL =
+"The Galactic Federation and the Astral Empire are currently the two major powers in the galaxy."
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SPACE_PIRATE_BAN_GUN =
+"As the defeated faction of the ancient war, the Space Pirates are forbidden from possessing firearms to this day."
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_GENESTEALER_CULT_REGION =
+"The 'Ascension Claw' is a religion that recently emerged on rim planets. Its cultists believe a four-clawed prophet will bring them salvation."
 
 -----------------------------------------------------------------------------------
 

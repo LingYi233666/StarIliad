@@ -302,24 +302,11 @@ STRINGS.STARILIAD_UI.TIPS = {
 }
 
 STRINGS.STARILIAD_UI.CUTSCENES = {
+    -- 恩苏: En-Zu
     INTRO = {
-        -- 久远以前，“泽克逊”（Zexion）武器曾让银河文明濒临毁灭的边缘……
-
-        -- 由于泽克逊太过危险，不应存在于世，古代先民摧毁了所有已知的相关痕迹。
-
-        -- 然而，在浩瀚无垠的宇宙中，至今仍有残存。
-
-        -- 扫描显示，在遥远的赛弗-X72（Cypher-X72）行星废墟深处，发现了泽克逊的踪迹。
-
-        -- 星区各地的海盗与军阀正纷纷涌向赛弗-X72。
-
-        -- 我是纳图（Natu），来自奥林斯（Orinth）星球的战士。 我也在寻找泽克逊。
-
-        -- 它的力量，或许正能将奥林斯从毁灭中挽救回来……
-
         "很久很久以前，歼星级武器“恩苏”曾将银河文明推向了毁灭的边缘……",
         "恩苏实在太过危险，不应存在于世。因此古人将它们几乎尽数摧毁。",
-        "然而，在浩瀚无垠的宇宙中，有一些恩苏被完好无损地保留了下来。",
+        "然而，在浩瀚无垠的宇宙中，一些恩苏被完好无损地保留了下来。",
         "传言称，有一个恩苏被封印在行星SR114附近。",
         "因此，海盗、军阀以及机会主义者们纷纷涌向行星SR114。",
         "我是星际游侠布莱丝，恩苏也是我的目标。",
@@ -327,7 +314,14 @@ STRINGS.STARILIAD_UI.CUTSCENES = {
     },
 }
 
-
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_ENZU_RECORDING = "古人几乎将关于恩苏的一切都抹除了，即便是它外形的记载也没能留存下来。"
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SR114_AND_SR514 = "行星SR114，和它的卫星SR514，共同构成了普通幸存者眼中的永恒领域。"
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SR114_1 = "曾经有多个外星文明在行星SR114上定居、发展和消亡。"
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_GALAXY_ASTRAL =
+"银河联盟和阿斯特拉帝国是目前银河系的两大主要势力。" -- Galactic Federation and Astral Empire
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_SPACE_PIRATE_BAN_GUN = "作为远古战争的战败方，宇宙海盗一族直至今日都不被允许持有枪械。"
+STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_GENESTEALER_CULT_REGION =
+"“飞升之爪”是近期才在边缘星球兴起的宗教，其教徒认为一名有着四只爪子的先知会为他们带来救赎。"
 
 -----------------------------------------------------------------------------------
 

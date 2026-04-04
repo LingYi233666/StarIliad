@@ -125,6 +125,8 @@ end
 
 function StarIliadOpeningPart6:Play()
     self.inst:DoTaskInTime(2, function()
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/ship_slide")
+
         local ship_start_pos = self.blythe_ship:GetPosition()
         local ship_stop_pos = Vector3(0, 0)
         self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 3)
@@ -132,6 +134,8 @@ function StarIliadOpeningPart6:Play()
 
     -- StarIliadDebug.CUTSCENE.parts[6].blythe_ship.flame1:SetPosition(-130, -65)
     self.inst:DoTaskInTime(6, function()
+        TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/ship_charge")
+
         local ship_start_pos = self.blythe_ship:GetPosition()
         local ship_stop_pos = Vector3(-100, 0)
         self.blythe_ship:MoveTo(ship_start_pos, ship_stop_pos, 1)
@@ -168,16 +172,16 @@ function StarIliadOpeningPart6:Play()
     for i = 1, 100 do
         local start_pos = Vector3(half_w, math.random(-half_h, half_h))
         local stop_pos = Vector3(-start_pos.x, start_pos.y)
-        local duration = GetRandomMinMax(1, 2)
+        local duration = GetRandomMinMax(0.8, 1.2)
 
         local star = self:EmitStar(start_pos, stop_pos, duration)
-        star.start_time = star.start_time - GetRandomMinMax(1, 2)
+        star.start_time = star.start_time - GetRandomMinMax(0.8, 1.2)
     end
 
     self.inst:DoPeriodicTask(0, function()
         local start_pos = Vector3(half_w, math.random(-half_h, half_h))
         local stop_pos = Vector3(-start_pos.x, start_pos.y)
-        local duration = GetRandomMinMax(1, 2)
+        local duration = GetRandomMinMax(0.8, 1.2)
 
         self:EmitStar(start_pos, stop_pos, duration)
     end)

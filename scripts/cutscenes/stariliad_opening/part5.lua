@@ -89,7 +89,7 @@ function StarIliadOpeningPart5:Play()
     local function emit_fn()
         local width, height = unpack(self.stars_region)
         local dist = math.sqrt(width * width + height * height) * 0.8
-        local duration = GetRandomMinMax(1.5, 2)
+        local duration = GetRandomMinMax(0.8, 1.2)
 
         local rand_value = math.random() * (width + height)
         if rand_value > width then
@@ -108,7 +108,7 @@ function StarIliadOpeningPart5:Play()
 
     for i = 1, 200 do
         local star = emit_fn()
-        star.start_time = star.start_time - GetRandomMinMax(0, 2)
+        star.start_time = star.start_time - GetRandomMinMax(0, 1)
     end
 
     self.inst:DoPeriodicTask(0, function()
