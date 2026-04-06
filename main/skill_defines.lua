@@ -40,6 +40,7 @@ BLYTHE_SKILL_TYPE = {
 STARILIAD_ALIEN_STATUE_TYPE = {
     NORMAL_CHOZO = "NORMAL_CHOZO",
     DODGE_CHOZO = "DODGE_CHOZO",
+    SCAN_CHOZO = "SCAN_CHOZO",
     BROKEN_CHOZO = "BROKEN_CHOZO",
     ALTAR = "ALTAR",
     MERMAID = "MERMAID",
@@ -335,6 +336,8 @@ BLYTHE_SKILL_DEFINES = {
     {
         name = "scan",
         dtype = BLYTHE_SKILL_TYPE.MAGIC,
+
+        statue_type = STARILIAD_ALIEN_STATUE_TYPE.SCAN_CHOZO,
 
         on_pressed = CastSkillByComponentWrapper("blythe_skill_scan")
     },

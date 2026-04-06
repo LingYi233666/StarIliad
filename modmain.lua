@@ -128,6 +128,7 @@ AddMinimapAtlas("images/map_icons/stariliad_chozo_ability_ball.xml")
 AddMinimapAtlas("images/map_icons/blythe_unlock_skill_item_missile.xml")
 AddMinimapAtlas("images/map_icons/blythe_unlock_skill_item_super_missile.xml")
 AddMinimapAtlas("images/map_icons/stariliad_alien_statue_chozo_dodge.xml")
+AddMinimapAtlas("images/map_icons/stariliad_alien_statue_chozo_scan.xml")
 
 --增加人物到mod人物列表的里面 性别为女性（MALE, FEMALE, ROBOT, NEUTRAL, and PLURAL）
 AddModCharacter("blythe", "FEMALE")

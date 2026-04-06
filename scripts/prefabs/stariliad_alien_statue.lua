@@ -6,6 +6,7 @@ local assets =
     Asset("ANIM", "anim/statue_ruins_gem.zip"),
     Asset("ANIM", "anim/stariliad_alien_statue_chozo.zip"),
     Asset("ANIM", "anim/stariliad_alien_statue_chozo_dodge.zip"),
+    Asset("ANIM", "anim/stariliad_alien_statue_chozo_scan.zip"),
 
     Asset("ANIM", "anim/lavaarena_portal.zip"),
     Asset("ANIM", "anim/lavaarena_keyhole.zip"),
@@ -13,8 +14,13 @@ local assets =
 
     Asset("ANIM", "anim/atrium_floor.zip"),
 
-    Asset("IMAGE", "images/map_icons/stariliad_alien_statue_chozo_dodge.tex"), --小地图
+
+    ------------------------------ 小地图 ------------------------------
+    Asset("IMAGE", "images/map_icons/stariliad_alien_statue_chozo_dodge.tex"),
     Asset("ATLAS", "images/map_icons/stariliad_alien_statue_chozo_dodge.xml"),
+
+    Asset("IMAGE", "images/map_icons/stariliad_alien_statue_chozo_scan.tex"),
+    Asset("ATLAS", "images/map_icons/stariliad_alien_statue_chozo_scan.xml"),
 }
 
 
@@ -184,6 +190,10 @@ local function wrapper_dodge_chozo(item_prefab)
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
 
+        if not TheNet:IsDedicated() then
+            inst.components.stariliad_important_scan_target:SetMarkerHeight(-100)
+        end
+
         if not TheWorld.ismastersim then
             return inst
         end
@@ -191,6 +201,58 @@ local function wrapper_dodge_chozo(item_prefab)
         inst.components.pickable.onpickedfn = OnPickedDodgeChozo
         inst.components.pickable.onregenfn = OnRegenDodgeChozo
         inst.components.pickable.makeemptyfn = MakeEmptyDodgeChozo
+
+        return inst
+    end
+
+    return fn
+end
+
+------------------------------------------------------------------------------------
+
+local function OnPickedScanChozo(inst, picker)
+    inst.SoundEmitter:PlaySound("dontstarve/common/together/atrium_gate/key_in")
+    -- inst.AnimState:ClearOverrideSymbol("swap_gem")
+
+    inst.AnimState:HideSymbol("swap_object")
+end
+
+local function OnRegenScanChozo(inst)
+    inst.AnimState:ShowSymbol("swap_object")
+end
+
+local function MakeEmptyScanChozo(inst)
+    inst.AnimState:HideSymbol("swap_object")
+end
+
+local function wrapper_scan_chozo(item_prefab)
+    local function fn()
+        local inst = common_fn("stariliad_alien_statue_chozo_scan", "stariliad_alien_statue_chozo_scan", "idle", nil,
+            item_prefab, 10,
+            "dontstarve/common/floating_statue_hum")
+
+        inst.MiniMapEntity:SetIcon("stariliad_alien_statue_chozo_scan.tex")
+
+        -- inst.Transform:SetTwoFaced()
+
+        inst.AnimState:ShowSymbol("swap_object")
+
+        -- inst:AddTag("stariliad_pick_high")
+        -- inst:AddTag("stariliad_alien_statue_chozo")
+
+        inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
+
+        if not TheNet:IsDedicated() then
+            inst.components.stariliad_important_scan_target:SetMarkerHeight(-100)
+        end
+
+        if not TheWorld.ismastersim then
+            return inst
+        end
+
+        inst.components.pickable.onpickedfn = OnPickedScanChozo
+        inst.components.pickable.onregenfn = OnRegenScanChozo
+        inst.components.pickable.makeemptyfn = MakeEmptyScanChozo
 
         return inst
     end
@@ -335,6 +397,8 @@ for _, data in pairs(BLYTHE_SKILL_DEFINES) do
             table.insert(rets, Prefab(statue_prefab, wrapper_normal_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.DODGE_CHOZO then
             table.insert(rets, Prefab(statue_prefab, wrapper_dodge_chozo(item_prefab), assets))
+        elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.SCAN_CHOZO then
+            table.insert(rets, Prefab(statue_prefab, wrapper_scan_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO then
             table.insert(rets, Prefab(statue_prefab, wrapper_broken_chozo(item_prefab), assets))
         elseif data.statue_type == STARILIAD_ALIEN_STATUE_TYPE.ALTAR then

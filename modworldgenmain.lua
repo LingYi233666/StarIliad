@@ -53,6 +53,7 @@ MyAddStaticLayout("stariliad_spyder_hideout_large", "map/static_layouts/starilia
 -- FUNGUSMOON
 -- si_layout("stariliad_chozo_statue_dodge")
 MyAddStaticLayout("stariliad_chozo_statue_dodge", "map/static_layouts/stariliad_chozo_statue_dodge")
+MyAddStaticLayout("stariliad_chozo_statue_scan", "map/static_layouts/stariliad_chozo_statue_scan")
 
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
 	areas = {
@@ -319,9 +320,11 @@ AddTaskSetPreInit("default", function(taskset)
 	taskset.set_pieces["stariliad_bonus_leif_missile"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_bonus_spiderden_missile"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_event_joust"] = { count = 1, tasks = tasks_except_begin }
+	taskset.set_pieces["stariliad_chozo_statue_scan"] = { count = 1, tasks = { "Forest hunters", } }
 
 	table.insert(taskset.required_prefabs, "stariliad_alien_statue_missile")
 	table.insert(taskset.required_prefabs, "stariliad_event_joust")
+	table.insert(taskset.required_prefabs, "stariliad_alien_statue_scan")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
