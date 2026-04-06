@@ -144,8 +144,11 @@ function StarIliadOpeningPart7:Play()
     local start_scale = 2
     local stop_scale = 0.01
 
-    local tail_time = 3.5
-    local duration = 4
+    local tail_time = 1.5
+    local duration = 2.3
+
+    -- local tail_time = 1.8
+    -- local duration = 2.8
 
 
     self.inst:DoTaskInTime(1, function()
@@ -154,6 +157,12 @@ function StarIliadOpeningPart7:Play()
 
         local last_ship_pos = nil
         local last_ship_t = nil
+
+        self.inst:DoTaskInTime(0, function()
+            TheFrontEnd:GetSound():PlaySound("stariliad_sfx/hud/opening/ship_fly2")
+        end)
+
+
         self.fly_task = self.inst:DoPeriodicTask(0, function()
             local t1 = GetStaticTime() - start_time
             if t1 <= duration then

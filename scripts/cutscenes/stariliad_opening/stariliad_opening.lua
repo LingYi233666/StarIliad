@@ -157,9 +157,10 @@ function StarIliadOpening:Play()
     -- self.parts[3]:Hide()
     -- self.parts[4]:Hide()
     -- self.parts[5]:Hide()
-    -- self.parts[6]:Show()
-    -- self.parts[7]:Hide()
-    -- self.parts[6]:Play()
+    -- self.parts[6]:Hide()
+    -- self.parts[7]:Show()
+
+    -- self.parts[7]:Play()
 
     -- self.parts[2]:Show()
     -- -- self.parts[2]:Play()

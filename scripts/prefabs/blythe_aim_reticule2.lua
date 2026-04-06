@@ -140,6 +140,7 @@ local function fn()
     inst.persists = false
 
     inst.AttachTarget = function(inst, target)
+        target:AddChild(inst)
         inst._target:set(target)
     end
 
