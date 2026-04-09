@@ -10,20 +10,25 @@ function BlytheSkillGravityControl:Enable(enable, is_onload)
 
     if not old_enable and enable then
         self.inst:AddTag("heavybody")
+        self.inst:AddTag("fireimmune")
+
         self.inst.components.combat.externaldamagetakenmultipliers:SetModifier(self.inst,
             TUNING.BLYTHE_GRAVITY_CONTROL_DAMAGE_PERCENT,
             "gravity_control")
         self.inst.components.planardefense:AddBonus(self.inst, TUNING.BLYTHE_GRAVITY_CONTROL_PLANAR_DEF,
             "gravity_control")
+        self.inst.components.health.externalfiredamagemultipliers:SetModifier(self.inst, 0, "gravity_control")
 
         -- self.inst:StartUpdatingComponent(self)
     elseif old_enable and not enable then
         -- self.inst:StopUpdatingComponent(self)
 
         self.inst:RemoveTag("heavybody")
+        self.inst:RemoveTag("fireimmune")
 
         self.inst.components.combat.externaldamagetakenmultipliers:RemoveModifier(self.inst, "gravity_control")
         self.inst.components.planardefense:RemoveBonus(self.inst, "gravity_control")
+        self.inst.components.health.externalfiredamagemultipliers:RemoveModifier(self.inst, "gravity_control")
 
         -- self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "gravity_control")
     end

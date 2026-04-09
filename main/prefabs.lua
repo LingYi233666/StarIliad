@@ -251,11 +251,38 @@ AddPrefabPostInit("lava_pond", function(inst)
     end
 
     local function OnStartBeingOccupiedBy(inst, ent)
-        print(inst, "OnStartBeingOccupiedBy", ent)
+        -- print(inst, "OnStartBeingOccupiedBy", ent)
+
+        -- ent.AnimState:SetSymbolMultColour("fx_splash", r, g, b, a)
+
+        ent.AnimState:SetSymbolMultColour("splash_wave", 255 / 255, 86 / 255, 10 / 255, 1)
+        ent.AnimState:SetSymbolMultColour("hotspring_water_ripple_front", 255 / 255, 86 / 255, 10 / 255, 1)
+        ent.AnimState:SetSymbolMultColour("hotspring_back_ripple_comp", 255 / 255, 86 / 255, 10 / 255, 1)
+        ent.AnimState:SetSymbolMultColour("fx_splash", 255 / 255, 86 / 255, 10 / 255, 1)
     end
 
     local function OnStopBeingOccupiedBy(inst, ent)
-        print(inst, "OnStopBeingOccupiedBy", ent)
+        -- print(inst, "OnStopBeingOccupiedBy", ent)
+
+        if inst.stop_occupy_tasks == nil then
+            inst.stop_occupy_tasks = {}
+        end
+
+        if inst.stop_occupy_tasks[ent] then
+            inst.stop_occupy_tasks[ent]:Cancel()
+        end
+
+        if ent.sg and ent.sg.statemem.water then
+            ent.sg.statemem.water.AnimState:SetMultColour(255 / 255, 86 / 255, 10 / 255, 1)
+        end
+
+        inst.stop_occupy_tasks[ent] = inst:DoTaskInTime(1, function()
+            ent.AnimState:SetSymbolMultColour("splash_wave", 1, 1, 1, 1)
+            ent.AnimState:SetSymbolMultColour("hotspring_water_ripple_front", 1, 1, 1, 1)
+            ent.AnimState:SetSymbolMultColour("hotspring_back_ripple_comp", 1, 1, 1, 1)
+            ent.AnimState:SetSymbolMultColour("fx_splash", 1, 1, 1, 1)
+            inst.stop_occupy_tasks[ent] = nil
+        end)
     end
 
     inst:AddComponent("bathingpool")

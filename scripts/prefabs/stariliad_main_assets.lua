@@ -77,6 +77,11 @@ local assets =
     Asset("IMAGE", "images/ui/skill_slot/scan.tex"),
     Asset("ATLAS", "images/ui/skill_slot/scan.xml"),
 
+    Asset("IMAGE", "images/ui/skill_slot/configure_powersuit.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/configure_powersuit.xml"),
+
+    Asset("IMAGE", "images/ui/skill_slot/heal.tex"),
+    Asset("ATLAS", "images/ui/skill_slot/heal.xml"),
 
     Asset("IMAGE", "images/ui/missile_status/missile.tex"),
     Asset("ATLAS", "images/ui/missile_status/missile.xml"),
