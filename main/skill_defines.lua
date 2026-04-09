@@ -88,7 +88,7 @@ BLYTHE_SKILL_DEFINES = {
         dtype = BLYTHE_SKILL_TYPE.ENERGY,
         statue_type = STARILIAD_ALIEN_STATUE_TYPE.BROKEN_CHOZO,
         -- Unlock item params
-        encrypted = true,
+        -- encrypted = true,
     },
 
     -- 海象森林群系 "Forest hunters"
@@ -261,7 +261,7 @@ BLYTHE_SKILL_DEFINES = {
 
 
         -- Unlock item params
-        encrypted = true,
+        -- encrypted = true,
     },
 
 

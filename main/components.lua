@@ -31,6 +31,12 @@ AddGamePostInit(function()
     else
         print("LootTables.minotaur not found!!!")
     end
+
+    if LootTables.dragonfly then
+        table.insert(LootTables.dragonfly, { "blythe_unlock_skill_item_gravity_control", 1.0 })
+    else
+        print("LootTables.dragonfly not found!!!")
+    end
 end)
 
 

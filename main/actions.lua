@@ -244,3 +244,17 @@ ACTIONS.PICK.extra_arrive_dist = function(inst, dest, ...)
 
     return 0
 end
+----------------------------------------------------------------------------------------------------
+
+local old_SOAKIN_fn = ACTIONS.SOAKIN.fn
+
+ACTIONS.SOAKIN.fn = function(act, ...)
+    if act.target
+        and act.target.components.bathingpool
+        and act.target.prefab == "lava_pond"
+        and not (act.doer.components.blythe_skiller
+            and act.doer.components.blythe_skiller:IsLearned("gravity_control")) then
+        return false
+    end
+    return old_SOAKIN_fn(act, ...)
+end

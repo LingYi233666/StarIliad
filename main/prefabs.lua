@@ -106,6 +106,16 @@ end)
 --     end)
 -- end)
 
+AddPrefabPostInit("stalker_atrium", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    -- TODO: Add plasma_beam in lootsetupfn
+    -- lootsetupfn
+end)
+
+
 AddPrefabPostInit("forest", function(inst)
     if not TheWorld.ismastersim then
         return
@@ -233,6 +243,25 @@ AddPrefabPostInit("pigking", function(inst)
     end
 
     inst.components.trader.onaccept = OnGetItemFromPlayer
+end)
+
+AddPrefabPostInit("lava_pond", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    local function OnStartBeingOccupiedBy(inst, ent)
+        print(inst, "OnStartBeingOccupiedBy", ent)
+    end
+
+    local function OnStopBeingOccupiedBy(inst, ent)
+        print(inst, "OnStopBeingOccupiedBy", ent)
+    end
+
+    inst:AddComponent("bathingpool")
+    inst.components.bathingpool:SetRadius(1.1)
+    inst.components.bathingpool:SetOnStartBeingOccupiedBy(OnStartBeingOccupiedBy)
+    inst.components.bathingpool:SetOnStopBeingOccupiedBy(OnStopBeingOccupiedBy)
 end)
 
 AddPrefabPostInitAny(function(inst)
