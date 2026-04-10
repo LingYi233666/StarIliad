@@ -47,15 +47,19 @@ local function OnEquip(inst, owner)
     owner.AnimState:Show("ARM_carry")
     owner.AnimState:Hide("ARM_normal")
 
-    owner.components.combat:SetAttackPeriod(FRAMES)
-    -- TryChangeAttackPeriod(inst, owner)
+    if owner.components.combat then
+        owner.components.combat:SetAttackPeriod(FRAMES)
+        -- TryChangeAttackPeriod(inst, owner)
+    end
 end
 
 local function OnUnequip(inst, owner)
     owner.AnimState:Hide("ARM_carry")
     owner.AnimState:Show("ARM_normal")
 
-    owner.components.combat:SetAttackPeriod(TUNING.WILSON_ATTACK_PERIOD)
+    if owner.components.combat then
+        owner.components.combat:SetAttackPeriod(TUNING.WILSON_ATTACK_PERIOD)
+    end
 end
 
 local function OnProjectileLaunch(inst, attacker, target)
