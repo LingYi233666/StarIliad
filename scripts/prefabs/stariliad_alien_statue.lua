@@ -185,8 +185,8 @@ local function wrapper_dodge_chozo(item_prefab)
 
         inst.AnimState:ShowSymbol("swap_object")
 
-        -- inst:AddTag("stariliad_pick_high")
-        -- inst:AddTag("stariliad_alien_statue_chozo")
+        inst:AddTag("stariliad_pick_high")
+        inst:AddTag("stariliad_alien_statue_chozo")
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
 
@@ -237,8 +237,8 @@ local function wrapper_scan_chozo(item_prefab)
 
         inst.AnimState:ShowSymbol("swap_object")
 
-        -- inst:AddTag("stariliad_pick_high")
-        -- inst:AddTag("stariliad_alien_statue_chozo")
+        inst:AddTag("stariliad_pick_high")
+        inst:AddTag("stariliad_alien_statue_chozo")
 
         inst:SetPrefabNameOverride("stariliad_alien_statue_normal_chozo")
 

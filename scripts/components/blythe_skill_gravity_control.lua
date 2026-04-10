@@ -18,6 +18,7 @@ function BlytheSkillGravityControl:Enable(enable, is_onload)
         self.inst.components.planardefense:AddBonus(self.inst, TUNING.BLYTHE_GRAVITY_CONTROL_PLANAR_DEF,
             "gravity_control")
         self.inst.components.health.externalfiredamagemultipliers:SetModifier(self.inst, 0, "gravity_control")
+        self.inst.components.temperature:SetOverheatHurtRate(0)
 
         -- self.inst:StartUpdatingComponent(self)
     elseif old_enable and not enable then
@@ -29,6 +30,7 @@ function BlytheSkillGravityControl:Enable(enable, is_onload)
         self.inst.components.combat.externaldamagetakenmultipliers:RemoveModifier(self.inst, "gravity_control")
         self.inst.components.planardefense:RemoveBonus(self.inst, "gravity_control")
         self.inst.components.health.externalfiredamagemultipliers:RemoveModifier(self.inst, "gravity_control")
+        self.inst.components.temperature:SetOverheatHurtRate(nil)
 
         -- self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "gravity_control")
     end

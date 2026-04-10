@@ -139,6 +139,48 @@ local debuffs_data = {
             end)
         end,
     },
+
+    stariliad_debuff_pirate_high_speed = {
+        on_attached = function(inst, target, followsymbol, followoffset, data, buffer)
+            if target.components.locomotor then
+                target.components.locomotor:SetExternalSpeedMultiplier(inst, "stariliad_debuff_pirate_high_speed",
+                    TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MOVESPEED_MULT)
+            end
+
+            inst.detach_task = inst:DoTaskInTime(TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MAX_DURATION, function()
+                inst.components.debuff:Stop()
+            end)
+
+            inst._on_state_change = function()
+                if target.sg:HasStateTag("attack") or not target.sg:HasStateTag("running") then
+                    inst.components.debuff:Stop()
+                end
+            end
+
+            inst:ListenForEvent("newstate", inst._on_state_change, target)
+        end,
+
+        on_detached = function(inst, target)
+            if target.components.locomotor then
+                target.components.locomotor:RemoveExternalSpeedMultiplier(inst, "stariliad_debuff_pirate_high_speed")
+            end
+
+            if inst._on_state_change then
+                inst:RemoveEventCallback("newstate", inst._on_state_change, target)
+
+                inst._on_state_change = nil
+            end
+        end,
+
+        on_extended = function(inst, target, followsymbol, followoffset, data, buffer)
+            if inst.detach_task then
+                inst.detach_task:Cancel()
+            end
+            inst.detach_task = inst:DoTaskInTime(TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MAX_DURATION, function()
+                inst.components.debuff:Stop()
+            end)
+        end,
+    },
 }
 
 local function MakeDebuff(prefab, on_attached, on_detached, on_extended)

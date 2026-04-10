@@ -125,8 +125,12 @@ AddStategraphPostInit("wilson_client", function(sg)
     end
 end)
 
-local function PlayWaterSound(inst)
-    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, nil, true)
+local function PlayWaterSound(inst, volume)
+    inst.SoundEmitter:PlaySound("turnoftides/common/together/water/splash/small", nil, volume, true)
+end
+
+local function PlayRunWaterSound(inst)
+    return PlayWaterSound(inst, 0.5)
 end
 
 local function DoEquipmentFoleySounds(inst)
@@ -583,9 +587,17 @@ AddStategraphState("wilson_client",
 
         onenter = function(inst)
             inst.components.locomotor:RunForward()
-            inst.AnimState:PlayAnimation("careful_walk_pre")
+
+            -- inst.AnimState:PlayAnimation("careful_walk_pre")
 
             inst.sg.mem.footsteps = 0
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            if inst.sg.statemem.gravity_control then
+                inst.AnimState:PlayAnimation("run_pre")
+            else
+                inst.AnimState:PlayAnimation("careful_walk_pre")
+            end
         end,
 
         onupdate = function(inst)
@@ -593,9 +605,24 @@ AddStategraphState("wilson_client",
         end,
 
         timeline = {
+            -- TimeEvent(0 * FRAMES, function(inst)
+            --     PlayWaterSound(inst)
+            --     DoFoleySounds(inst)
+            -- end),
+
             TimeEvent(0 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            TimeEvent(4 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
         },
 
@@ -622,7 +649,15 @@ AddStategraphState("wilson_client",
         onenter = function(inst)
             inst.components.locomotor:RunForward()
 
-            local anim = "careful_walk"
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            local anim = "run_loop"
+            if inst.sg.statemem.gravity_control then
+                anim = "run_loop"
+            else
+                anim = "careful_walk"
+            end
+
             if not inst.AnimState:IsCurrentAnimation(anim) then
                 inst.AnimState:PlayAnimation(anim, true)
             end
@@ -636,14 +671,35 @@ AddStategraphState("wilson_client",
 
         timeline =
         {
+            TimeEvent(7 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+
             TimeEvent(11 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
+            end),
+
+            TimeEvent(15 * FRAMES, function(inst)
+                if inst.sg.statemem.gravity_control then
+                    -- PlayWaterSound(inst)
+                    PlayRunWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
 
             TimeEvent(26 * FRAMES, function(inst)
-                PlayWaterSound(inst)
-                DoFoleySounds(inst)
+                if not inst.sg.statemem.gravity_control then
+                    PlayWaterSound(inst)
+                    DoFoleySounds(inst)
+                end
             end),
         },
 
@@ -664,7 +720,14 @@ AddStategraphState("wilson_client",
 
         onenter = function(inst)
             inst.components.locomotor:Stop()
-            inst.AnimState:PlayAnimation("careful_walk_pst")
+
+            inst.sg.statemem.gravity_control = StarIliadBasic.HasGravityControl(inst)
+
+            if inst.sg.statemem.gravity_control then
+                inst.AnimState:PlayAnimation("run_pst")
+            else
+                inst.AnimState:PlayAnimation("careful_walk_pst")
+            end
         end,
 
         timeline =
