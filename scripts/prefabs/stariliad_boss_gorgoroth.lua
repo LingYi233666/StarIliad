@@ -523,7 +523,11 @@ local function meteor_fn()
     --     end
     -- end)
 
-    inst:ListenForEvent("animover", inst.Remove)
+    inst:ListenForEvent("animover", function()
+        -- Keep to play the sound
+        inst:Hide()
+        inst:DoTaskInTime(1, inst.Remove)
+    end)
 
     return inst
 end

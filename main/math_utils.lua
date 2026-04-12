@@ -151,4 +151,79 @@ function StarIliadMath.GetDistPointToLine(point_A, point_B, point_C)
     -- return cross_product / AB_length
 end
 
+--[[
+    DBSCAN 聚类函数
+    points: Vector3 对象的 table
+    eps: 邻域半径
+    min_pts: 成为核心点所需的最小邻域点数
+    返回: 一个 table，格式为 { [聚类ID] = {Vector3, Vector3, ...}, ... }
+    注：未达到聚类标准的点（噪声）将不会包含在返回的聚类结果中
+--]]
+function StarIliadMath.DBSCAN(points, eps, min_pts)
+    local n = #points
+    local labels = {} -- 0 代表噪声, nil 代表未访问, >0 代表聚类ID
+    local clusters = {}
+    local cluster_id = 0
+    local eps_sq = eps * eps -- 使用平方距离提高效率
+
+    -- 寻找邻居点的辅助函数
+    local function get_neighbors(point_idx)
+        local neighbors = {}
+        local p1 = points[point_idx]
+        for i = 1, n do
+            -- 使用 Vector3 的 DistSq 方法
+            if p1:DistSq(points[i]) <= eps_sq then
+                table.insert(neighbors, i)
+            end
+        end
+        return neighbors
+    end
+
+    for i = 1, n do
+        if labels[i] == nil then -- 如果点尚未处理
+            local neighbors = get_neighbors(i)
+
+            if #neighbors < min_pts then
+                labels[i] = 0 -- 标记为噪声
+            else
+                cluster_id = cluster_id + 1
+                labels[i] = cluster_id
+                clusters[cluster_id] = { points[i] }
+
+                -- 开始扩展聚类
+                local queue = {}
+                for _, neighbor_idx in ipairs(neighbors) do
+                    if neighbor_idx ~= i then
+                        table.insert(queue, neighbor_idx)
+                    end
+                end
+
+                local q_idx = 1
+                while q_idx <= #queue do
+                    local target_idx = queue[q_idx]
+
+                    if labels[target_idx] == 0 then -- 噪声点可以转换为边界点
+                        labels[target_idx] = cluster_id
+                        table.insert(clusters[cluster_id], points[target_idx])
+                    elseif labels[target_idx] == nil then -- 未访问过的点
+                        labels[target_idx] = cluster_id
+                        table.insert(clusters[cluster_id], points[target_idx])
+
+                        local target_neighbors = get_neighbors(target_idx)
+                        if #target_neighbors >= min_pts then
+                            -- 如果是核心点，将其邻居加入待处理队列
+                            for _, tn_idx in ipairs(target_neighbors) do
+                                table.insert(queue, tn_idx)
+                            end
+                        end
+                    end
+                    q_idx = q_idx + 1
+                end
+            end
+        end
+    end
+
+    return clusters
+end
+
 GLOBAL.StarIliadMath = StarIliadMath

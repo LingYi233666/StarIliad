@@ -169,4 +169,27 @@ function GLOBAL.si_layout(name, pos)
     StarIliadLayout.Spawn(name, pos)
 end
 
+-- Passed
+-- function GLOBAL.si_dbscan()
+--     local pos_list = {
+--         Vector3(0, 0, 0),
+--         Vector3(1, 0, 0),
+--         Vector3(0, 0, 1),
+
+--         Vector3(100, 0, 0),
+--         Vector3(100, 0, 19),
+
+--         Vector3(300, 0, 0),
+--     }
+
+--     local clusters = StarIliadMath.DBSCAN(pos_list, 20, 1)
+
+--     for id, members in pairs(clusters) do
+--         print("ID:", id)
+--         for _, v in pairs(members) do
+--             print("", v)
+--         end
+--     end
+-- end
+
 GLOBAL.StarIliadDebug = StarIliadDebug

@@ -120,6 +120,7 @@ TUNING.STARILIAD_BOSS_GORGOROTH_METEOR_TRAIL_DURATION_VAR = 5
 -- TUNING.STARILIAD_BOSS_GORGOROTH_BLOB_REGEN_HEALTH = 34
 
 --------------------------------------------------------------------------------------------
+
 TUNING.STARILIAD_BOSS_GUARDIAN_HEALTH = 4000
 TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE = 34
 TUNING.STARILIAD_BOSS_GUARDIAN_COUNTER_DAMAGE = 20
@@ -136,8 +137,6 @@ TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_ADDITION = 100
 TUNING.STARILIAD_BOSS_GUARDIAN_DAMAGE_THRESHOLD_MAX = 750
 
 --------------------------------------------------------------------------------------------
-TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE = 34
---------------------------------------------------------------------------------------------
 TUNING.STARILIAD_BOSS_SPYDER_HEALTH = 3000
 TUNING.STARILIAD_BOSS_SPYDER_DAMAGE = 80
 TUNING.STARILIAD_BOSS_SPYDER_CHARGE_DAMAGE = 200
@@ -152,11 +151,21 @@ TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MIN_RADIUS = 13
 TUNING.STARILIAD_BOSS_SPYDER_CHARGE_MAX_RADIUS = 21
 
 --------------------------------------------------------------------------------------------
-TUNING.STARILIAD_GUARDIAN_SCALES_DAMAGE = 20
---------------------------------------------------------------------------------------------
 
 TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MOVESPEED_MULT = 2
 TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MAX_DURATION = 3
+
+--------------------------------------------------------------------------------------------
+
+TUNING.STARILIAD_ICE_METEOR_DAMAGE = 300
+-- TUNING.STARILIAD_ICE_METEOR_WORK_DAMAGE = 100
+TUNING.STARILIAD_ICE_METEOR_LANDING_DURATION = 1.5
+
+--------------------------------------------------------------------------------------------
+
+TUNING.STARILIAD_GUARDIAN_SCALES_DAMAGE = 20
+
+--------------------------------------------------------------------------------------------
 
 --选人界面初始物品显示
 TUNING.GAMEMODE_STARTING_ITEMS.DEFAULT.BLYTHE = { "blythe_blaster", "blythe_backpack" }

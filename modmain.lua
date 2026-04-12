@@ -113,6 +113,8 @@ PrefabFiles = {
     "stariliad_boss_spyder",
 
     "stariliad_space_pirate_solider",
+
+    "stariliad_ice_meteor",
 }
 
 -- See stariliad_main_assets.lua
