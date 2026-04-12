@@ -4,7 +4,7 @@ local assets =
     Asset("ANIM", "anim/spider_queen.zip"),
     Asset("ANIM", "anim/spider_queen_2.zip"),
     Asset("ANIM", "anim/stariliad_boss_spyder.zip"),
-    Asset("ANIM", "anim/wagboss_leg.zip"),
+    -- Asset("ANIM", "anim/wagboss_leg.zip"),
     --Asset("ANIM", "anim/spider_queen_3.zip"),
     --Asset("SOUND", "sound/spider.fsb"),
 }
@@ -111,6 +111,9 @@ local function fn()
     inst.AnimState:SetBank("spider_queen")
     inst.AnimState:SetBuild("stariliad_boss_spyder")
     inst.AnimState:PlayAnimation("idle", true)
+
+    -- inst.AnimState:OverrideSymbol("legmid", "spider_queen_build", "legmid")
+    -- inst.AnimState:SetSymbolMultColour("legmid", 0, 0, 0, 1)
 
     StarIliadBasic.AddTriggeredEventMusic(inst, "stariliad_boss_spyder")
 

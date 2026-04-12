@@ -111,6 +111,8 @@ PrefabFiles = {
     "stariliad_guardian_scales",
 
     "stariliad_boss_spyder",
+
+    "stariliad_space_pirate_solider",
 }
 
 -- See stariliad_main_assets.lua

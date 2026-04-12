@@ -1,6 +1,6 @@
 local assets =
 {
-	Asset("ANIM", "anim/meteor_shadow.zip")
+	Asset("ANIM", "anim/stariliad_meteor_shadow.zip")
 }
 
 local easing = require("easing")
@@ -54,8 +54,8 @@ local function fn()
 	inst.entity:AddAnimState()
 	inst.entity:AddNetwork()
 
-	inst.AnimState:SetBank("meteor_shadow")
-	inst.AnimState:SetBuild("meteor_shadow")
+	inst.AnimState:SetBank("stariliad_meteor_shadow")
+	inst.AnimState:SetBuild("stariliad_meteor_shadow")
 	inst.AnimState:PlayAnimation("idle")
 	inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
 	inst.AnimState:SetLayer(LAYER_BACKGROUND)

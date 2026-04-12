@@ -21,7 +21,7 @@ local STOP_AVOID_TARGET_DIST = 8
 local HIGH_SPEED_CHASE_CD = 12
 local HIGH_SPEED_CHASE_DIST = 8
 
-local StarIliadSpacePirateBrain = Class(Brain, function(self, inst)
+local StarIliadSpacePirateSoliderBrain = Class(Brain, function(self, inst)
     Brain._ctor(self, inst)
 end)
 
@@ -83,6 +83,10 @@ local function GetCombatTargetFn(inst)
 end
 
 local function CanCastHighSpeedChase(inst)
+    if not inst.can_charge then
+        return false
+    end
+
     if inst.last_cast_high_speed_chase_time ~= nil
         and GetTime() - inst.last_cast_high_speed_chase_time < HIGH_SPEED_CHASE_CD then
         return false
@@ -97,7 +101,8 @@ local function CanCastHighSpeedChase(inst)
         and not inst.components.health:IsDead()
         and not inst.components.combat:InCooldown()
         and not inst.sg:HasStateTag("busy")
-        and inst.sg:HasStateTag("running")
+        -- and inst.sg:HasStateTag("running")
+        and inst.sg:HasStateTag("moving")
         and inst:IsNear(target, HIGH_SPEED_CHASE_DIST)
 end
 
@@ -108,7 +113,7 @@ end
 
 ------------------------------------------------------------------------------------------
 
-function StarIliadSpacePirateBrain:OnStart()
+function StarIliadSpacePirateSoliderBrain:OnStart()
     -- local SPITTER_SEE_DIST  = TUNING.SPIDER_SPITTER_ATTACK_RANGE - .5
     -- local SPITTER_SAFE_DIST = TUNING.SPIDER_SPITTER_ATTACK_RANGE
 
@@ -168,7 +173,6 @@ function StarIliadSpacePirateBrain:OnStart()
     --         FaceEntity(self.inst, GetFaceTargetFn, KeepFaceTargetFn)),
     -- })
 
-    self.chase_and_attack_node = ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST)
 
     local combat_node =
         PriorityNode(
@@ -183,13 +187,13 @@ function StarIliadSpacePirateBrain:OnStart()
 
                 IfNode(
                     function()
-                        return self.chase_and_attack_node.state == RUNNING and CanCastHighSpeedChase(self.inst)
+                        return CanCastHighSpeedChase(self.inst)
                     end,
                     "CanCastHighSpeedChase",
                     ActionNode(function() CastHighSpeedChase(self.inst) end)
                 ),
 
-                self.chase_and_attack_node,
+                ChaseAndAttack(self.inst, MAX_CHASE_TIME, MAX_CHASE_DIST),
             },
             0.5
         )
@@ -223,4 +227,6 @@ function StarIliadSpacePirateBrain:OnStart()
     self.bt    = BT(self.inst, root)
 end
 
-return StarIliadSpacePirateBrain
+return StarIliadSpacePirateSoliderBrain
+
+-- local brain = require "brains/stariliad_space_pirate_brain" c_spawn("spider"):SetBrain(brain)

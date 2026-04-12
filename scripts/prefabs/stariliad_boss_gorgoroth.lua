@@ -4,7 +4,7 @@ local assets =
     Asset("ANIM", "anim/stariliad_boss_gorgoroth.zip"),
     Asset("ANIM", "anim/stariliad_boss_gorgoroth_head.zip"),
 
-    Asset("ANIM", "anim/meteor.zip"),
+    Asset("ANIM", "anim/stariliad_lava_meteor.zip"),
 
     Asset("ANIM", "anim/stariliad_gelblob_meteor.zip"),
 
@@ -474,8 +474,8 @@ local function meteor_fn()
 
     inst.Transform:SetTwoFaced()
 
-    inst.AnimState:SetBank("meteor")
-    inst.AnimState:SetBuild("meteor")
+    inst.AnimState:SetBank("stariliad_lava_meteor")
+    inst.AnimState:SetBuild("stariliad_lava_meteor")
     -- inst.AnimState:PlayAnimation("idle")
 
     inst.AnimState:SetSymbolMultColour("rock01", 0, 0, 0, 0)
