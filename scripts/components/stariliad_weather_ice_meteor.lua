@@ -10,7 +10,7 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
     -- self.range_time_first_warning = { 120, 480 }
     -- self.range_time_second_warning = { 60, 240 }
     -- self.range_time_third_warning = { 30, 120 }
-    self.range_time_between_meteor = { 0.5, 1 }
+    self.range_time_between_meteor = { 1, 2 }
     self.max_radius_meteor = 12
     self.percent_time_first_warning = 0.5
     self.percent_time_second_warning = 0.25
@@ -184,7 +184,7 @@ function StarIliadWeatherIceMeteor:SpawnMeteors()
         local offset = Vector3FromTheta(math.random() * TWOPI, math.random() * self.max_radius_meteor)
 
         self.inst:DoTaskInTime(math.random() * 0.33, function()
-            SpawnAt("stariliad_ice_meteor", center, nil, offset)
+            SpawnAt("stariliad_ice_meteor", center, nil, offset):StartMeteor()
         end)
     end
 end
