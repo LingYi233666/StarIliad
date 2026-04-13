@@ -254,3 +254,9 @@ AddClientModRPCHandler("stariliad_rpc", "show_destroy3_text", function(guardian)
         end)
     end
 end)
+
+AddClientModRPCHandler("stariliad_rpc", "triggeredevent", function(name, level, duration)
+    if ThePlayer and ThePlayer:IsValid() and name ~= nil then
+        ThePlayer:PushEvent("triggeredevent", { name = name, level = level, duration = duration })
+    end
+end)

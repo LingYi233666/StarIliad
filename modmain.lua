@@ -115,6 +115,7 @@ PrefabFiles = {
     "stariliad_space_pirate_solider",
 
     "stariliad_ice_meteor",
+    "stariliad_ice_meteor_erupt_warning",
 }
 
 -- See stariliad_main_assets.lua

@@ -3,8 +3,8 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
 
 
     -- Config
-    -- self.range_countdown = { 240, 1530 }
-    self.range_countdown = { 300, 1000 }
+    -- self.range_peace_duration = { 240, 1530 }
+    self.range_peace_duration = { 300, 1000 }
     self.range_eruption_duration = { 30, 90 }
     self.range_ash_hover_duration = { 150, 270 }
     -- self.range_time_first_warning = { 120, 480 }
@@ -18,13 +18,52 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
 
 
     -- Data
-    self.erupting = false
     self.init_peace_countdown = nil
     self.peace_countdown = nil
 
+    self.init_erupting_countdown = nil
     self.erupting_countdown = nil
+
     self.period_meteor_task = nil
+
+    self.period_music_task = nil
+
+
+    -- Watch iswinter to trigger
+    local function CheckFn()
+        if TheWorld.state.iswinter then
+            if self.init_peace_countdown == nil and self.init_erupting_countdown == nil then
+                print("Start ice meteor because enter winter!")
+                self:StartPeace(self:CalcPeaceDuration())
+            end
+        else
+            if self.init_peace_countdown ~= nil then
+                -- Only cancel if peace countdown
+                self:Cancel()
+            elseif self.init_erupting_countdown ~= nil then
+                -- If erupting, do nothing, let it stop by itself
+            end
+        end
+    end
+
+    inst:WatchWorldState("iswinter", CheckFn)
+
+    -- Init
+    inst:DoTaskInTime(1, CheckFn)
 end)
+
+---------------------------------- Peace ----------------------------------
+
+function StarIliadWeatherIceMeteor:StartPeace(init_duration, cur_duration)
+    self:Cancel()
+
+    self.init_peace_countdown = init_duration
+    self.peace_countdown = cur_duration or init_duration
+
+    self.inst:StartUpdatingComponent(self)
+
+    print(string.format("Start ice meteor, peace time: %d/%d", self.peace_countdown, self.init_peace_countdown))
+end
 
 function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
     local t1 = self.init_peace_countdown * self.percent_time_first_warning
@@ -35,12 +74,23 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
 
     self.peace_countdown = self.peace_countdown + t
 
+    local warning_prefab = nil
     if old_countdown > t1 and self.peace_countdown <= t1 then
-        -- TODO: Send first warn
+        -- First warn
+        warning_prefab = "stariliad_ice_meteor_erupt_warning_lv1"
     elseif old_countdown > t2 and self.peace_countdown <= t2 then
-        -- TODO: Send second warn
+        -- Second warn
+        warning_prefab = "stariliad_ice_meteor_erupt_warning_lv2"
     elseif old_countdown > t3 and self.peace_countdown <= t3 then
-        -- TODO: Send third warn
+        -- Third warn
+        warning_prefab = "stariliad_ice_meteor_erupt_warning_lv3"
+    end
+
+    if warning_prefab then
+        print("Send ice meteor erupt warning:", warning_prefab)
+        for _, v in pairs(AllPlayers) do
+            SpawnPrefab(warning_prefab):SetTarget(v)
+        end
     end
 
     if self.peace_countdown <= 0 then
@@ -49,15 +99,7 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
     end
 end
 
-function StarIliadWeatherIceMeteor:DoDeltaErupt(t)
-    local old_countdown = self.erupting_countdown
-
-    self.erupting_countdown = self.erupting_countdown + t
-
-    if self.erupting_countdown <= 0 then
-        self:StopErupt()
-    end
-end
+---------------------------------- Erupt ----------------------------------
 
 local function MeteorTaskFn(self)
     if self.period_meteor_task then
@@ -67,45 +109,61 @@ local function MeteorTaskFn(self)
         GetRandomMinMax(unpack(self.range_time_between_meteor)),
         function()
             self:SpawnMeteors()
+            MeteorTaskFn(self)
         end
     )
 end
 
-function StarIliadWeatherIceMeteor:StartErupt(duration)
-    self.inst:StopUpdatingComponent(self)
-
-    self.erupting_countdown = duration
-    self.erupting = true
-
-    -- TODO: Periodic spawn meteors among players
-    MeteorTaskFn(self)
-
-    self.inst:StartUpdatingComponent(self)
-end
-
-function StarIliadWeatherIceMeteor:StopErupt()
+function StarIliadWeatherIceMeteor:StartErupt(init_duration, cur_duration)
     self:Cancel()
 
-    -- self.erupting = false
+    self.init_erupting_countdown = init_duration
+    self.erupting_countdown = cur_duration or init_duration
 
-    -- TODO: Send ash HUD hover
+    -- Periodic spawn meteors among players
+    MeteorTaskFn(self)
 
-    -- TODO: Restart a erupt after N seconds
+    -- Play triggered music
+    self.period_music_task = self.inst:DoPeriodicTask(0.33, function()
+        for _, v in pairs(AllPlayers) do
+            SendModRPCToClient(CLIENT_MOD_RPC["stariliad_rpc"]["triggeredevent"], v.userid,
+                "stariliad_weather_ice_meteor", 1, 1)
+        end
+    end)
+
+    self.inst:StartUpdatingComponent(self)
+
+    TheWorld:PushEvent("stariliad_start_erupting_ice_meteor")
+
+    print(string.format("Erupt ice meteor time: %d/%d", self.erupting_countdown, self.init_erupting_countdown))
 end
 
-function StarIliadWeatherIceMeteor:Cancel()
-    self.inst:StopUpdatingComponent(self)
+function StarIliadWeatherIceMeteor:DoDeltaErupt(t)
+    local old_countdown = self.erupting_countdown
 
-    if self.period_meteor_task then
-        self.period_meteor_task:Cancel()
+    self.erupting_countdown = self.erupting_countdown + t
+
+    if self.erupting_countdown <= 0 then
+        self:StopErupt(true)
+
+        if TheWorld.state.iswinter then
+            print("Try restart ice meteor peace countdown")
+            -- Restart a erupt after N seconds
+            self:StartPeace(self:CalcPeaceDuration())
+        end
+    end
+end
+
+function StarIliadWeatherIceMeteor:StopErupt(show_ash_hover)
+    self:Cancel()
+
+    print("Ice meteor erupt stop!")
+
+    if show_ash_hover then
+        -- TODO: Send ash HUD hover
     end
 
-    self.erupting = false
-    self.init_peace_countdown = nil
-    self.peace_countdown = nil
-
-    self.erupting_countdown = nil
-    self.period_meteor_task = nil
+    TheWorld:PushEvent("stariliad_stop_erupting_ice_meteor")
 end
 
 function StarIliadWeatherIceMeteor:SpawnMeteors()
@@ -125,20 +183,88 @@ function StarIliadWeatherIceMeteor:SpawnMeteors()
 
         local offset = Vector3FromTheta(math.random() * TWOPI, math.random() * self.max_radius_meteor)
 
-        SpawnAt("stariliad_ice_meteor", center, nil, offset)
+        self.inst:DoTaskInTime(math.random() * 0.33, function()
+            SpawnAt("stariliad_ice_meteor", center, nil, offset)
+        end)
     end
 end
 
+---------------------------------- Common ----------------------------------
+
+function StarIliadWeatherIceMeteor:CalcPeaceDuration()
+    return self.range_peace_duration[1] +
+        math.sin(TheWorld.state.seasonprogress * PI) * (self.range_peace_duration[2] - self.range_peace_duration[1])
+
+    -- return Remap(TheWorld.state.seasonprogress, 0, 1, self.range_peace_duration[2], self.range_peace_duration[1])
+end
+
+function StarIliadWeatherIceMeteor:IsErupting()
+    return self.init_erupting_countdown ~= nil
+end
+
+function StarIliadWeatherIceMeteor:Cancel()
+    self.inst:StopUpdatingComponent(self)
+
+    if self.period_meteor_task then
+        self.period_meteor_task:Cancel()
+    end
+    self.period_meteor_task = nil
+
+    if self.period_music_task then
+        self.period_music_task:Cancel()
+    end
+    self.period_music_task = nil
+
+
+    self.init_peace_countdown = nil
+    self.peace_countdown = nil
+
+    self.init_erupting_countdown = nil
+    self.erupting_countdown = nil
+end
+
 function StarIliadWeatherIceMeteor:OnUpdate(dt)
-    if self.erupting then
+    if self.init_erupting_countdown ~= nil then
         self:DoDeltaErupt(-dt)
     else
         self:DoDeltaPeace(-dt)
     end
 end
 
-function StarIliadWeatherIceMeteor:GetDebugString()
+function StarIliadWeatherIceMeteor:OnSave()
+    local data = {}
 
+    if self.init_erupting_countdown ~= nil then
+        data.init_erupting_countdown = self.init_erupting_countdown
+        data.erupting_countdown = self.erupting_countdown
+    elseif self.init_peace_countdown ~= nil then
+        data.init_peace_countdown = self.init_peace_countdown
+        data.peace_countdown = self.peace_countdown
+    else
+
+    end
+
+    return data
+end
+
+function StarIliadWeatherIceMeteor:OnLoad(data)
+    if data ~= nil then
+        if data.init_erupting_countdown ~= nil then
+            self:StartErupt(data.init_erupting_countdown, data.erupting_countdown)
+        elseif data.init_peace_countdown ~= nil then
+            self:StartPeace(data.init_peace_countdown, data.peace_countdown)
+        end
+    end
+end
+
+function StarIliadWeatherIceMeteor:GetDebugString()
+    if self.init_erupting_countdown ~= nil then
+        return string.format("Erupting: %d/%d", self.erupting_countdown, self.init_erupting_countdown)
+    elseif self.init_peace_countdown ~= nil then
+        return string.format("Peace: %d/%d", self.peace_countdown, self.init_peace_countdown)
+    else
+        return "Not active"
+    end
 end
 
 return StarIliadWeatherIceMeteor

@@ -317,6 +317,10 @@ local STARILIAD_MUSIC = {
         "",
         "stariliad_music/music/spyder",
     },
+
+    stariliad_weather_ice_meteor = {
+        "",
+    },
 }
 
 AddComponentPostInit("dynamicmusic", function(self)

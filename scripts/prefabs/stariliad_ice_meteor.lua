@@ -5,6 +5,20 @@ local assets =
     Asset("ANIM", "anim/sharkboi_iceplow_fx.zip"),
 }
 
+SetSharedLootTable("stariliad_ice_meteor",
+    {
+        { "ice",   0.90 },
+        { "ice",   0.50 },
+        { "ice",   0.25 },
+
+        { "flint", 0.50 },
+
+        { "rocks", 0.90 },
+        { "rocks", 0.25 },
+    }
+)
+
+
 local INITIAL_LAUNCH_HEIGHT = 0.1
 local SPEED = 8
 local function launch_away(inst, position)
@@ -22,12 +36,12 @@ local function OnGroundPound(inst)
     local position = inst:GetPosition()
     local x, y, z = position:Get()
 
-    -- Destroy boats
     local ents = TheSim:FindEntities(x, y, z, 6, nil, { "INLIMBO", "FX", "groundpound_immune" })
 
     for _, v in pairs(ents) do
         if v:IsValid() then
             if v:HasTag("boat") and v.components.health and not v.components.health:IsDead() then
+                -- Destroy boats
                 v.components.health:Kill()
             elseif v.components.oceanfishable ~= nil then
                 -- Splash the fishes
@@ -89,6 +103,8 @@ local function HitGround(inst)
         if not on_platform then
             SpawnAt("stariliad_ice_meteor_impact_ground_fx", inst)
         end
+
+        inst.components.lootdropper:DropLoot()
     elseif inst:IsOnOcean() then
         -- Ocean
 
@@ -172,6 +188,13 @@ local function fn()
     -- inst.components.groundpounder.destroyer = true
     -- inst.components.groundpounder.burner = true
     -- inst.components.groundpounder.ring_fx_scale = 0.75
+
+    inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("stariliad_ice_meteor")
+    inst.components.lootdropper.min_speed = 0.5
+    inst.components.lootdropper.max_speed = 6
+    inst.components.lootdropper.y_speed = 8
+    inst.components.lootdropper.y_speed_variance = 4
 
     inst:AddComponent("groundpounder")
     inst.components.groundpounder:UseRingMode()
