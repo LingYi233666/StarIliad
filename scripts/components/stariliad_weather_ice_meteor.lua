@@ -1,7 +1,6 @@
 local StarIliadWeatherIceMeteor = Class(function(self, inst)
     self.inst = inst
 
-
     -- Config
     -- self.range_peace_duration = { 240, 1530 }
     self.range_peace_duration = { 300, 1000 }
@@ -16,7 +15,6 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
     self.percent_time_second_warning = 0.25
     self.percent_time_third_warning = 0.125
 
-
     -- Data
     self.init_peace_countdown = nil
     self.peace_countdown = nil
@@ -25,7 +23,6 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
     self.erupting_countdown = nil
 
     self.period_meteor_task = nil
-
     self.period_music_task = nil
 
 
@@ -90,6 +87,11 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
         print("Send ice meteor erupt warning:", warning_prefab)
         for _, v in pairs(AllPlayers) do
             SpawnPrefab(warning_prefab):SetTarget(v)
+            v:DoTaskInTime(GetRandomMinMax(1, 2), function()
+                if v.components.talker then
+                    v.components.talker:Say(GetString(v, "ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING"))
+                end
+            end)
         end
     end
 
@@ -162,8 +164,6 @@ function StarIliadWeatherIceMeteor:StopErupt(show_ash_hover)
     if show_ash_hover then
         -- TODO: Send ash HUD hover
     end
-
-    TheWorld:PushEvent("stariliad_stop_erupting_ice_meteor")
 end
 
 function StarIliadWeatherIceMeteor:SpawnMeteors()
@@ -192,8 +192,13 @@ end
 ---------------------------------- Common ----------------------------------
 
 function StarIliadWeatherIceMeteor:CalcPeaceDuration()
+    -- return self.range_peace_duration[1] +
+    --     math.sin(TheWorld.state.seasonprogress * PI) * (self.range_peace_duration[2] - self.range_peace_duration[1])
+
     return self.range_peace_duration[1] +
-        math.sin(TheWorld.state.seasonprogress * PI) * (self.range_peace_duration[2] - self.range_peace_duration[1])
+        (math.sin(TheWorld.state.seasonprogress * PI + PI) + 1) *
+        (self.range_peace_duration[2] - self.range_peace_duration[1])
+
 
     -- return Remap(TheWorld.state.seasonprogress, 0, 1, self.range_peace_duration[2], self.range_peace_duration[1])
 end
@@ -203,6 +208,8 @@ function StarIliadWeatherIceMeteor:IsErupting()
 end
 
 function StarIliadWeatherIceMeteor:Cancel()
+    local is_erupting = self.init_erupting_countdown ~= nil
+
     self.inst:StopUpdatingComponent(self)
 
     if self.period_meteor_task then
@@ -215,12 +222,15 @@ function StarIliadWeatherIceMeteor:Cancel()
     end
     self.period_music_task = nil
 
-
     self.init_peace_countdown = nil
     self.peace_countdown = nil
 
     self.init_erupting_countdown = nil
     self.erupting_countdown = nil
+
+    if is_erupting then
+        TheWorld:PushEvent("stariliad_stop_erupting_ice_meteor")
+    end
 end
 
 function StarIliadWeatherIceMeteor:OnUpdate(dt)

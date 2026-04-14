@@ -104,8 +104,8 @@ function BlytheMissileCounter:OnLoad(data)
 end
 
 function BlytheMissileCounter:OnUpdate(dt)
-    self:DoDeltaNumMissiles(dt / 10)
-    self:DoDeltaNumSuperMissiles(dt / 15)
+    self:DoDeltaNumMissiles(dt / TUNING.BLYTHE_MISSILE_COUNT_REGEN_TIME)
+    self:DoDeltaNumSuperMissiles(dt / TUNING.BLYTHE_SUPER_MISSILE_COUNT_REGEN_TIME)
 end
 
 return BlytheMissileCounter

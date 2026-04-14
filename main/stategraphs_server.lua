@@ -235,6 +235,7 @@ local function CreateShootAttackState(name, enter_bonus, shoot_time, free_time, 
             local target = buffaction ~= nil and buffaction.target or nil
             local equip = inst.components.inventory:GetEquippedItem(EQUIPSLOTS.HANDS)
 
+            -- TODO: Consider remove this if
             if buffaction and buffaction.action == ACTIONS.ATTACK then
                 inst.components.combat:SetTarget(target)
                 inst.components.combat:StartAttack()

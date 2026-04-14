@@ -21,15 +21,18 @@ local function TryChangeSwapBuild(inst, owner)
 end
 
 local function TryChangeAttackPeriod(inst, owner)
-    local period = FRAMES
-    local proj_prefab = inst.components.stariliad_pistol.projectile_prefab
-    local def = StarIliadBasic.GetProjectileDefine(proj_prefab)
-    if def and def.attackperiod then
-        period = def.attackperiod
-    end
+    if owner and owner:IsValid() and owner.components.combat then
+        local period = FRAMES
+        local proj_prefab = inst.components.stariliad_pistol.projectile_prefab
+        local def = StarIliadBasic.GetProjectileDefine(proj_prefab)
+        if def and def.attackperiod then
+            period = def.attackperiod
+        end
 
-    owner.components.combat:SetAttackPeriod(period)
+        owner.components.combat:SetAttackPeriod(period)
+    end
 end
+
 
 local function OnProjectilePrefabChange(inst, new_prefab, old_prefab)
     local owner
@@ -49,8 +52,8 @@ local function OnEquip(inst, owner)
 
     if owner.components.combat then
         owner.components.combat:SetAttackPeriod(FRAMES)
-        -- TryChangeAttackPeriod(inst, owner)
     end
+    -- TryChangeAttackPeriod(inst, owner)
 end
 
 local function OnUnequip(inst, owner)

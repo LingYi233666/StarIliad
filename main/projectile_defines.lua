@@ -9,7 +9,7 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- castaoe_sg = "blythe_shoot_beam_castaoe",
         -- repeat_cast = true,
         attackwear = 1,
-        -- attackperiod = 10 * FRAMES,
+        -- attackperiod = 12 * FRAMES,
     },
 
     {
@@ -83,7 +83,9 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
-        attackwear = 1,
+        attackwear = 5,
+        -- attackperiod = 19 * FRAMES,
+
         costs = {
             {
                 can_cost = function(inst, weapon)
@@ -116,7 +118,9 @@ STARILIAD_PROJECTILE_DEFINES = {
         -- repeat_cast = true,
         swap_build = "swap_blythe_blaster2",
 
-        attackwear = 1,
+        attackwear = 5,
+        -- attackperiod = 19 * FRAMES,
+
         costs = {
             {
                 can_cost = function(inst, weapon)
