@@ -89,7 +89,7 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
             SpawnPrefab(warning_prefab):SetTarget(v)
             v:DoTaskInTime(GetRandomMinMax(1, 2), function()
                 if v.components.talker then
-                    v.components.talker:Say(GetString(v, "ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING"))
+                    v.components.talker:Say(GetString(v, "ANNOUNCE_QUAKE"))
                 end
             end)
         end
@@ -134,6 +134,17 @@ function StarIliadWeatherIceMeteor:StartErupt(init_duration, cur_duration)
     end)
 
     self.inst:StartUpdatingComponent(self)
+
+
+    for _, v in pairs(AllPlayers) do
+        v:DoTaskInTime(GetRandomMinMax(0, 0.5), function()
+            if v.components.talker then
+                v.components.talker:Say(GetString(v, "ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING"))
+            end
+        end)
+    end
+
+    ShakeAllCameras(CAMERASHAKE.FULL, 4.0, 0.02, 2.0)
 
     TheWorld:PushEvent("stariliad_start_erupting_ice_meteor")
 
@@ -187,6 +198,8 @@ function StarIliadWeatherIceMeteor:SpawnMeteors()
             SpawnAt("stariliad_ice_meteor", center, nil, offset):StartMeteor()
         end)
     end
+
+    -- ShakeAllCameras(CAMERASHAKE.FULL, 1.0, 0.02, 2.0)
 end
 
 ---------------------------------- Common ----------------------------------

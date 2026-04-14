@@ -319,7 +319,8 @@ local STARILIAD_MUSIC = {
     },
 
     stariliad_weather_ice_meteor = {
-        "dontstarve/music/music_epicfight_winter",
+        -- "dontstarve/music/music_epicfight_winter",
+        "stariliad_music/music/ice_meteor_erupt",
     },
 }
 

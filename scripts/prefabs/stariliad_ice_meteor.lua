@@ -141,6 +141,8 @@ local function StartMeteor(inst)
 
     -- Play warning sound
     inst.SoundEmitter:PlaySound("dontstarve/common/meteor_spawn")
+    -- inst.SoundEmitter:PlaySound("stariliad_sfx/prefabs/ice_meteor/fall")
+
 
     inst:DoTaskInTime(whole_time - collide_time, function()
         inst.Transform:SetRotation(math.random(-180, 180))

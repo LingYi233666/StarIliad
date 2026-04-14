@@ -8,19 +8,19 @@ local warning_configs = {
     -- ["large"] = { duration = 2 * 0.7, speed = 0.02, scale = 2 * 0.75 },
 
     {
-        duration = 0.7 / 2,
+        duration = 1.3,
         speed = 0.02,
         scale = 0.75 / 2,
     },
 
     {
-        duration = 0.7,
+        duration = 2.0,
         speed = 0.02,
         scale = 0.75,
     },
 
     {
-        duration = 2 * 0.7,
+        duration = 2.5,
         speed = 0.02,
         scale = 2 * 0.75,
     }
