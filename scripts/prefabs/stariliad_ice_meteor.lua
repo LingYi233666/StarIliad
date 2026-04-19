@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/stariliad_lava_meteor.zip"),
+    Asset("ANIM", "anim/stariliad_ice_meteor.zip"),
 
     Asset("ANIM", "anim/sharkboi_iceplow_fx.zip"),
 }
@@ -87,6 +88,8 @@ local function OnGroundPound(inst)
                 end
 
                 v:Remove()
+            elseif v.prefab == "stariliad_ice_meteor_remain" then
+                v:RemainExplode()
             end
         end
     end
@@ -133,7 +136,7 @@ local function HitGround(inst)
     end
 end
 
-local function StartMeteor(inst)
+local function StartMeteor(inst, force_remain)
     local whole_time = TUNING.STARILIAD_ICE_METEOR_LANDING_DURATION
     local collide_time = 8 * FRAMES
 
@@ -147,10 +150,11 @@ local function StartMeteor(inst)
     inst:DoTaskInTime(whole_time - collide_time, function()
         inst.Transform:SetRotation(math.random(-180, 180))
 
-        -- inst.AnimState:PlayAnimation("egg_crash_pre")
-        -- inst.AnimState:PushAnimation("egg_crash", false)
-
-        inst.AnimState:PlayAnimation("idle")
+        if (force_remain or math.random() < 0.1) and inst:GetCurrentPlatform() == nil then
+            inst.AnimState:PlayAnimation("egg_crash_pre")
+        else
+            inst.AnimState:PlayAnimation("idle")
+        end
     end)
 
     inst:DoTaskInTime(whole_time, HitGround)
@@ -167,7 +171,7 @@ local function fn()
     inst.Transform:SetTwoFaced()
 
     inst.AnimState:SetBank("stariliad_lava_meteor")
-    inst.AnimState:SetBuild("stariliad_lava_meteor")
+    inst.AnimState:SetBuild("stariliad_ice_meteor")
 
     inst:AddTag("FX")
 
@@ -176,6 +180,8 @@ local function fn()
     if not TheWorld.ismastersim then
         return inst
     end
+
+    inst.persists = false
 
     inst.StartMeteor = StartMeteor
 
@@ -217,9 +223,171 @@ local function fn()
     inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_ICE_METEOR_DAMAGE)
 
     inst:ListenForEvent("animover", function()
+        inst:Hide()
+
+        if inst.AnimState:IsCurrentAnimation("egg_crash_pre") then
+            local remain = SpawnAt("stariliad_ice_meteor_remain", inst)
+            remain.Transform:SetRotation(inst.Transform:GetRotation())
+            remain.AnimState:PlayAnimation("egg_crash")
+            remain.AnimState:PushAnimation("egg_idle", false)
+        end
+
         -- Keep to play the sound
+        inst:DoTaskInTime(1, inst.Remove)
+    end)
+
+    return inst
+end
+
+-----------------------------------------------------------
+
+local function OnRemainIgnite(inst)
+    inst.SoundEmitter:PlaySound("dontstarve/common/blackpowder_fuse_LP", "hiss")
+    DefaultBurnFn(inst)
+
+    inst.components.timer:StopTimer("self_ignite")
+end
+
+local function RemainExplode(inst)
+    if not inst.exploded then
+        SpawnAt("sharkboi_iceimpact_fx", inst)
+        SpawnAt("stariliad_ice_meteor_impact_fx", inst)
+        -- SpawnAt("stariliad_ice_meteor_remain_ground", inst)
+        -- if inst:GetCurrentPlatform() == nil then
+        --     SpawnAt("stariliad_ice_meteor_impact_ground_fx", inst)
+        -- end
+
+        inst.SoundEmitter:PlaySound("dontstarve/impacts/lava_arena/meteor_strike")
+        inst.SoundEmitter:PlaySound("dontstarve/common/break_iceblock")
+
+        ShakeAllCameras(CAMERASHAKE.FULL, .7, .03, 0.5, inst, 40)
+
+        inst.components.timer:StopTimer("self_ignite")
+
+        inst.persists = false
+        inst.exploded = true
         inst:Hide()
         inst:DoTaskInTime(1, inst.Remove)
+    end
+end
+
+local function OnRemainBurnt(inst)
+    RemainExplode(inst)
+end
+
+local function OnRemainExtinguish(inst)
+    inst.SoundEmitter:KillSound("hiss")
+    DefaultExtinguishFn(inst)
+end
+
+local function OnRemainTimerDone(inst, data)
+    if data.name == "self_ignite" then
+        inst.components.burnable.fxdata = {}
+        inst.components.burnable:SetFXLevel(4)
+        -- inst.components.burnable:AddBurnFX("coldfirefire", Vector3(-30, -50, 0), "rock01")
+        inst.components.burnable:AddBurnFX("coldfirefire", Vector3(0, 150, 0), "rock01")
+        inst.components.burnable:Ignite(true)
+
+        local fire = inst.components.burnable.fxchildren[1]
+        if fire and fire:IsValid() then
+            fire.Transform:SetScale(2, 1.5, 1)
+        end
+    end
+end
+
+local function remain_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddSoundEmitter()
+    inst.entity:AddAnimState()
+    inst.entity:AddMiniMapEntity()
+    inst.entity:AddNetwork()
+
+    -- inst.Transform:SetTwoFaced()
+
+    inst.AnimState:SetBank("stariliad_lava_meteor")
+    inst.AnimState:SetBuild("stariliad_ice_meteor")
+    inst.AnimState:PlayAnimation("egg_idle")
+
+    MakeObstaclePhysics(inst, 1)
+
+    -- inst.MiniMapEntity:SetIcon("iceboulder.png")
+
+    -- inst:AddTag("antlion_sinkhole_blocker")
+    -- inst:AddTag("frozen")
+    -- MakeSnowCoveredPristine(inst)
+
+    inst:SetPrefabNameOverride("stariliad_ice_meteor")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.RemainExplode = RemainExplode
+
+    inst:AddComponent("lootdropper")
+
+    inst:AddComponent("inspectable")
+
+    inst:AddComponent("savedrotation")
+
+    inst:AddComponent("timer")
+    inst.components.timer:StartTimer("self_ignite", GetRandomMinMax(1, 3) * TUNING.TOTAL_DAY_TIME)
+    -- inst.components.timer:StartTimer("self_ignite", 5)
+
+    -- MakeSmallBurnable(inst, 3 + math.random() * 3)
+    -- MakeMediumBurnable(inst, 3 + math.random() * 3)
+    MakeLargeBurnable(inst, 3 + math.random() * 3, Vector3(0, 90, 0), nil, "rock01")
+    inst.components.burnable:SetOnIgniteFn(OnRemainIgnite)
+    inst.components.burnable:SetOnBurntFn(OnRemainBurnt)
+    inst.components.burnable:SetOnExtinguishFn(OnRemainExtinguish)
+
+    -- MakeHauntableWork(inst)
+
+    inst:ListenForEvent("timerdone", OnRemainTimerDone)
+
+    return inst
+end
+
+-----------------------------------------------------------
+
+
+local function remain_ground_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    -- inst.Transform:SetTwoFaced()
+
+    inst.AnimState:SetBank("stariliad_lava_meteor")
+    inst.AnimState:SetBuild("stariliad_ice_meteor")
+    inst.AnimState:PlayAnimation("egg_idle")
+    inst.AnimState:HideSymbol("rock01")
+
+    inst.AnimState:SetLayer(LAYER_BACKGROUND)
+    inst.AnimState:SetSortOrder(3)
+
+    inst:AddTag("NOCLICK")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst:AddComponent("timer")
+    inst.components.timer:StartTimer("remove", math.random(60, 120))
+
+    inst:ListenForEvent("timerdone", function(_, data)
+        if data.name == "remove" then
+            inst.persists = false
+            ErodeAway(inst)
+        end
     end)
 
     return inst
@@ -337,6 +505,8 @@ end
 
 
 return Prefab("stariliad_ice_meteor", fn, assets),
+    Prefab("stariliad_ice_meteor_remain", remain_fn, assets),
+    Prefab("stariliad_ice_meteor_remain_ground", remain_ground_fn, assets),
     Prefab("stariliad_ice_meteor_plow_fx", iceplow_fn, assets),
     Prefab("stariliad_ice_meteor_impact_fx", impact_fn, assets),
     Prefab("stariliad_ice_meteor_impact_ground_fx", impact_ground_fn, assets)

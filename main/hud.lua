@@ -127,3 +127,25 @@ AddClassPostConstruct("screens/redux/lobbyscreen", function(self)
         end
     end
 end)
+
+-- AddClassPostConstruct("screens/playerhud", function(self)
+--     local old_UpdateClouds = self.UpdateClouds
+
+--     self.UpdateClouds = function(self, camera, ...)
+--         if TheFocalPoint
+--             and TheFocalPoint.components.focalpoint
+--             and TheFocalPoint.components.focalpoint.current_focus
+--             and TheFocalPoint.components.focalpoint.current_focus.target
+--             and TheFocalPoint.components.focalpoint.current_focus.target.prefab == "stariliad_icecano" then
+--             if self.clouds_on then
+--                 -- camera.should_push_down = false
+--                 self.clouds_on = false
+--                 self.clouds:Hide()
+--                 TheFocalPoint.SoundEmitter:KillSound("windsound")
+--                 TheMixer:PopMix("high")
+--             end
+--             return
+--         end
+--         return old_UpdateClouds(self, camera, ...)
+--     end
+-- end)

@@ -116,6 +116,12 @@ PrefabFiles = {
 
     "stariliad_ice_meteor",
     "stariliad_ice_meteor_erupt_warning",
+
+    "stariliad_ice_axe",
+    "stariliad_ice_pickaxe",
+    "stariliad_ice_backpack",
+
+    "stariliad_icecano",
 }
 
 -- See stariliad_main_assets.lua
