@@ -6,7 +6,7 @@ STRINGS.CHARACTER_DESCRIPTIONS.blythe =
 STRINGS.CHARACTER_QUOTES.blythe = "\"A true Star Ranger wishlists 'Star Iliad' on Steam!\""
 
 -- Custom speech strings
-STRINGS.CHARACTERS.BLYTHE = require "speech_blythe"
+STRINGS.CHARACTERS.BLYTHE = require "speech_blythe_eng"
 
 -- The character's name as appears in-game
 STRINGS.NAMES.BLYTHE = "Blythe"
@@ -104,7 +104,12 @@ STRINGS.NAMES.STARILIAD_GUARDIAN_SCALES = "Thulecite Scales"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_GUARDIAN_SCALES =
 "A fragment of the Sanctuary Guardian's dull shell. It reacts to enemy attacks."
 
+STRINGS.NAMES.STARILIAD_ICE_METEOR = "Ice Meteor"
+
+--------------------- ACTIONS ------------------------
+
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "Shoot"
+
 STRINGS.ACTIONS.STARILIAD_OCEAN_LAND_JUMP = {
     TO_OCEAN = "Enter Water",
     TO_LAND = "Return to Land",
@@ -181,8 +186,10 @@ STRINGS.STARILIAD_UI.BLYTHE_SKILL_TYPE_NAME = {
 }
 
 STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS = {
-    MISSILE = "Missiles",
-    SUPER_MISSILE = "Super Missiles",
+    MISSILE = string.format("Missiles\nAutomatically regenerates 1 round every %d seconds",
+        TUNING.BLYTHE_MISSILE_COUNT_REGEN_TIME),
+    SUPER_MISSILE = string.format("Super Missiles\nAutomatically regenerates 1 round every %d seconds",
+        TUNING.BLYTHE_SUPER_MISSILE_COUNT_REGEN_TIME),
 }
 
 STRINGS.STARILIAD_UI.SKILL_DETAIL = {
@@ -245,7 +252,8 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     GRAVITY_CONTROL = {
         NAME = "Gravity Controller",
-        DESC = "Manipulate gravity to reduce damage taken, grant knockback resistance, and allow free movement in water.",
+        DESC =
+        "Manipulate gravity to reduce damage taken and resist knockback, while also allowing you to move freely in water and lava.",
     },
 
     CONFIGURE_POWERSUIT = {
@@ -341,3 +349,25 @@ STRINGS.STARILIAD_NPC_SPEECH.STARILIAD_EVENT_JOUST_KNIGHT_RED = {
     GAMBLE_WIN_RED = "You won the bet. Take these sacred relics.",
     GAMBLE_WIN_BLUE = "You won the bet. Take this sacred relic.",
 }
+
+-----------------------------------------------------------------------------------
+
+STRINGS.CHARACTERS.GENERIC.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "This is definitely not a good thing."
+STRINGS.CHARACTERS.WILLOW.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "The iceberg is roaring!"
+STRINGS.CHARACTERS.WOLFGANG.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Haha! Is time to fight iceberg!"
+STRINGS.CHARACTERS.WENDY.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Not with a bang, but an eruption!"
+STRINGS.CHARACTERS.WOODIE.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Oh, terrible weather, eh?"
+STRINGS.CHARACTERS.WICKERBOTTOM.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "The glaciers are churning!"
+STRINGS.CHARACTERS.WATHGRITHR.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Has Ragnarök cöme for me?!"
+STRINGS.CHARACTERS.WEBBER.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "It's raining hail!"
+STRINGS.CHARACTERS.WINONA.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Hmm... anyone else feel that?"
+STRINGS.CHARACTERS.WORTOX.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Hyuyu... not good."
+STRINGS.CHARACTERS.WORMWOOD.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Whoa. Ice is sliding!"
+STRINGS.CHARACTERS.WARLY.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Something is crashing down!"
+STRINGS.CHARACTERS.WURT.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING = "Ice mountain is angry, florp!"
+STRINGS.CHARACTERS.WALTER.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING =
+"Woby, hide! I need to check the manual for this!"
+STRINGS.CHARACTERS.WANDA.ANNOUNCE_STARILIAD_ICE_METEOR_ERUPT_WARNING =
+"Ah. This is the timeline where everyone gets crushed by ice meteors. It was nice knowing you all."
+STRINGS.CHARACTERS.WAXWELL.ANNOUNCE_VOLCANO_ERUPT = "There's no need for such an outburst."
+STRINGS.CHARACTERS.WX78.ANNOUNCE_VOLCANO_ERUPT = "GLACIAL ACTIVITY DETECTED"

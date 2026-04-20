@@ -189,8 +189,8 @@ STRINGS.STARILIAD_UI.BLYTHE_SKILL_TYPE_NAME = {
 }
 
 STRINGS.STARILIAD_UI.BLYTHE_MISSILE_STATUS = {
-    MISSILE = "导弹数量",
-    SUPER_MISSILE = "超级导弹数量",
+    MISSILE = string.format("导弹数量\n每隔%d秒自动恢复一发", TUNING.BLYTHE_MISSILE_COUNT_REGEN_TIME),
+    SUPER_MISSILE = string.format("超级导弹数量\n每隔%d秒自动恢复一发", TUNING.BLYTHE_SUPER_MISSILE_COUNT_REGEN_TIME),
 }
 
 STRINGS.STARILIAD_UI.SKILL_DETAIL = {
@@ -227,14 +227,11 @@ STRINGS.STARILIAD_UI.SKILL_DETAIL = {
 
     MISSILE = {
         NAME = "导弹",
-        -- DESC = "能够使用魔法枪发射一枚导弹，造成小范围120伤害并摧毁周围的建筑。导弹的上限可以通过搜集导弹柜来提升。",
         DESC = "能够使用魔法枪发射导弹，引起小范围的爆炸并摧毁周围的建筑，爆炸伤害较高。导弹的当前数量和上限可以在屏幕右上角查看。导弹的上限可以通过导弹柜来提升。",
-
     },
 
     SUPER_MISSILE = {
         NAME = "超级导弹",
-        -- DESC = "能够使用魔法枪发射一枚超级导弹，造成中范围300伤害并摧毁周围的建筑。超级导弹的上限可以通过搜集超级导弹柜来提升。",
         DESC = "能够使用魔法枪发射超级导弹，引起中等范围的爆炸并摧毁周围的建筑，爆炸伤害极高。超级导弹的当前数量和上限可以在屏幕右上角查看。超级导弹的上限可以通过超级导弹柜来提升。",
     },
 

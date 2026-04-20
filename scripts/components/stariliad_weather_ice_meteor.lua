@@ -3,7 +3,7 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
 
     -- Config
     -- self.range_peace_duration = { 240, 1530 }
-    self.range_peace_duration = { 300, 1000 }
+    self.range_peace_duration = { 600, 1200 }
     self.range_eruption_duration = { 30, 90 }
     self.range_ash_hover_duration = { 150, 270 }
     -- self.range_time_first_warning = { 120, 480 }
@@ -157,7 +157,7 @@ function StarIliadWeatherIceMeteor:DoDeltaErupt(t)
     self.erupting_countdown = self.erupting_countdown + t
 
     if self.erupting_countdown <= 0 then
-        self:StopErupt(true)
+        self:StopErupt()
 
         if TheWorld.state.iswinter then
             print("Try restart ice meteor peace countdown")
@@ -167,14 +167,12 @@ function StarIliadWeatherIceMeteor:DoDeltaErupt(t)
     end
 end
 
-function StarIliadWeatherIceMeteor:StopErupt(show_ash_hover)
+function StarIliadWeatherIceMeteor:StopErupt()
     self:Cancel()
 
-    print("Ice meteor erupt stop!")
+    -- TODO: Send ash HUD hover
 
-    if show_ash_hover then
-        -- TODO: Send ash HUD hover
-    end
+    print("Ice meteor erupt stop!")
 end
 
 function StarIliadWeatherIceMeteor:SpawnMeteors()
