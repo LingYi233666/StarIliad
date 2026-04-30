@@ -53,7 +53,10 @@ local BlytheItemAcquired = Class(Screen,
         self.black.image:SetHAnchor(ANCHOR_MIDDLE)
         self.black.image:SetScaleMode(SCALEMODE_FILLSCREEN)
         self.black.image:SetTint(0, 0, 0, 0)
-        self.black:SetOnClick(function() TheFrontEnd:PopScreen(self) end)
+        self.black:SetOnClick(function()
+            -- TheFrontEnd:PopScreen(self)
+            self:TryCallMainMenu()
+        end)
 
         if title_str and description_str then
             self.title:SetPosition(0, 25)
@@ -118,6 +121,21 @@ function BlytheItemAcquired:OnUpdateCommon(sx_start, sx_end, sy_start, sy_end, d
     return time_elapse >= duration
 end
 
+function BlytheItemAcquired:TryCallMainMenu()
+    self.is_closing = false
+
+    if self.skill_names and #(self.skill_names) > 0 then
+        local main_menu = StarIliadMainMenu(self.owner)
+        main_menu:MakeItemsGray(self.skill_names)
+
+        main_menu:SlideIn(1, function()
+            main_menu:PlayLearningAnim(self.skill_names)
+        end)
+        TheFrontEnd:PushScreen(main_menu)
+    end
+    TheFrontEnd:PopScreen(self)
+end
+
 function BlytheItemAcquired:OnUpdate()
     if self.is_opening then
         local sx_start = 0.5
@@ -134,18 +152,7 @@ function BlytheItemAcquired:OnUpdate()
         local sy_start = 1
         local sy_end = 0.01
         if self:OnUpdateCommon(sx_start, sx_end, sy_start, sy_end, self.duration_close) then
-            self.is_closing = false
-
-            if self.skill_names and #(self.skill_names) > 0 then
-                local main_menu = StarIliadMainMenu(self.owner)
-                main_menu:MakeItemsGray(self.skill_names)
-
-                main_menu:SlideIn(1, function()
-                    main_menu:PlayLearningAnim(self.skill_names)
-                end)
-                TheFrontEnd:PushScreen(main_menu)
-            end
-            TheFrontEnd:PopScreen(self)
+            self:TryCallMainMenu()
         end
     end
 end

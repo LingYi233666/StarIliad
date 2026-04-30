@@ -62,6 +62,10 @@ local BlytheMagicTab = Class(Widget, function(self, owner)
     }))
     self.description:Hide()
 
+    self.skill_current_key = self:AddChild(Text(NUMBERFONT, 30, "", { 1, 1, 1, 1 }))
+    self.skill_current_key:SetPosition(342, -190)
+    self.skill_current_key:Hide()
+
     self.skill_key_config_button = self:AddChild(
         TEMPLATES.StandardButton(nil, STRINGS.STARILIAD_UI.MAGIC_TAB.KEY_CONFIG, { 140, 50 })
     )
@@ -133,11 +137,32 @@ function BlytheMagicTab:OnSkillSlotClick(skill_name)
     if is_learned and StarIliadBasic.IsCastByButton(skill_name) then
         self.skill_key_config_button:Show()
         self.skill_key_config_button:SetOnClick(function()
-            TheFrontEnd:PushScreen(StarIliadKeyConfigDialog(self.owner, skill_name))
+            local dialog = StarIliadKeyConfigDialog(self.owner, skill_name)
+            self.inst:ListenForEvent("key_changed", function()
+                self:OnSkillSlotClick(skill_name)
+            end, dialog.inst)
+            TheFrontEnd:PushScreen(dialog)
         end)
+        self:ShowCurrentSkillKey(skill_name)
     else
         self.skill_key_config_button:Hide()
         self.skill_key_config_button:SetOnClick(nil)
+        self.skill_current_key:Hide()
+    end
+end
+
+function BlytheMagicTab:ShowCurrentSkillKey(skill_name)
+    if self.owner and self.owner.replica.blythe_skiller then
+        local cur_key = self.owner.replica.blythe_skiller:GetSkillKey(skill_name)
+        if cur_key then
+            self.skill_current_key:SetString(STRINGS.STARILIAD_UI.MAGIC_TAB.CUR_KEY_PRESET ..
+                STRINGS.UI.CONTROLSSCREEN.INPUTS[1][cur_key])
+        else
+            self.skill_current_key:SetString(STRINGS.STARILIAD_UI.MAGIC_TAB.CUR_KEY_NONE)
+        end
+        self.skill_current_key:Show()
+    else
+        self.skill_current_key:Hide()
     end
 end
 

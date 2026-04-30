@@ -13,6 +13,7 @@ local StarIliadKeyConfigDialog = Class(PopupDialogScreen,
                                 self.selected_button, self.target_skill_name, true)
                             self.owner.replica.blythe_skiller:PrintInputHandler()
                             self.owner:PushEvent("blythe_skiller_ui_update")
+                            self.inst:PushEvent("key_changed")
                         else
                             print("key_select_ui No setting !")
                         end
@@ -25,6 +26,7 @@ local StarIliadKeyConfigDialog = Class(PopupDialogScreen,
                         self.target_skill_name, true)
                     self.owner.replica.blythe_skiller:PrintInputHandler()
                     self.owner:PushEvent("blythe_skiller_ui_update")
+                    self.inst:PushEvent("key_changed")
                     TheFrontEnd:PopScreen(self)
                 end
             }, {

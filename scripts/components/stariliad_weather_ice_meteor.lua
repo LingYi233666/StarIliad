@@ -4,7 +4,7 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
     -- Config
     -- self.range_peace_duration = { 240, 1530 }
     self.range_peace_duration = { 600, 1200 }
-    self.range_eruption_duration = { 30, 90 }
+    self.range_eruption_duration = { 15, 25 }
     self.range_ash_hover_duration = { 150, 270 }
     -- self.range_time_first_warning = { 120, 480 }
     -- self.range_time_second_warning = { 60, 240 }
@@ -24,6 +24,8 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
 
     self.period_meteor_task = nil
     self.period_music_task = nil
+
+    self.icecano = nil
 
 
     -- Watch iswinter to trigger
@@ -48,6 +50,12 @@ local StarIliadWeatherIceMeteor = Class(function(self, inst)
     -- Init
     inst:DoTaskInTime(1, CheckFn)
 end)
+
+function StarIliadWeatherIceMeteor:TrySpawnIcecano()
+    if self.icecano and self.icecano:IsValid() then
+        return
+    end
+end
 
 ---------------------------------- Peace ----------------------------------
 
@@ -93,6 +101,8 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
                 end
             end)
         end
+
+        TheWorld:PushEvent("stariliad_ice_meteor_erupt_warning", { prefab = warning_prefab })
     end
 
     if self.peace_countdown <= 0 then

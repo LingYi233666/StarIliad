@@ -1,6 +1,7 @@
 local assets =
 {
     Asset("ANIM", "anim/stariliad_volcano.zip"),
+    Asset("ANIM", "anim/stariliad_icecano2.zip"),
 }
 
 ----------------------------------------------------------------
@@ -81,6 +82,28 @@ local function TryAffectPlayer(inst)
     end
 end
 
+----------------------------------------------------------------
+
+
+local function IsErupting(inst)
+    return TheWorld.components.stariliad_weather_ice_meteor
+        and TheWorld.components.stariliad_weather_ice_meteor:IsErupting()
+end
+
+local function ShouldActive(inst)
+    return inst:IsErupting() or TheWorld.state.iswinter
+end
+
+local function CheckState(inst)
+    if inst:IsErupting() then
+        inst.sg:GoToState("erupt_pre")
+    elseif inst:ShouldActive() then
+        inst.sg:GoToState("active_idle")
+    else
+        inst.sg:GoToState("dormant_idle")
+    end
+end
+
 local function fn()
     local inst = CreateEntity()
 
@@ -98,9 +121,8 @@ local function fn()
 
     MakeWaterObstaclePhysics(inst, 5, 17, 0.75)
 
-
     inst.AnimState:SetBank("volcano")
-    inst.AnimState:SetBuild("stariliad_volcano")
+    inst.AnimState:SetBuild("stariliad_icecano2")
     inst.AnimState:PlayAnimation("dormant_idle", true)
 
     if not TheNet:IsDedicated() then
@@ -115,7 +137,29 @@ local function fn()
         return inst
     end
 
+
+    inst.IsErupting = IsErupting
+    inst.ShouldActive = ShouldActive
+
     inst:AddComponent("inspectable")
+
+    inst:SetStateGraph("SGstariliad_icecano")
+
+    inst:ListenForEvent("stariliad_ice_meteor_erupt_warning", function()
+        inst.sg:GoToState("rumble")
+    end, TheWorld)
+
+
+    inst:ListenForEvent("stariliad_start_erupting_ice_meteor", function()
+        CheckState(inst)
+    end, TheWorld)
+
+    inst:ListenForEvent("stariliad_stop_erupting_ice_meteor", function()
+        CheckState(inst)
+    end, TheWorld)
+
+    inst:WatchWorldState("iswinter", CheckState)
+    CheckState(inst)
 
     return inst
 end

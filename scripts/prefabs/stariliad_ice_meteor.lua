@@ -225,7 +225,8 @@ local function fn()
     inst:ListenForEvent("animover", function()
         inst:Hide()
 
-        if inst.AnimState:IsCurrentAnimation("egg_crash_pre") then
+        if inst.AnimState:IsCurrentAnimation("egg_crash_pre")
+            and inst:IsOnPassablePoint(false, true) then
             local remain = SpawnAt("stariliad_ice_meteor_remain", inst)
             remain.Transform:SetRotation(inst.Transform:GetRotation())
             remain.AnimState:PlayAnimation("egg_crash")

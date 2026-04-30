@@ -7,9 +7,9 @@ local GROUND_OCEAN_COLOR = -- Color for blending to the land ground tiles
     minimap_color = { 23, 51, 62, 102 },
 }
 
-local function MyAddTile(tile_name, tile_range, tile_data, ground_tile_def, minimap_tile_def, turf_def)
+local function MyAddTile(tile_name, ...)
     if WORLD_TILES[tile_name] == nil then
-        AddTile(tile_name, tile_range, tile_data, ground_tile_def, minimap_tile_def, turf_def)
+        AddTile(tile_name, ...)
     end
 end
 
@@ -54,5 +54,25 @@ MyAddTile("STARILIAD_ALIEN_RUINS_SLAB",
     {
         name = "map_edge",
         noise_texture = "mini_ruins_slab",
+    }
+)
+
+MyAddTile("STARILIAD_ICE_GROUND",
+    "LAND",
+    { ground_name = "Stariliad Ice Ground" },
+    {
+        name = "ocean_ice",
+        noise_texture = "noise_oceanice",
+        runsound = "dontstarve/movement/run_iceslab",
+        walksound = "dontstarve/movement/walk_iceslab",
+        snowsound = "dontstarve/movement/run_iceslab", --shouldn't actually be used:
+        mudsound = "dontstarve/movement/run_iceslab",  --nogroundoverlays flag should ignore snow/mud levels
+        nogroundoverlays = true,
+        cannotbedug = true,
+        hard = true,
+    },
+    {
+        name = "map_edge",
+        noise_texture = "mini_oceanice_noise",
     }
 )

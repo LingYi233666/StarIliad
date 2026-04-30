@@ -14,6 +14,62 @@ local Tasks = require("map/tasks")
 -- 	v.layout.archive_centipede_husk = nil
 -- end
 
+--adding new keys and locks
+local locks = 1
+for _, v in pairs(LOCKS) do
+	if v >= locks then
+		locks = v
+	end
+end
+locks = locks + 1
+
+local keys = 1
+for _, v in pairs(KEYS) do
+	if v >= keys then
+		keys = v
+	end
+end
+keys = keys + 1
+
+local function AddLock(name)
+	LOCKS[name] = locks
+	locks = locks + 1
+
+	print(string.format("New LOCKS[%s] = %d", name, LOCKS[name]))
+end
+
+local function AddKey(name)
+	KEYS[name] = keys
+	keys = keys + 1
+
+	print(string.format("New KEYS[%s] = %d", name, KEYS[name]))
+end
+
+local function RegisterKeyForLock(lock_name, key_name)
+	if type(key_name) == "table" then
+		for _, v in pairs(key_name) do
+			RegisterKeyForLock(lock_name, v)
+		end
+		return
+	end
+
+	if LOCKS_KEYS[LOCKS[lock_name]] == nil then
+		LOCKS_KEYS[LOCKS[lock_name]] = {}
+	end
+	table.insert(LOCKS_KEYS[LOCKS[lock_name]], KEYS[key_name])
+
+	print(string.format("New pairs: LOCKS[%s] <-> KEYS[%s]", lock_name, key_name))
+end
+
+-- Extra locks
+AddLock("STARILIAD_ICE_CAVE_ENTRANCE")
+
+-- Extra keys
+AddKey("STARILIAD_ICE_CAVE_ENTRANCE")
+
+-- Extra lock-key pairs
+RegisterKeyForLock("STARILIAD_ICE_CAVE_ENTRANCE", "STARILIAD_ICE_CAVE_ENTRANCE")
+
 local function MyAddStaticLayout(name, path, additional_props)
 	Layouts[name] = StaticLayout.Get(path, additional_props)
 
@@ -220,6 +276,31 @@ AddRoom("StarIliad_Test_Water_Area_Room2", {
 	}
 })
 
+AddRoom("stariliad_ice_cave_entrance", {
+	colour = { r = .1, g = .1, b = .1, a = .50 },
+	value = WORLD_TILES.STARILIAD_ICE_GROUND,
+	required_prefabs = {
+		-- "greenstaff",
+	},
+	contents = {
+		-- countstaticlayouts =
+		-- {
+		-- 	["moontrees_2"] = function(area) return 2 + math.max(1, math.floor(area / 75)) end,
+		-- 	["MoonTreeHiddenAxe"] = 1,
+		-- },
+		countprefabs =
+		{
+			greenstaff = 1,
+		},
+		distributepercent = 0.22,
+		distributeprefabs =
+		{
+			grass = 0.3,
+			sapling = 0.3,
+		},
+	},
+})
+
 AddTask("StarIliad_Test_Island", {
 	locks = {},
 	keys_given = {},
@@ -257,6 +338,20 @@ AddTask("StarIliad_Test_Water_Area", {
 	cove_room_max_edges = 2,
 	colour = { r = 0.6, g = 0.6, b = 0.0, a = 1 },
 })
+
+AddTask("stariliad_ice_cave", {
+	locks = {},
+	keys_given = {},
+	region_id = "stariliad_ice_cave",
+	room_choices = {
+		["stariliad_ice_cave_entrance"] = 1, -- 放入刚才定义的房间
+	},
+	entrance_room = "ForceDisconnectedRoom",
+	room_bg = WORLD_TILES.IMPASSABLE,
+	background_room = "ForceDisconnectedRoom",
+	colour = { r = .1, g = .1, b = .1, a = .50 },
+})
+-- c_gotoroom("stariliad_ice_cave_entrance")
 
 AddTaskSetPreInit("default", function(taskset)
 	assert(taskset.set_pieces ~= nil)
@@ -344,6 +439,8 @@ AddTaskSetPreInit("cave_default", function(taskset)
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
+
+	table.insert(taskset.tasks, "stariliad_ice_cave")
 end)
 
 
@@ -351,3 +448,16 @@ end)
 -- AddTaskPreInit("Dig that rock", function(task)
 -- 	task.room_choices["stariliad_alien_ruin_missile_room"] = 1
 -- end)
+
+
+local function LevelPreInit(level)
+	if level.location == "forest" then
+
+	end
+
+	if level.location == "cave" then
+		level.overrides.keep_disconnected_tiles = true
+	end
+end
+
+AddLevelPreInitAny(LevelPreInit)
