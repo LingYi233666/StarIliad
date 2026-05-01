@@ -54,6 +54,14 @@ local function OnEquip(inst, owner)
         owner.components.combat:SetAttackPeriod(FRAMES)
     end
     -- TryChangeAttackPeriod(inst, owner)
+
+    if inst.rmb_enable_task then
+        inst.rmb_enable_task:Cancel()
+    end
+    inst.rmb_enable_task = inst:DoTaskInTime(5 * FRAMES, function()
+        owner:AddTag("stariliad_shoot_at")
+        inst.rmb_enable_task = nil
+    end)
 end
 
 local function OnUnequip(inst, owner)
@@ -63,6 +71,12 @@ local function OnUnequip(inst, owner)
     if owner.components.combat then
         owner.components.combat:SetAttackPeriod(TUNING.WILSON_ATTACK_PERIOD)
     end
+
+    if inst.rmb_enable_task then
+        inst.rmb_enable_task:Cancel()
+        inst.rmb_enable_task = nil
+    end
+    owner:RemoveTag("stariliad_shoot_at")
 end
 
 local function OnProjectileLaunch(inst, attacker, target)
