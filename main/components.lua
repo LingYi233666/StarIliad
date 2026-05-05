@@ -319,8 +319,15 @@ local STARILIAD_MUSIC = {
     },
 
     stariliad_weather_ice_meteor = {
-        -- "dontstarve/music/music_epicfight_winter",
         "stariliad_music/music/ice_meteor_erupt",
+    },
+
+    stariliad_ice_cave = {
+        "stariliad_music/music/ice_cave",
+    },
+
+    stariliad_ice_cave_boss = {
+        "stariliad_music/music/tangled_gears",
     },
 }
 

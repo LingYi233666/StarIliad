@@ -129,6 +129,8 @@ end
 
 -- GetWorldTileMap()
 -- si_tile(WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB)
+-- si_tile(WORLD_TILES.STARILIAD_ICE_GROUND)
+-- si_tile(WORLD_TILES.STARILIAD_MAGMA)
 function GLOBAL.si_tile(tile, x, y, z)
     if x == nil or y == nil or z == nil then
         x, y, z = ConsoleWorldPosition():Get()
@@ -164,6 +166,7 @@ function GLOBAL.si_falling_star(num)
     end)
 end
 
+-- si_layout()
 function GLOBAL.si_layout(name, pos)
     pos = pos or ConsoleWorldPosition()
     StarIliadLayout.Spawn(name, pos)

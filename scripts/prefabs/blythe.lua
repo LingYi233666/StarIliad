@@ -120,6 +120,41 @@ end
 
 local function OnNewSpawn(inst)
 	inst.components.inventory:Equip(SpawnAt("blythe_backpack", inst), nil, true)
+
+	-- print(inst, "OnNewSpawn")
+
+	inst:Hide()
+	inst:DoTaskInTime(FRAMES, function()
+		if TheWorld.blythe_ship
+			and TheWorld.blythe_ship:IsValid()
+			and not inst.components.blythe_reroll_data_handler.rerolled then
+			local pos = TheWorld.blythe_ship:GetPosition()
+			local offset = FindWalkableOffset(pos, TWOPI, 7, 36, nil, false, nil, false, false) or Vector3(0, 0, 0)
+
+			inst.Transform:SetPosition((pos + offset):Get())
+
+			inst.AnimState:SetMultColour(1, 1, 1, 1)
+
+			inst.sg:GoToState("knockout")
+
+			inst.AnimState:PlayAnimation("sleep_loop", true)
+			inst.sg:AddStateTag("sleeping")
+
+			inst:DoTaskInTime(3, function()
+				inst:PushEvent("cometo")
+			end)
+
+			-- inst:DoTaskInTime(60 * FRAMES, function()
+			-- 	if inst.components.colourtweener then
+			-- 		inst.components.colourtweener:EndTween()
+			-- 	end
+			-- end)
+
+
+			inst:SnapCamera()
+		end
+		inst:Show()
+	end)
 end
 
 --这个函数将在服务器和客户端都会执行

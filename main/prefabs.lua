@@ -338,6 +338,7 @@ local function LoadForRerollWrapper(old_fn)
             if data.blythe_reroll_data_handler ~= nil then
                 inst.components.blythe_reroll_data_handler:OnLoad(data.blythe_reroll_data_handler)
                 inst.components.blythe_reroll_data_handler:ApplyMemory()
+                inst.components.blythe_reroll_data_handler.rerolled = true
             end
         else
             if data.blythe_reroll_data_handler ~= nil then
@@ -350,15 +351,44 @@ local function LoadForRerollWrapper(old_fn)
 end
 
 AddPlayerPostInit(function(inst)
+    if not TheNet:IsDedicated() then
+        inst:DoTaskInTime(3, function()
+            inst:DoPeriodicTask(0, function()
+                if not inst.components.areaaware then
+                    return
+                end
+
+                local data = inst.components.areaaware:GetCurrentArea()
+                if not data then
+                    return
+                end
+
+                local music_name
+                local music_level
+                local music_duration = 3
+                if string.find(data.id, "stariliad_ice_cave") then
+                    music_name = "stariliad_ice_cave"
+                end
+
+                if music_name then
+                    -- TODO: Add epic music monster check
+                    -- print("Push music:", music_name, music_level)
+                    ThePlayer:PushEvent("triggeredevent",
+                        { name = music_name, level = music_level, duration = music_duration })
+                end
+            end)
+        end)
+    end
+
     if not TheWorld.ismastersim then
         return
     end
 
     inst:AddComponent("stariliad_rain_fx_bonus_watcher")
 
-    if not TheWorld.ismastersim then
-        return
-    end
+
+    inst.components.areaaware:StartWatchingTile(WORLD_TILES.STARILIAD_ICE_GROUND)
+
 
     if inst.prefab == "blythe" or inst.prefab == "wonkey" then
         inst:AddComponent("blythe_reroll_data_handler")
@@ -366,4 +396,25 @@ AddPlayerPostInit(function(inst)
         inst.SaveForReroll = SaveForRerollWrapper(inst.SaveForReroll)
         inst.LoadForReroll = LoadForRerollWrapper(inst.LoadForReroll)
     end
+
+    local function OnStariliadIceTile(inst, on_ice)
+        if inst.components.slipperyfeet then
+            -- print("on_STARILIAD_ICE_GROUND_tile", on_ice)
+
+            if on_ice then
+                inst.components.slipperyfeet:StartSlipperySource(inst, "stariliad_ice_ground")
+            else
+                inst.components.slipperyfeet:StopSlipperySource(inst, "stariliad_ice_ground")
+            end
+        end
+    end
+
+    inst:ListenForEvent("on_STARILIAD_ICE_GROUND_tile", OnStariliadIceTile)
+
+    inst:DoTaskInTime(5 * FRAMES, function()
+        local x, y, z = inst.Transform:GetWorldPosition()
+        local tile = TheWorld.Map:GetTileAtPoint(x, y, z)
+
+        OnStariliadIceTile(inst, tile == WORLD_TILES.STARILIAD_ICE_GROUND)
+    end)
 end)

@@ -76,3 +76,21 @@ MyAddTile("STARILIAD_ICE_GROUND",
         noise_texture = "mini_oceanice_noise",
     }
 )
+
+MyAddTile("STARILIAD_MAGMA",
+    "LAND",
+    { ground_name = "Stariliad Magma" },
+    {
+        name = "cave",
+        noise_texture = "Ground_noise_magmafield",
+        runsound = "dontstarve/movement/run_dirt",
+        walksound = "dontstarve/movement/walk_dirt",
+        snowsound = "dontstarve/movement/run_iceslab",
+        mudsound = "dontstarve/movement/run_mud",
+        cannotbedug = true,
+    },
+    {
+        name = "map_edge",
+        noise_texture = "mini_magmafield_noise",
+    }
+)
