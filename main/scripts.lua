@@ -55,3 +55,38 @@ end)
 -- end)
 
 -- GLOBAL.StarIliadTip = StarIliadTip
+
+-- Skins
+GLOBAL.blythe_backpack_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "blythe_backpack")
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. build_name .. ".xml"
+    inst.components.inventoryitem:ChangeImageName(build_name)
+end
+
+GLOBAL.blythe_backpack_clear_fn = function(inst)
+    basic_clear_fn(inst, "blythe_backpack")
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/blythe_backpack.xml"
+    inst.components.inventoryitem:ChangeImageName("blythe_backpack")
+end
+
+GLOBAL.blythe_blaster_init_fn = function(inst, build_name)
+    basic_init_fn(inst, build_name, "blythe_blaster")
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/" .. build_name .. ".xml"
+    inst.components.inventoryitem:ChangeImageName(build_name)
+end
+
+GLOBAL.blythe_blaster_clear_fn = function(inst)
+    basic_clear_fn(inst, "blythe_blaster")
+
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/blythe_blaster.xml"
+    inst.components.inventoryitem:ChangeImageName("blythe_blaster")
+end
+
+RegisterInventoryItemAtlas(resolvefilepath("images/inventoryimages/ms_blythe_blaster_avgn.xml"),
+    "ms_blythe_blaster_avgn.tex")
+
+RegisterInventoryItemAtlas(resolvefilepath("images/inventoryimages/ms_blythe_backpack_avgn.xml"),
+    "ms_blythe_backpack_avgn.tex")

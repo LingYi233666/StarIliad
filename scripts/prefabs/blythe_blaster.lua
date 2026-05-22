@@ -16,7 +16,12 @@ local function TryChangeSwapBuild(inst, owner)
     inst.swap_build = swap_build
 
     if owner and owner:IsValid() then
-        owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", inst.swap_build)
+        local skin_build = inst:GetSkinBuild()
+        if skin_build ~= nil then
+            owner.AnimState:OverrideItemSkinSymbol("swap_object", skin_build, inst.swap_build, inst.GUID, "swap_object")
+        else
+            owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", inst.swap_build)
+        end
     end
 end
 
@@ -44,7 +49,6 @@ local function OnProjectilePrefabChange(inst, new_prefab, old_prefab)
 end
 
 local function OnEquip(inst, owner)
-    -- owner.AnimState:OverrideSymbol("swap_object", "blythe_blaster", "swap_blythe_blaster")
     TryChangeSwapBuild(inst, owner)
 
     owner.AnimState:Show("ARM_carry")
@@ -231,4 +235,18 @@ local function fn()
     return inst
 end
 
-return Prefab("blythe_blaster", fn, assets)
+return Prefab("blythe_blaster", fn, assets),
+    CreatePrefabSkin("ms_blythe_blaster_avgn", { --The ID of our skin
+        assets = {                               --Our assets
+            Asset("ANIM", "anim/ms_blythe_blaster_avgn.zip"),
+            Asset("IMAGE", "images/inventoryimages/ms_blythe_blaster_avgn.tex"),
+            Asset("ATLAS", "images/inventoryimages/ms_blythe_blaster_avgn.xml"),
+        },
+        base_prefab = "blythe_blaster", --The prefab of the item/structure we're adding a skin for
+        build_name_override = "ms_blythe_blaster_avgn",
+
+        type = "item", --We are now creating a modded item/structure! Thus our skin's type is "item" (Note: there aren't different types for modded "structures", to the game there is no difference between skinning an item, a structure, or even a mob! (Yes you could create mob skins if you wanted!)
+        rarity = "ModMade",
+
+        skin_tags = { "BLYTHE_BLASTER" }, --Skin tags, you should add a tag matching the original prefab of the item/structure we're adding a skin for in full capitalization
+    })

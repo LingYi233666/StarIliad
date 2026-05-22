@@ -1,26 +1,47 @@
-local assets =
-{
-	Asset("ANIM", "anim/blythe.zip"),
-	Asset("ANIM", "anim/ghost_blythe_build.zip"),
-}
-
-local skins =
-{
-	normal_skin = "blythe",
-	ghost_skin = "ghost_blythe_build",
-}
-
 local base_prefab = "blythe"
 
-local tags = { "BASE", "BLYTHE", "CHARACTER" }
+local skin_prefabs = {
+	CreatePrefabSkin("blythe_none",
+		{
+			assets = {
+				Asset("ANIM", "anim/blythe.zip"),
+				Asset("ANIM", "anim/ghost_blythe_build.zip"),
+			},
+			skins = {
+				normal_skin = "blythe",
+				ghost_skin = "ghost_blythe_build",
+			},
 
-return CreatePrefabSkin("blythe_none",
-	{
-		base_prefab = base_prefab,
-		skins = skins,
-		assets = assets,
-		skin_tags = tags,
+			base_prefab = base_prefab,
+			build_name_override = "blythe",
 
-		build_name_override = "blythe",
-		rarity = "Character",
-	})
+			type = "base",
+			rarity = "Character",
+
+			skin_tags = { "BASE", "BLYTHE", "CHARACTER" },
+		}
+	),
+
+	CreatePrefabSkin("ms_blythe_avgn",
+		{
+			assets = {
+				Asset("ANIM", "anim/ms_blythe_avgn.zip"),
+				Asset("ANIM", "anim/ghost_blythe_build.zip"),
+			},
+			skins = {
+				normal_skin = "ms_blythe_avgn",
+				ghost_skin = "ghost_blythe_build",
+			},
+
+			base_prefab = base_prefab,
+			build_name_override = "ms_blythe_avgn",
+
+			type = "base",
+			rarity = "ModMade",
+
+			skin_tags = { "BASE", "BLYTHE", "CHARACTER" },
+		}
+	),
+}
+
+return unpack(skin_prefabs)

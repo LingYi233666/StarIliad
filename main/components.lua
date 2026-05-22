@@ -327,8 +327,11 @@ local STARILIAD_MUSIC = {
     },
 
     stariliad_ice_cave_boss = {
-        "stariliad_music/music/tangled_gears",
+        "stariliad_music/music/tangled_gears2",
     },
+
+    -- TheFocalPoint.SoundEmitter:PlaySound("stariliad_music/music/tangled_gears2", "test")
+    -- TheFocalPoint.SoundEmitter:KillSound("test")
 }
 
 AddComponentPostInit("dynamicmusic", function(self)

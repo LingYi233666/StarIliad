@@ -40,7 +40,12 @@ StarIliadBasic.AddContainersParams("blythe_backpack", backpack_params)
 ---------------------------------------------------------------------------------------
 
 local function onequip(inst, owner)
-    owner.AnimState:OverrideSymbol("swap_body", "blythe_backpack", "swap_body")
+    local skin_build = inst:GetSkinBuild()
+    if skin_build ~= nil then
+        owner.AnimState:OverrideItemSkinSymbol("swap_body", skin_build, "swap_body", inst.GUID, "swap_body")
+    else
+        owner.AnimState:OverrideSymbol("swap_body", "blythe_backpack", "swap_body")
+    end
 
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
@@ -119,4 +124,18 @@ local function fn()
 end
 
 
-return Prefab("blythe_backpack", fn, assets)
+return Prefab("blythe_backpack", fn, assets),
+    CreatePrefabSkin("ms_blythe_backpack_avgn", { --The ID of our skin
+        assets = {                                --Our assets
+            Asset("ANIM", "anim/ms_blythe_backpack_avgn.zip"),
+            Asset("IMAGE", "images/inventoryimages/ms_blythe_backpack_avgn.tex"),
+            Asset("ATLAS", "images/inventoryimages/ms_blythe_backpack_avgn.xml"),
+        },
+        base_prefab = "blythe_backpack", --The prefab of the item/structure we're adding a skin for
+        build_name_override = "ms_blythe_backpack_avgn",
+
+        type = "item", --We are now creating a modded item/structure! Thus our skin's type is "item" (Note: there aren't different types for modded "structures", to the game there is no difference between skinning an item, a structure, or even a mob! (Yes you could create mob skins if you wanted!)
+        rarity = "ModMade",
+
+        skin_tags = { "BLYTHE_BACKPACK" }, --Skin tags, you should add a tag matching the original prefab of the item/structure we're adding a skin for in full capitalization
+    })
