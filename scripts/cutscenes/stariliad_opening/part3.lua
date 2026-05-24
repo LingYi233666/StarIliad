@@ -32,7 +32,7 @@ local StarIliadOpeningPart3 = Class(Widget, function(self)
     self.text = self:AddChild(Text(TALKINGFONT, 68))
     self.text:SetHAnchor(ANCHOR_MIDDLE)
     self.text:SetVAnchor(ANCHOR_BOTTOM)
-    self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[3], 99999, 900)
+    self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[3], 99999, 950)
     self.text:SetPosition(0, 100)
 end)
 

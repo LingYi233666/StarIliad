@@ -21,6 +21,7 @@ local assets =
     Asset("ANIM", "anim/blythe_tv.zip"),
 
     Asset("ANIM", "anim/stariliad_cutscene_opening.zip"),
+    Asset("ANIM", "anim/stariliad_cutscene_opening_avgn.zip"),
 
     -- swap beam ui
     Asset("IMAGE", "images/ui/stariliad_8star.tex"),

@@ -52,9 +52,7 @@ local assets = {
 local prefabs = {}
 
 -- 初始物品
-local start_inv = {
-	"blythe_blaster",
-}
+local start_inv = {}
 
 local function OnBecomeXParasite(inst, data)
 	local r, g, b, a = 1, 0, 0, 1
@@ -122,16 +120,22 @@ local function OnToolBroken(inst, data)
 end
 
 local function OnNewSpawn(inst)
-	inst.components.inventory:Equip(SpawnAt("blythe_backpack", inst), nil, true)
-
-	-- print(inst, "OnNewSpawn")
-	-- and not inst.components.skinner
-
 	inst:Hide()
 	inst:DoTaskInTime(FRAMES, function()
+		local blaster = SpawnAt("blythe_blaster", inst)
+		local backpack = SpawnAt("blythe_backpack", inst)
+		if inst.components.skinner.skin_name == "ms_blythe_avgn" then
+			TheSim:ReskinEntity(blaster.GUID, "ms_blythe_blaster_avgn", "ms_blythe_blaster_avgn", nil, inst.userid)
+			TheSim:ReskinEntity(backpack.GUID, "ms_blythe_backpack_avgn", "ms_blythe_backpack_avgn", nil, inst.userid)
+		end
+		inst.components.inventory:GiveItem(blaster)
+		inst.components.inventory:Equip(backpack, nil, true)
+
 		if TheWorld.blythe_ship
 			and TheWorld.blythe_ship:IsValid()
-			and not inst.components.blythe_reroll_data_handler.rerolled then
+			and not inst.components.blythe_reroll_data_handler.rerolled
+			and inst.components.skinner.skin_name == nil
+		then
 			local pos = TheWorld.blythe_ship:GetPosition()
 			local offset = FindWalkableOffset(pos, TWOPI, 7, 36, nil, false, nil, false, false) or Vector3(0, 0, 0)
 

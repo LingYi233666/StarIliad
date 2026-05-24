@@ -8,6 +8,7 @@ local BlytheTV = require "widgets/blythe_tv"
 local StarIliadTipUI = require "widgets/stariliad_tip_ui"
 local StariliadShakingText = require "widgets/stariliad_shaking_text"
 local StarIliadOpening = require "cutscenes/stariliad_opening/stariliad_opening"
+local StarIliadOpeningAVGN = require "cutscenes/stariliad_opening_avgn/stariliad_opening_avgn"
 
 AddClassPostConstruct("widgets/controls", function(self)
     if self.owner:HasTag("blythe") then
@@ -94,10 +95,20 @@ AddClassPostConstruct("screens/redux/lobbyscreen", function(self)
 
         -- if char == "blythe" and not ReadHaveSeenFirstPlayCG() then
         if char == "blythe" then
+            print("Stariliad Opening character and skin:", char, skin_base)
+
             self.no_more_sound = true
             self:StopLobbyMusic()
 
-            local opening = StarIliadOpening()
+            local opening
+            local opening_time
+            if skin_base == "ms_blythe_avgn" then
+                opening = StarIliadOpeningAVGN()
+                opening_time = 46
+            else
+                opening = StarIliadOpening()
+                opening_time = 70
+            end
 
             local old_OnDestroy = opening.OnDestroy
             opening.OnDestroy = function(his_self, ...)
@@ -105,7 +116,7 @@ AddClassPostConstruct("screens/redux/lobbyscreen", function(self)
                 old_self_cb(char, skin_base, clothing_body, clothing_hand, clothing_legs, clothing_feet)
             end
 
-            opening.inst:DoTaskInTime(70, function()
+            opening.inst:DoTaskInTime(opening_time, function()
                 TheFrontEnd:PopScreen(opening)
             end)
 

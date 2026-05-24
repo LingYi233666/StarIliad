@@ -192,6 +192,7 @@ local StarIliadOpeningPart1 = Class(Widget, function(self)
             end
         end)
     end)
+    self:CreateCrownForWeapon(self.weapon)
 
     self.flash = self:AddChild(Image("images/global.xml", "square.tex"))
     self.flash:SetVRegPoint(ANCHOR_MIDDLE)
@@ -207,6 +208,64 @@ local StarIliadOpeningPart1 = Class(Widget, function(self)
     self.text:SetMultilineTruncatedString(STRINGS.STARILIAD_UI.CUTSCENES.INTRO[1], 99999, 900)
     self.text:SetPosition(0, 100)
 end)
+
+function StarIliadOpeningPart1:CreateCrownForWeapon(weapon)
+    local y_offset = 75
+    weapon.layer_front = weapon:AddChild(Widget())
+    weapon.layer_front:SetPosition(0, y_offset)
+    weapon.layer_front:MoveToFront()
+
+    weapon.layer_back = weapon:AddChild(Widget())
+    weapon.layer_back:SetPosition(0, y_offset)
+    weapon.layer_back:MoveToBack()
+
+    weapon.crown_flames = {}
+
+    local num_flames = 5
+    local a = 50
+    local b = 15
+
+    -- 初始化查表（只做一次）
+    local arc_table = StarIliadMath.BuildEllipseArcTable(a, b, 360)
+
+    -- 线速度：例如 3 秒绕一圈
+    local period = 3
+    local linear_speed = arc_table.total_length / period
+
+    for i = 1, num_flames do
+        local flame = weapon.layer_front:AddChild(UIAnim())
+        flame:GetAnimState():SetBank("wagboss_lunar")
+        flame:GetAnimState():SetBuild("wagboss_lunar")
+        flame:GetAnimState():PlayAnimation("flame_loop", true)
+        flame:GetAnimState():SetMultColour(1, 1, 1, 0.66)
+        flame:GetAnimState():UsePointFiltering(true)
+        flame:SetScale(0.1)
+
+        -- 每个 flame 的初始弧长（均匀分布在一圈上）
+        flame.start_arc = (i - 1) / num_flames * arc_table.total_length
+        table.insert(weapon.crown_flames, flame)
+    end
+
+    weapon.crown_arc_table = arc_table
+    weapon.crown_linear_speed = linear_speed
+    weapon.crown_start_time = GetStaticTime()
+
+    weapon.crown_task = weapon.inst:DoPeriodicTask(0, function()
+        local dt = GetStaticTime() - weapon.crown_start_time
+
+        for _, flame in ipairs(weapon.crown_flames) do
+            local s = flame.start_arc + dt * weapon.crown_linear_speed
+            local x, y, degree = StarIliadMath.SampleEllipseByArcLength(weapon.crown_arc_table, s)
+
+            flame:SetPosition(x, y)
+
+            local correct_parent = (degree <= 180) and weapon.layer_back or weapon.layer_front
+            if correct_parent ~= flame.parent then
+                correct_parent:AddChild(flame)
+            end
+        end
+    end)
+end
 
 function StarIliadOpeningPart1:Play()
     self:StartBeamFight()

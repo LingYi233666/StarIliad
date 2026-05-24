@@ -270,6 +270,20 @@ function StarIliadOpeningPart2:SpawnGlassShards(center)
     end
 end
 
+function StarIliadOpeningPart2:SpawnPlanarHit(center)
+    local root = self:AddChild(Widget())
+
+    local fx = root:AddChild(UIAnim())
+    fx:GetAnimState():SetBank("planar_damage_fx")
+    fx:GetAnimState():SetBuild("planar_damage_fx")
+    fx:GetAnimState():PlayAnimation("damage2")
+    fx:GetAnimState():UsePointFiltering(true)
+    fx:SetPosition(Vector3(0, -187, 0))
+
+    root:SetScale(1)
+    root:SetPosition(center)
+end
+
 function StarIliadOpeningPart2:Play()
     self.inst:DoTaskInTime(1.8, function()
         self:StartLaunchProjectiles()
@@ -305,6 +319,7 @@ function StarIliadOpeningPart2:Play()
         self:StopContainerShaking()
 
         self:SpawnGlassShards(self.energy_container:GetPosition())
+        self:SpawnPlanarHit(self.energy_container:GetPosition())
 
         self.energy_container:GetAnimState():SetDeltaTimeMultiplier(2)
         self.energy_container:GetAnimState():PlayAnimation("container_break3")

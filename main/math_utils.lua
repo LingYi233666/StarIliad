@@ -226,4 +226,102 @@ function StarIliadMath.DBSCAN(points, eps, min_pts)
     return clusters
 end
 
+function StarIliadMath.EllipseRayIntersection(a, b, degree)
+    local theta = degree * DEGREES
+    local cos_t = math.cos(theta)
+    local sin_t = math.sin(theta)
+    local denom = math.sqrt(b * b * cos_t * cos_t + a * a * sin_t * sin_t)
+    local t = (a * b) / denom
+    return t * cos_t, t * sin_t
+end
+
+-- 构建椭圆弧长查表（按参数角 t 采样，点一定在椭圆上）
+function StarIliadMath.BuildEllipseArcTable(a, b, num_samples)
+    num_samples = num_samples or 360
+
+    local samples = {}
+    local prev_x, prev_y = a, 0
+    local cumulative_s = 0
+
+    -- i=0 对应 t=0，即 (a, 0)
+    samples[1] = { s = 0, x = prev_x, y = prev_y }
+
+    for i = 1, num_samples - 1 do
+        local t = (i / num_samples) * TWOPI
+        local x = a * math.cos(t)
+        local y = b * math.sin(t)
+
+        local dx = x - prev_x
+        local dy = y - prev_y
+        cumulative_s = cumulative_s + math.sqrt(dx * dx + dy * dy)
+
+        table.insert(samples, { s = cumulative_s, x = x, y = y })
+        prev_x, prev_y = x, y
+    end
+
+    -- 闭合：最后一个采样点回到起点
+    local dx = a - prev_x
+    local dy = 0 - prev_y
+    cumulative_s = cumulative_s + math.sqrt(dx * dx + dy * dy)
+
+    return {
+        a = a,
+        b = b,
+        total_length = cumulative_s,
+        samples = samples, -- samples[k].s 严格递增，samples[1].s = 0
+    }
+end
+
+-- 按弧长 s 查位置（s 可循环）
+function StarIliadMath.SampleEllipseByArcLength(arc_table, s)
+    local total = arc_table.total_length
+    local samples = arc_table.samples
+    local n = #samples
+
+    s = s % total
+    if s < 0 then
+        s = s + total
+    end
+
+    -- 找 segment：samples[i].s <= s < samples[i+1].s
+    local idx = 1
+    for i = 1, n - 1 do
+        if s >= samples[i].s and s < samples[i + 1].s then
+            idx = i
+            break
+        end
+    end
+
+    -- 最后一段：最后一个点 → 回到起点 (a, 0)
+    if s >= samples[n].s then
+        idx = n
+    end
+
+    local s0 = samples[idx].s
+    local x0, y0 = samples[idx].x, samples[idx].y
+
+    local s1, x1, y1
+    if idx < n then
+        s1 = samples[idx + 1].s
+        x1, y1 = samples[idx + 1].x, samples[idx + 1].y
+    else
+        s1 = total
+        x1, y1 = arc_table.a, 0
+    end
+
+    local seg_len = s1 - s0
+    local f = (seg_len > 0) and ((s - s0) / seg_len) or 0
+
+    local x = x0 + (x1 - x0) * f
+    local y = y0 + (y1 - y0) * f
+
+    -- 用于前后层判断；不要对 degree 做线性插值（跨 360° 会出错）
+    local degree = math.atan2(y, x) * RADIANS
+    if degree < 0 then
+        degree = degree + 360
+    end
+
+    return x, y, degree
+end
+
 GLOBAL.StarIliadMath = StarIliadMath
