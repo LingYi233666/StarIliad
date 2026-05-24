@@ -12,6 +12,10 @@ STRINGS.CHARACTERS.BLYTHE = require "speech_blythe_eng"
 STRINGS.NAMES.BLYTHE = "Blythe"
 STRINGS.SKIN_NAMES.blythe_none = "Blythe"
 
+STRINGS.SKIN_NAMES.ms_blythe_avgn = "Angry Video Game Nerd"
+STRINGS.SKIN_DESCRIPTIONS.ms_blythe_avgn = "She's the angriest video game nerd of all time."
+STRINGS.SKIN_QUOTES.ms_blythe_avgn = "It's time to play some shitty games!"
+
 -- Survivability
 STRINGS.CHARACTER_SURVIVABILITY.blythe = "Easy"
 
@@ -19,6 +23,9 @@ STRINGS.NAMES.BLYTHE_BLASTER = "Magic Blaster"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER = "This thing is beyond any science I know."
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BLASTER = "A reliable pistol that can fire various types of ammo!"
 STRINGS.RECIPE_DESC.BLYTHE_BLASTER = "Your most trusted weapon."
+
+STRINGS.SKIN_NAMES.ms_blythe_blaster_avgn = "Scribbled Magic Blaster"
+STRINGS.SKIN_DESCRIPTIONS.ms_blythe_blaster_avgn = "Now that's what I call style!"
 
 STRINGS.NAMES.BLYTHE_BLASTER_REPAIR_KIT = "Blaster Repair Kit"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BLASTER_REPAIR_KIT = "I have no idea how it works."
@@ -90,6 +97,9 @@ STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_MAGIC_CRYSTAL = "Now I can absorb t
 STRINGS.NAMES.BLYTHE_BACKPACK = "Ranger Backpack"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_BACKPACK = "A mechanical backpack."
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_BACKPACK = "It's been with me for a long time."
+
+STRINGS.SKIN_NAMES.ms_blythe_backpack_avgn = "Scribbled Backpack"
+STRINGS.SKIN_DESCRIPTIONS.ms_blythe_backpack_avgn = "Now that's what I call style!"
 
 STRINGS.NAMES.STARILIAD_EVENT_JOUST_KNIGHT_RED = "Pet Owner"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_EVENT_JOUST_KNIGHT_RED = "It seems to be seeking revenge for its pet."
@@ -341,6 +351,28 @@ STRINGS.STARILIAD_UI.CUTSCENES = {
         "I am Blythe, a Star Ranger, and the En-Zu is my target as well.",
         "This dangerous weapon must never resurface. It must be destroyed!",
     },
+
+    INTRO_AVGN = {
+        "One day, Blythe, the master of action games, was at home playing %s.",
+        "Suddenly, a shadow hand reached out from the TV and pulled her in!",
+        "When Blythe woke up, she saw three giant, fleshy creatures in front of her. They were Pigmen!",
+        "Blythe tried to explain... The Pigmen told her the rules of survival in the Constant: 'Don't worry, you just need to find something to eat before dark...'",
+        "The Pigmen ran off. And now, the Pigmen...",
+    },
+
+    INTRO_AVGN_SHITTY_GAMES = {
+        "Concord",
+        "Warcraft III: Reforged",
+        "The Last of Us Part II",
+        "Monkey King: Hero is Back",
+        "Suicide Squad: Kill the Justice League",
+        "Overwatch 2",
+        "The Day Before",
+        "Castlevania II: Simon's Quest",
+        "Cheetahmen",
+        "Pepsiman",
+        "Dr. Jekyll and Mr. Hyde",
+    }
 }
 
 STRINGS.UI.LOADING_SCREEN_OTHER_TIPS.STARILIAD_TIP_ENZU_RECORDING =
