@@ -134,7 +134,7 @@ local function OnNewSpawn(inst)
 		if TheWorld.blythe_ship
 			and TheWorld.blythe_ship:IsValid()
 			and not inst.components.blythe_reroll_data_handler.rerolled
-			and inst.components.skinner.skin_name == nil
+			and (inst.components.skinner.skin_name == nil or inst.components.skinner.skin_name == "blythe_none")
 		then
 			local pos = TheWorld.blythe_ship:GetPosition()
 			local offset = FindWalkableOffset(pos, TWOPI, 7, 36, nil, false, nil, false, false) or Vector3(0, 0, 0)
