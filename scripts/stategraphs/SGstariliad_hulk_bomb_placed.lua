@@ -155,7 +155,7 @@ local states =
                 if not effected_map[v] and v.components.workable and v.components.workable:CanBeWorked() then
                     SpawnPrefab("deerclops_laserhit"):SetTarget(v)
                     effected_map[v] = inst:DoTaskInTime(GetRandomMinMax(0.1, 0.3), function()
-                        if v.components.workable and v.components.workable:CanBeWorked() then
+                        if v:IsValid() and v.components.workable and v.components.workable:CanBeWorked() then
                             v.components.workable:WorkedBy(inst, 25)
                         end
                     end)
