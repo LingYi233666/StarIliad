@@ -87,7 +87,12 @@ local function OnCollapse(inst, other)
 end
 
 local function OnCollide(inst, other)
-    if other ~= nil and (other:HasTag("tree") or other:HasTag("boulder")) and Vector3(inst.Physics:GetVelocity()):LengthSq() >= 1 then
+    if other ~= nil and
+        Vector3(inst.Physics:GetVelocity()):LengthSq() >= 1 and
+        other.components.workable and
+        other.components.workable:CanBeWorked() and
+        other.components.workable:GetWorkAction() ~= ACTIONS.NET
+    then
         inst:DoTaskInTime(2 * FRAMES, OnCollapse, other)
     end
 end

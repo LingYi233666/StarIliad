@@ -23,7 +23,13 @@ local warning_configs = {
         duration = 2.5,
         speed = 0.02,
         scale = 2 * 0.75,
-    }
+    },
+
+    {
+        duration = 2.5,
+        speed = 0.02,
+        scale = 2 * 0.75,
+    },
 
     -- {
     --     sound = nil,

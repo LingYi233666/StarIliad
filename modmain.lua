@@ -113,17 +113,30 @@ PrefabFiles = {
     "stariliad_boss_spyder",
 
     "stariliad_space_pirate_solider",
+    "stariliad_hulk_bomb",
+    "stariliad_laser_ring",
+    "stariliad_laser_explosion",
 
     "stariliad_ice_meteor",
     "stariliad_ice_meteor_erupt_warning",
 
+    "stariliad_ice_crystal",
+
     "stariliad_ice_axe",
     "stariliad_ice_pickaxe",
+    "stariliad_ice_hammer",
     "stariliad_ice_backpack",
+    "stariliad_bingbong",
 
     "stariliad_icecano",
 
     "blythe_ship",
+
+    "stariliad_placeholder_rock_ice",
+
+    "stariliad_curse_poison",
+
+    "stariliad_energy_tank",
 }
 
 -- See stariliad_main_assets.lua
@@ -143,6 +156,9 @@ AddMinimapAtlas("images/map_icons/blythe_unlock_skill_item_super_missile.xml")
 AddMinimapAtlas("images/map_icons/stariliad_alien_statue_chozo_dodge.xml")
 AddMinimapAtlas("images/map_icons/stariliad_alien_statue_chozo_scan.xml")
 AddMinimapAtlas("images/map_icons/blythe_ship.xml")
+AddMinimapAtlas("images/map_icons/stariliad_ice_backpack.xml")
+AddMinimapAtlas("images/map_icons/stariliad_ice_meteor.xml")
+AddMinimapAtlas("images/map_icons/stariliad_bingbong.xml")
 
 --增加人物到mod人物列表的里面 性别为女性（MALE, FEMALE, ROBOT, NEUTRAL, and PLURAL）
 AddModCharacter("blythe", "FEMALE")

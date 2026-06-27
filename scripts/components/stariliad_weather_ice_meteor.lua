@@ -108,6 +108,10 @@ function StarIliadWeatherIceMeteor:DoDeltaPeace(t)
     if self.peace_countdown <= 0 then
         local duration = GetRandomMinMax(unpack(self.range_eruption_duration))
         self:StartErupt(duration)
+
+        -- for _, v in pairs(AllPlayers) do
+        --     SpawnPrefab("stariliad_ice_meteor_erupt_warning_lv4"):SetTarget(v)
+        -- end
     end
 end
 

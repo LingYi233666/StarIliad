@@ -105,6 +105,9 @@ local assets =
     Asset("SOUNDPACKAGE", "sound/stariliad_music.fev"),
     Asset("SOUND", "sound/stariliad_music.fsb"),
     Asset("SOUND", "sound/stariliad_music_lossless.fsb"),
+
+    Asset("SOUNDPACKAGE", "sound/dontstarve_DLC003.fev"),
+    Asset("SOUND", "sound/DLC003_sfx.fsb"),
 }
 
 local function fn()

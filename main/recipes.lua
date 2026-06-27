@@ -133,3 +133,75 @@ AddRecipeWithManyIngredients("blythe_unlock_skill_item_super_missile",
     },
     { "CHARACTER", "WEAPON" }
 )
+
+MyAddRecipe2("stariliad_ice_axe",
+    {
+        Ingredient("twigs", 1),
+        Ingredient("stariliad_ice_crystal", 1, "images/inventoryimages/stariliad_ice_crystal.xml"),
+    },
+    TECH.SCIENCE_ONE,
+    {
+
+    },
+    { "TOOLS" }
+)
+
+MyAddRecipe2("stariliad_ice_pickaxe",
+    {
+        Ingredient("twigs", 2),
+        Ingredient("stariliad_ice_crystal", 3, "images/inventoryimages/stariliad_ice_crystal.xml"),
+    },
+    TECH.SCIENCE_ONE,
+    {
+    },
+    { "TOOLS" }
+)
+
+MyAddRecipe2("stariliad_ice_hammer",
+    {
+        Ingredient("twigs", 3),
+        Ingredient("stariliad_ice_crystal", 2, "images/inventoryimages/stariliad_ice_crystal.xml"),
+        Ingredient("cutgrass", 6),
+    },
+    TECH.SCIENCE_ONE,
+    {
+    },
+    { "TOOLS" }
+)
+
+MyAddRecipe2("stariliad_ice_backpack",
+    {
+        Ingredient("rope", 2),
+        Ingredient("stariliad_ice_crystal", 4, "images/inventoryimages/stariliad_ice_crystal.xml"),
+    },
+    TECH.SCIENCE_TWO,
+    {
+    },
+    { "CLOTHING", "CONTAINERS" }
+)
+
+MyAddRecipe2("stariliad_bingbong",
+    {
+        Ingredient("cutgrass", 6),
+        Ingredient("beefalowool", 2),
+        Ingredient("silk", 2),
+        Ingredient("stariliad_ice_crystal", 1, "images/inventoryimages/stariliad_ice_crystal.xml"),
+    },
+    TECH.MAGIC_TWO,
+    {
+    },
+    { "CLOTHING", }
+)
+
+MyAddRecipe2("stariliad_energy_tank",
+    {
+        Ingredient("redgem", 1),
+        Ingredient("gears", 1),
+        Ingredient("transistor", 2),
+    },
+    TECH.SCIENCE_TWO,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", "RESTORATION" }
+)

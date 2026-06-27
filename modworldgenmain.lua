@@ -340,7 +340,7 @@ AddRoom("stariliad_ice_cave_ice_room1", {
 		distributeprefabs =
 		{
 			-- grass = 0.3,
-			rock_ice = 0.3,
+			stariliad_placeholder_rock_ice = 0.3,
 		},
 	},
 })
@@ -356,7 +356,7 @@ AddRoom("stariliad_ice_cave_rock_room1", {
 			flint = 0.5,
 			rock1 = 1,
 			rock2 = 1,
-			rock_ice = 0.4,
+			stariliad_placeholder_rock_ice = 0.4,
 		},
 	}
 })
@@ -608,7 +608,21 @@ AddTaskSetPreInit("default", function(taskset)
 	taskset.set_pieces["stariliad_bonus_spiderden_missile"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_event_joust"] = { count = 1, tasks = tasks_except_begin }
 	taskset.set_pieces["stariliad_chozo_statue_scan"] = { count = 1, tasks = { "Forest hunters", } }
-	taskset.set_pieces["blythe_impact_zone"] = { count = 1, tasks = tasks_must_contain }
+	taskset.set_pieces["blythe_impact_zone"] = {
+		count = 1,
+		tasks = {
+			"Make a pick",
+			"Dig that rock",
+			"Great Plains",
+			"Squeltch",
+			"Beeeees!",
+			"Speak to the king",
+			"Forest hunters",
+			-- "Badlands",
+			"For a nice walk",
+			"Lightning Bluff",
+		}
+	}
 
 
 

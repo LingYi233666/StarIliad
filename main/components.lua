@@ -165,6 +165,10 @@ if TUNING.STARILIAD_DAMAGE_NUMBER_ENABLE then
 
     AddComponentPostInit("health", function(self)
         local function OnHealthDelta(inst, data)
+            if data.overtime then
+                return
+            end
+
             local value = (data.newpercent - data.oldpercent) * self.maxhealth
             if value <= 1e-6 then
                 return

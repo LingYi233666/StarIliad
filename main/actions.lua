@@ -233,6 +233,58 @@ ACTIONS.STARILIAD_BLOB_RETURN.distance = 0
 
 ----------------------------------------------------------------------------------------------------
 
+local function UseableItemActionFn(act)
+    local target = act.invobject
+    if target and target:IsValid() and target.components.stariliad_useable_item then
+        return target.components.stariliad_useable_item:Use(act.doer)
+    end
+
+    return false
+end
+
+local function UseableItemStrFn(act)
+    local target = act.invobject
+    local str
+    if target and target:IsValid() then
+        str = target.stariliad_useable_item_str
+    end
+
+    return str or "GENERIC"
+end
+
+AddAction("STARILIAD_USE_ITEM", "STARILIAD_USE_ITEM", UseableItemActionFn)
+AddAction("STARILIAD_USE_ITEM_WITH_ACTION_METER", "STARILIAD_USE_ITEM_WITH_ACTION_METER", UseableItemActionFn)
+
+ACTIONS.STARILIAD_USE_ITEM.strfn = UseableItemStrFn
+ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER.actionmeter = true
+ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER.strfn = UseableItemStrFn
+
+AddComponentAction("INVENTORY", "stariliad_useable_item", function(inst, doer, actions, right)
+    if inst:IsValid() and inst.replica.inventoryitem and doer:IsValid() then
+        if inst:HasTag("stariliad_useable_item_action_meter") then
+            table.insert(actions, ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER)
+        else
+            table.insert(actions, ACTIONS.STARILIAD_USE_ITEM)
+        end
+    end
+end)
+
+AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.STARILIAD_USE_ITEM, function(inst)
+    return "stariliad_use_item"
+end))
+AddStategraphActionHandler("wilson", ActionHandler(ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER, function(inst)
+    return "stariliad_use_item"
+end))
+AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_USE_ITEM, function(inst)
+    return "dolongaction"
+end))
+AddStategraphActionHandler("wilson_client", ActionHandler(ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER, function(inst)
+    return "dolongaction"
+end))
+
+
+----------------------------------------------------------------------------------------------------
+
 local old_PICK_extra_arrive_dist = ACTIONS.PICK.extra_arrive_dist
 
 ACTIONS.PICK.extra_arrive_dist = function(inst, dest, ...)
@@ -260,3 +312,16 @@ ACTIONS.SOAKIN.fn = function(act, ...)
     end
     return old_SOAKIN_fn(act, ...)
 end
+
+----------------------------------------------------------------------------------------------------
+AddAction("STARILIAD_PLACE_BOMB", "STARILIAD_PLACE_BOMB", function(act)
+    local bomb = SpawnAt("stariliad_hulk_bomb_placed", act:GetActionPoint())
+    bomb.sg:GoToState("land")
+    -- bomb.sg:GoToState("open")
+
+    if act.doer and act.doer.SoundEmitter then
+        act.doer.SoundEmitter:PlaySound("dontstarve/common/place_structure_stone")
+    end
+
+    return true
+end)

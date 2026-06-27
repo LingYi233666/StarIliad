@@ -1248,6 +1248,27 @@ AddStategraphState("wilson",
         end,
     }
 )
+
+AddStategraphState("wilson",
+    State {
+        name = "stariliad_use_item",
+        tags = {},
+
+        onenter = function(inst)
+            local buffaction = inst:GetBufferedAction()
+            local target = buffaction and buffaction.invobject
+
+            if target and target:IsValid() and target.components.stariliad_useable_item then
+                local duration = target.components.stariliad_useable_item:GetActionDuration()
+                inst.sg:GoToState("dolongaction", duration)
+            else
+                inst.sg:GoToState("idle")
+                return
+            end
+        end,
+    }
+)
+
 --------------------------------------------------------------------
 
 local FREEZE_COLOUR_2 = { 82 / 255, 115 / 255, 124 / 255, 1 }

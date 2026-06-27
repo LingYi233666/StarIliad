@@ -10,7 +10,7 @@ function StarIliadIceCraftCommon.AddPerishable(inst, perish_time, fire_melt, per
     ------------------------------------------------
 
     inst:AddComponent("perishable")
-    inst.components.perishable:SetPerishTime(perish_time or TUNING.PERISH_MED)
+    inst.components.perishable:SetPerishTime(perish_time or TUNING.PERISH_FAST)
     inst.components.perishable:StartPerishing()
 
     if fire_melt ~= false then

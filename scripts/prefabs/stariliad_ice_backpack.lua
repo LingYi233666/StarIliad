@@ -2,13 +2,13 @@ local StarIliadIceCraftCommon = require("prefabs/stariliad_ice_craft_common")
 
 local assets =
 {
-    Asset("ANIM", "anim/blythe_backpack.zip"),
+    Asset("ANIM", "anim/stariliad_ice_backpack.zip"),
 
-    Asset("IMAGE", "images/inventoryimages/blythe_backpack.tex"),
-    Asset("ATLAS", "images/inventoryimages/blythe_backpack.xml"),
+    Asset("IMAGE", "images/inventoryimages/stariliad_ice_backpack.tex"),
+    Asset("ATLAS", "images/inventoryimages/stariliad_ice_backpack.xml"),
 
-    Asset("IMAGE", "images/map_icons/blythe_backpack.tex"), --小地图
-    Asset("ATLAS", "images/map_icons/blythe_backpack.xml"),
+    Asset("IMAGE", "images/map_icons/stariliad_ice_backpack.tex"), --小地图
+    Asset("ATLAS", "images/map_icons/stariliad_ice_backpack.xml"),
 }
 
 ---------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ StarIliadBasic.AddContainersParams("stariliad_ice_backpack", backpack_params)
 
 local function onequip(inst, owner)
     -- owner.AnimState:OverrideSymbol("swap_body", "stariliad_ice_backpack", "swap_body")
-    owner.AnimState:OverrideSymbol("swap_body", "swap_backpack", "swap_body")
+    owner.AnimState:OverrideSymbol("swap_body", "stariliad_ice_backpack", "swap_body")
 
     if inst.components.container ~= nil then
         inst.components.container:Open(owner)
@@ -82,21 +82,21 @@ local function fn()
 
     MakeInventoryPhysics(inst)
 
-    inst.AnimState:SetBank("backpack1")
-    inst.AnimState:SetBuild("swap_backpack")
+    inst.AnimState:SetBank("stariliad_ice_backpack")
+    inst.AnimState:SetBuild("stariliad_ice_backpack")
     inst.AnimState:PlayAnimation("anim")
 
     inst:AddTag("backpack")
     inst:AddTag("fridge")
 
-    -- inst.MiniMapEntity:SetIcon("blythe_backpack.tex")
+    inst.MiniMapEntity:SetIcon("stariliad_ice_backpack.tex")
 
     -- inst.foleysound = "dontstarve/movement/foley/backpack"
     -- inst.foleysound = "dontstarve/movement/foley/metalarmour"
 
     -- local swap_data = { bank = "blythe_backpack", anim = "idle" }
     -- MakeInventoryFloatable(inst, "small", 0.2, nil, nil, nil, swap_data)
-    MakeInventoryFloatable(inst, "small", 0.2, { 1, 1.1, 1 })
+    -- MakeInventoryFloatable(inst, "small", 0.2, { 1, 1.1, 1 })
 
     inst.entity:SetPristine()
 
@@ -107,10 +107,10 @@ local function fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("inventoryitem")
-    -- inst.components.inventoryitem.imagename = "stariliad_ice_backpack"
-    -- inst.components.inventoryitem.atlasname = "images/inventoryimages/stariliad_ice_backpack.xml"
+    inst.components.inventoryitem.imagename = "stariliad_ice_backpack"
+    inst.components.inventoryitem.atlasname = "images/inventoryimages/stariliad_ice_backpack.xml"
     inst.components.inventoryitem.cangoincontainer = false
-    StarIliadDebug.SetDebugInventoryImage(inst)
+    inst.components.inventoryitem:SetSinks(true)
 
     inst:AddComponent("equippable")
     inst.components.equippable.equipslot = EQUIPSLOTS.BACK or EQUIPSLOTS.BODY
@@ -126,7 +126,7 @@ local function fn()
 
     MakeHauntableLaunchAndDropFirstItem(inst)
 
-    StarIliadIceCraftCommon.AddPerishable(inst)
+    StarIliadIceCraftCommon.AddPerishable(inst, TUNING.PERISH_SUPERFAST)
     inst.components.perishable:SetOnPerishFn(OnPerishFn)
 
     StarIliadIceCraftCommon.AddHeater(inst)

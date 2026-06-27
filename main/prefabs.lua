@@ -111,8 +111,20 @@ AddPrefabPostInit("stalker_atrium", function(inst)
         return
     end
 
-    -- TODO: Add plasma_beam in lootsetupfn
-    -- lootsetupfn
+    -- Add plasma_beam in lootsetupfn
+    local old_lootsetupfn = inst.components.lootdropper.lootsetupfn
+
+    local function NewLootSetupFn(lootdropper, ...)
+        old_lootsetupfn(lootdropper, ...)
+
+        if lootdropper.inst.atriumdecay then
+
+        else
+            lootdropper:AddChanceLoot("blythe_unlock_skill_item_plasma_beam", 1)
+        end
+    end
+
+    inst.components.lootdropper:SetLootSetupFn(NewLootSetupFn)
 end)
 
 
@@ -125,7 +137,9 @@ AddPrefabPostInit("forest", function(inst)
 
     inst:AddComponent("stariliad_weather_falling_star")
 
-    -- inst:AddComponent("stariliad_weather_ice_meteor")
+    inst:AddComponent("stariliad_weather_ice_meteor")
+
+    inst:AddComponent("stariliad_space_pirate_invasion")
 end)
 
 AddPrefabPostInit("tallbirdnest", function(inst)

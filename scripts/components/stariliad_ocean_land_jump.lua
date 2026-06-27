@@ -25,6 +25,13 @@ local StarIliadOceanLandJump = Class(function(self, inst)
     --     end
     -- end)
 
+    self._on_new_state = function()
+        if (inst.sg:HasStateTag("busy") or inst.sg:HasStateTag("attack") or inst.sg:HasStateTag("doing"))
+            and inst.components.moisture then
+            inst.components.moisture:DoDelta(5, true)
+        end
+    end
+
     self.inst:StartUpdatingComponent(self)
 end, nil, {
     is_swimming = onis_swimming,
@@ -134,6 +141,13 @@ function StarIliadOceanLandJump:EnableSwimming(enable)
         self.distance_travel = 0
     elseif self.is_swimming and has_gravity_control then
         self.inst.components.locomotor:RemoveExternalSpeedMultiplier(self.inst, "stariliad_swimming")
+    end
+
+
+    if not self.is_swimming and enable then
+        self.inst:ListenForEvent("newstate", self._on_new_state)
+    elseif self.is_swimming and not enable then
+        self.inst:RemoveEventCallback("newstate", self._on_new_state)
     end
 
     self.is_swimming = enable

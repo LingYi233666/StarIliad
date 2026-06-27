@@ -4,6 +4,9 @@ local assets =
     Asset("ANIM", "anim/stariliad_ice_meteor.zip"),
 
     Asset("ANIM", "anim/sharkboi_iceplow_fx.zip"),
+
+    Asset("IMAGE", "images/map_icons/stariliad_ice_meteor.tex"), --小地图
+    Asset("ATLAS", "images/map_icons/stariliad_ice_meteor.xml"),
 }
 
 SetSharedLootTable("stariliad_ice_meteor",
@@ -19,6 +22,20 @@ SetSharedLootTable("stariliad_ice_meteor",
     }
 )
 
+SetSharedLootTable("stariliad_ice_meteor_remain",
+    {
+        { "stariliad_ice_crystal", 1.00 },
+
+        { "ice",                   0.90 },
+        { "ice",                   0.50 },
+        { "ice",                   0.25 },
+
+        { "flint",                 0.50 },
+
+        { "rocks",                 0.90 },
+        { "rocks",                 0.25 },
+    }
+)
 
 local INITIAL_LAUNCH_HEIGHT = 0.1
 local SPEED = 8
@@ -258,6 +275,10 @@ local function RemainExplode(inst)
         --     SpawnAt("stariliad_ice_meteor_impact_ground_fx", inst)
         -- end
 
+        if not inst.self_ignite then
+            inst.components.lootdropper:DropLoot()
+        end
+
         inst.SoundEmitter:PlaySound("dontstarve/impacts/lava_arena/meteor_strike")
         inst.SoundEmitter:PlaySound("dontstarve/common/break_iceblock")
 
@@ -283,6 +304,8 @@ end
 
 local function OnRemainTimerDone(inst, data)
     if data.name == "self_ignite" then
+        inst.self_ignite = true
+
         inst.components.burnable.fxdata = {}
         inst.components.burnable:SetFXLevel(4)
         -- inst.components.burnable:AddBurnFX("coldfirefire", Vector3(-30, -50, 0), "rock01")
@@ -313,10 +336,10 @@ local function remain_fn()
 
     MakeObstaclePhysics(inst, 1)
 
-    -- inst.MiniMapEntity:SetIcon("iceboulder.png")
+    inst.MiniMapEntity:SetIcon("stariliad_ice_meteor.tex")
 
     -- inst:AddTag("antlion_sinkhole_blocker")
-    -- inst:AddTag("frozen")
+    inst:AddTag("boulder")
     -- MakeSnowCoveredPristine(inst)
 
     inst:SetPrefabNameOverride("stariliad_ice_meteor")
@@ -330,13 +353,15 @@ local function remain_fn()
     inst.RemainExplode = RemainExplode
 
     inst:AddComponent("lootdropper")
+    inst.components.lootdropper:SetChanceLootTable("stariliad_ice_meteor_remain")
 
     inst:AddComponent("inspectable")
 
     inst:AddComponent("savedrotation")
 
     inst:AddComponent("timer")
-    inst.components.timer:StartTimer("self_ignite", GetRandomMinMax(1, 3) * TUNING.TOTAL_DAY_TIME)
+    inst.components.timer:StartTimer("self_ignite",
+        GetRandomMinMax(unpack(TUNING.STARILIAD_ICE_METEOR_REMAIN_SELF_IGNITE_TIME)))
     -- inst.components.timer:StartTimer("self_ignite", 5)
 
     -- MakeSmallBurnable(inst, 3 + math.random() * 3)

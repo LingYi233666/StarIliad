@@ -147,12 +147,30 @@ local debuffs_data = {
                     TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MOVESPEED_MULT)
             end
 
+            if target.EnableFadeShadow then
+                target:EnableFadeShadow(true)
+            end
+
             inst.detach_task = inst:DoTaskInTime(TUNING.STARILIAD_SPACE_PIRATE_HIGH_SPEED_MAX_DURATION, function()
                 inst.components.debuff:Stop()
             end)
 
             inst._on_state_change = function()
-                if target.sg:HasStateTag("attack") or not target.sg:HasStateTag("running") then
+                -- if target.sg:HasStateTag("attack") or not target.sg:HasStateTag("running") then
+                --     inst.components.debuff:Stop()
+                -- end
+
+                if inst.enter_attack_sg then
+                    inst.components.debuff:Stop()
+                    return
+                end
+
+                if target.sg:HasStateTag("attack") then
+                    inst.enter_attack_sg = true
+                    return
+                end
+
+                if not target.sg:HasStateTag("running") then
                     inst.components.debuff:Stop()
                 end
             end
@@ -163,6 +181,10 @@ local debuffs_data = {
         on_detached = function(inst, target)
             if target.components.locomotor then
                 target.components.locomotor:RemoveExternalSpeedMultiplier(inst, "stariliad_debuff_pirate_high_speed")
+            end
+
+            if target.EnableFadeShadow then
+                target:EnableFadeShadow(false)
             end
 
             if inst._on_state_change then

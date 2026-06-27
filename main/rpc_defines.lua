@@ -260,3 +260,48 @@ AddClientModRPCHandler("stariliad_rpc", "triggeredevent", function(name, level, 
         ThePlayer:PushEvent("triggeredevent", { name = name, level = level, duration = duration })
     end
 end)
+
+local BlytheSkillActiveFX = require "widgets/blythe_skill_active_fx"
+AddClientModRPCHandler("stariliad_rpc", "energy_tank_health_update", function()
+    if ThePlayer
+        and ThePlayer:IsValid()
+        and ThePlayer.HUD
+        and ThePlayer.HUD.controls
+        and ThePlayer.HUD.controls.status
+        and ThePlayer.HUD.controls.status.heart then
+        ThePlayer.HUD.controls.status.heart:AddChild(BlytheSkillActiveFX(
+            "stariliad_sfx/hud/item_accquired_zexion_energy_tank"))
+
+        local heart_anim = ThePlayer.HUD.controls.status.heart.circleframe
+        if heart_anim then
+            if heart_anim.energy_tank_health_update_task then
+                heart_anim.energy_tank_health_update_task:Cancel()
+            end
+
+            if heart_anim.energy_tank_health_update_task2 then
+                heart_anim.energy_tank_health_update_task2:Cancel()
+            end
+
+            local flag = true
+
+            heart_anim.energy_tank_health_update_task = heart_anim.inst:DoStaticPeriodicTask(FRAMES, function()
+                if flag then
+                    heart_anim:GetAnimState():SetAddColour(1, 1, 0, 1)
+                else
+                    heart_anim:GetAnimState():SetAddColour(0, 0, 0, 0)
+                end
+                flag = not flag
+            end)
+
+            heart_anim.energy_tank_health_update_task2 = heart_anim.inst:DoStaticTaskInTime(1.2, function()
+                heart_anim:GetAnimState():SetAddColour(0, 0, 0, 0)
+
+                if heart_anim.energy_tank_health_update_task then
+                    heart_anim.energy_tank_health_update_task:Cancel()
+                end
+                heart_anim.energy_tank_health_update_task = nil
+                heart_anim.energy_tank_health_update_task2 = nil
+            end)
+        end
+    end
+end)

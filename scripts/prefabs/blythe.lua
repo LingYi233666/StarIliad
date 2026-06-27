@@ -262,6 +262,10 @@ local master_postinit = function(inst)
 				end
 			end)
 		end
+
+		if TheWorld:HasTag("cave") then
+			inst.components.drownable.enabled = true
+		end
 	end)
 
 	-- inst:DoTaskInTime(1.5, function()

@@ -115,6 +115,27 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_GUARDIAN_SCALES =
 "A fragment of the Sanctuary Guardian's dull shell. It reacts to enemy attacks."
 
 STRINGS.NAMES.STARILIAD_ICE_METEOR = "Ice Meteor"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_METEOR = "A fascinating specimen of cryo-meteorological phenomena."
+STRINGS.CHARACTERS.WILLOW.DESCRIBE.STARILIAD_ICE_METEOR = "Ugh, it's freezing. Let's set it on fire!"
+STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STARILIAD_ICE_METEOR = "Sky throws ice rocks! Wolfgang will punch it back!"
+STRINGS.CHARACTERS.WENDY.DESCRIBE.STARILIAD_ICE_METEOR = "Cold and dead, like a star that gave up."
+STRINGS.CHARACTERS.WX78.DESCRIBE.STARILIAD_ICE_METEOR = "WARNING: EXTREME CRYOGENIC HAZARD DETECTED"
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STARILIAD_ICE_METEOR =
+"A fascinating glacial erratic, likely ejected during a cryovolcanic event."
+STRINGS.CHARACTERS.WOODIE.DESCRIBE.STARILIAD_ICE_METEOR = "Almost as cold as a northern winter, eh?"
+STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STARILIAD_ICE_METEOR = "A vulgar display of elemental force."
+STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STARILIAD_ICE_METEOR = "The frost giants hurl their icy wrath!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_ICE_METEOR = "Wow! The sky is throwing giant snowballs at us!"
+STRINGS.CHARACTERS.WINONA.DESCRIBE.STARILIAD_ICE_METEOR = "Watch your head! That's some heavy ice."
+STRINGS.CHARACTERS.WARLY.DESCRIBE.STARILIAD_ICE_METEOR = "It lacks flavor, but it would keep the icebox cold."
+STRINGS.CHARACTERS.WORTOX.DESCRIBE.STARILIAD_ICE_METEOR = "Hyuyu! The mountain spits frozen tears!"
+STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.STARILIAD_ICE_METEOR = "Cold sky rock! Brrr!"
+STRINGS.CHARACTERS.WURT.DESCRIBE.STARILIAD_ICE_METEOR = "Florp... big ice rock fall from sky."
+STRINGS.CHARACTERS.WALTER.DESCRIBE.STARILIAD_ICE_METEOR =
+"Note to self: standard hardhats do not protect against ice meteors."
+STRINGS.CHARACTERS.WANDA.DESCRIBE.STARILIAD_ICE_METEOR =
+"It stopped moving, but it's melting away like seconds on a clock."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_ICE_METEOR = "It's afraid of heat."
 
 STRINGS.NAMES.STARILIAD_ICECANO = "Icecano"
 STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICECANO =
@@ -143,6 +164,171 @@ STRINGS.CHARACTERS.GENERIC.DESCRIBE.BLYTHE_SHIP = "A very novel... thing."
 STRINGS.CHARACTERS.BLYTHE.DESCRIBE.BLYTHE_SHIP =
 "No! My spaceship! What exactly happened? Why can't I remember anything?"
 
+STRINGS.NAMES.STARILIAD_ICE_CRYSTAL = "Ice Crystal"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_CRYSTAL = "The properties of this ice stone are quite special."
+
+STRINGS.NAMES.STARILIAD_ICE_AXE = "Ice Crystal Axe"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_AXE = "A veritable ice axe."
+STRINGS.RECIPE_DESC.STARILIAD_ICE_AXE = "Chop down trees like a snowman."
+
+STRINGS.NAMES.STARILIAD_ICE_PICKAXE = "Ice Crystal Pickaxe"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_PICKAXE = "A veritable ice pickaxe."
+STRINGS.RECIPE_DESC.STARILIAD_ICE_PICKAXE = "Smash rocks like a snowman."
+
+STRINGS.NAMES.STARILIAD_ICE_HAMMER = "Ice Crystal Hammer"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_HAMMER = "A veritable ice hammer."
+STRINGS.RECIPE_DESC.STARILIAD_ICE_HAMMER = "Destroy structures like a snowman."
+
+STRINGS.NAMES.STARILIAD_ICE_BACKPACK = "Ice Crystal Backpack"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ICE_BACKPACK = "A veritable ice pack."
+STRINGS.RECIPE_DESC.STARILIAD_ICE_BACKPACK = "Refrigerate food like a snowman."
+
+STRINGS.NAMES.STARILIAD_BINGBONG = "Bingbong"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_BINGBONG = "A veritable Bingbong."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_BINGBONG = "It's already frozen stiff."
+STRINGS.RECIPE_DESC.STARILIAD_BINGBONG = "It can help you climb the mountain... right?"
+
+STRINGS.NAMES.STARILIAD_CURSE_POISON = "Toxic Slime"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_CURSE_POISON = "It's stuck to me!"
+
+STRINGS.NAMES.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 = "Space Pirate Sapper"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"Looks like it's here to do the dirty work, not to shoot."
+STRINGS.CHARACTERS.WILLOW.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"I bet those mines it drops on the ground explode beautifully!"
+STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 = "Weak alien bug hiding behind exploding traps!"
+STRINGS.CHARACTERS.WENDY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"It leaves its traps on the surface, as naked as our unburiable past."
+STRINGS.CHARACTERS.WX78.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"LOW-LEVEL UNIT DETECTED. ARMAMENT: PRIMITIVE GROUND EXPLOSIVES."
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"An alien sapper. Note that it is not equipped with long-range ballistic weapons."
+STRINGS.CHARACTERS.WOODIE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"Hope it doesn't leave those traps near my trees."
+STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"Pathetic. The defeated are now reduced to scattering toys on the ground."
+STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"A coward who dares not cross swords, only tinkers with contraptions on the ground!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"It looks a bit like a bug, but it's mean, leaving explosive toys everywhere!"
+STRINGS.CHARACTERS.WINONA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"A fellow engineer. Too bad it's one who likes to destroy things."
+STRINGS.CHARACTERS.WARLY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"I prefer surprises on my plate, not under my feet."
+STRINGS.CHARACTERS.WORTOX.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 = "Explosive pranks! My kind of fun!"
+STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 = "Leaves hurty things on the ground. Bad bug!"
+STRINGS.CHARACTERS.WURT.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 = "Weird bug-shell man leave sneaky splodeys! Florp!"
+STRINGS.CHARACTERS.WALTER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"A real space pirate! Wait, where's your laser gun?"
+STRINGS.CHARACTERS.WANDA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"Their ancient defeat doomed them to their current lack of firepower."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV1 =
+"If this guy is coming for me, I might need to keep my distance."
+
+STRINGS.NAMES.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Space Pirate Heavy"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"Watch out, it looks ready to bowl me over at any moment!"
+STRINGS.CHARACTERS.WILLOW.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"Big and clunky! But it'll burn for a long time once lit."
+STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Wolfgang is not scared of charging big bug!"
+STRINGS.CHARACTERS.WENDY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"Like a soulless pawn, blindly following its leader to doom."
+STRINGS.CHARACTERS.WX78.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "THREAT LEVEL INCREASED. KINETIC IMPACT EXPECTED."
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"A heavy infantry variant. Prepare for rapid physical assault."
+STRINGS.CHARACTERS.WOODIE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Whoa, it charges like a moose in heat!"
+STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"All brawn, no brains, and still lacking firearms."
+STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"A charge worthy of me! Let our strength collide!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Run! The big red bug is charging!"
+STRINGS.CHARACTERS.WINONA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"Thickened chassis and a fierce ram. I'd better step aside!"
+STRINGS.CHARACTERS.WARLY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"I don't think I have a frying pan big enough for this big fellow."
+STRINGS.CHARACTERS.WORTOX.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Hyuyu! It charges around like a grumpy Beefalo!"
+STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Heavy stomper rushing in!"
+STRINGS.CHARACTERS.WURT.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 = "Red bug man runs fast! Florp!"
+STRINGS.CHARACTERS.WALTER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"A charging alien barbarian! Hold your ground, Woby!"
+STRINGS.CHARACTERS.WANDA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"No matter how fierce the charge, it cannot reverse their past defeat."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV2 =
+"It's huge. I need to be careful not to get hit by it."
+
+STRINGS.NAMES.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 = "Space Pirate Elite"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"That energy shield looks like a tough scientific problem to crack!"
+STRINGS.CHARACTERS.WILLOW.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Its shell will crack open when it's halfway burned!"
+STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Shield makes him tough, but Wolfgang will smash it with fists!"
+STRINGS.CHARACTERS.WENDY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"That false shield will eventually shatter in agony."
+STRINGS.CHARACTERS.WX78.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"TARGET HAS ENERGY SHIELD. INITIATING SHIELD-BREAKING PROTOCOL."
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"The leader of an elite squad. Its kinetic barrier nullifies hit stun until broken."
+STRINGS.CHARACTERS.WOODIE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Gonna take a lot of axe swings to break that darn barrier!"
+STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"A shielded boss. Stripped of firearms, it has to rely on this trick."
+STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"A shielded warlord! Shatter its defenses and grant it a glorious defeat!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"It's the boss! Its shield makes it completely ignore our attacks!"
+STRINGS.CHARACTERS.WINONA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"High-tech shield? It won't be so smug once I smash it into scrap metal."
+STRINGS.CHARACTERS.WARLY.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"A very tough shell. Must be cracked before we can start cooking."
+STRINGS.CHARACTERS.WORTOX.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"A shielded commander! The real fun starts once the shield is broken!"
+STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 = "Shiny boss bug won't stop!"
+STRINGS.CHARACTERS.WURT.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 = "Silver bug man has magic shell! Smash it!"
+STRINGS.CHARACTERS.WALTER.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Elite commander! We have to break its shield while there's still time!"
+STRINGS.CHARACTERS.WANDA.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Its shield is strong now, but time—and attacks—will wear it down."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_SPACE_PIRATE_SOLIDER_LV3 =
+"Its shield reminds me of engineering problems that used to give me headaches."
+
+STRINGS.NAMES.STARILIAD_HULK_BOMB_PLACED = "Metal Bomb"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "A highly destructive metal bomb."
+STRINGS.CHARACTERS.WILLOW.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Ooh! I can't wait to see the gorgeous sparks when it blows up!"
+STRINGS.CHARACTERS.WOLFGANG.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Wolfgang must be careful not to step on exploding iron blocks!"
+STRINGS.CHARACTERS.WENDY.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"A cold mechanical heart ready to fall apart at any moment."
+STRINGS.CHARACTERS.WX78.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "WARNING: GROUND-DEPLOYED EXPLOSIVE DETECTED. AVOID."
+STRINGS.CHARACTERS.WICKERBOTTOM.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"An explosive device deployed by alien sappers, featuring a very sturdy metal casing."
+STRINGS.CHARACTERS.WOODIE.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"If this thing goes off, it could definitely uproot a good tree."
+STRINGS.CHARACTERS.WAXWELL.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"A crude but effective ground trap. Gotta watch where I step."
+STRINGS.CHARACTERS.WATHGRITHR.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"A true warrior would never stoop to using such glowing iron blocks for ambush!"
+STRINGS.CHARACTERS.WEBBER.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Watch out! The glowing green metal block left by the alien bug will go 'boom'!"
+STRINGS.CHARACTERS.WINONA.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"The casing is well-made, must be packed with high explosives inside."
+STRINGS.CHARACTERS.WARLY.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Now that's a 'firecracker' I definitely do not want to taste with my feet."
+STRINGS.CHARACTERS.WORTOX.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Step on it and you'll go flying into the sky with a 'bang'! Hyuyu!"
+STRINGS.CHARACTERS.WORMWOOD.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "Glowing hard rock. Do not step! Will hurt!"
+STRINGS.CHARACTERS.WURT.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "Iron hard rock, looks dangerous, florp."
+STRINGS.CHARACTERS.WALTER.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "Scout's code: never step on an unexploded bomb!"
+STRINGS.CHARACTERS.WANDA.DESCRIBE.STARILIAD_HULK_BOMB_PLACED =
+"Its fuse sits still, waiting only for the destined moment to be stepped on."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_HULK_BOMB_PLACED = "Watch out for the mines!"
+
+STRINGS.NAMES.STARILIAD_ENERGY_TANK = "Energy Tank"
+STRINGS.CHARACTERS.GENERIC.DESCRIBE.STARILIAD_ENERGY_TANK = "A tin can."
+STRINGS.CHARACTERS.BLYTHE.DESCRIBE.STARILIAD_ENERGY_TANK = "It improves my ability to take hits."
+STRINGS.RECIPE_DESC.STARILIAD_ENERGY_TANK = "This tin can increases your maximum health."
+
 --------------------- ACTIONS ------------------------
 
 STRINGS.ACTIONS.STARILIAD_SHOOT_AT = "Shoot"
@@ -161,6 +347,13 @@ STRINGS.CHARACTERS.GENERIC.ACTIONFAIL.BLYTHE_UNLOCK_SKILL = {
     MISSILE_THRESHOLD = "Missile capacity has reached its limit and cannot be increased further.",
     SUPER_MISSILE_THRESHOLD = "Super Missile capacity has reached its limit and cannot be increased further.",
 }
+
+STRINGS.ACTIONS.STARILIAD_USE_ITEM = {
+    GENERIC = "Use",
+    POISON = "Shake off poison",
+}
+
+STRINGS.ACTIONS.STARILIAD_USE_ITEM_WITH_ACTION_METER = STRINGS.ACTIONS.STARILIAD_USE_ITEM
 
 --------------------- HUD ------------------------
 STRINGS.UI.COOKBOOK.FOOD_EFFECTS_HUNGER_UPGRADE = "Increases Blythe's maximum Hunger."

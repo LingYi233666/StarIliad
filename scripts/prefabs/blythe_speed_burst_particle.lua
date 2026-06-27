@@ -246,5 +246,56 @@ local function spyder_fn()
     return inst
 end
 
+local function pirate_fn()
+    local inst = common_fn()
+
+    if TheNet:IsDedicated() then
+        return inst
+    end
+
+    inst.area_emitter = StarIliadMath.CreateCylinderEmitter(0, 0.33, 0.3, 2)
+
+    local num_to_emit = 1
+
+    inst.last_pos = nil
+
+    EmitterManager:AddEmitter(inst, nil, function()
+        local parent = inst.entity:GetParent()
+        if not parent then
+            return
+        end
+
+        if not inst.last_pos then
+            inst.last_pos = parent:GetPosition()
+            return
+        end
+
+        local pos = parent:GetPosition()
+        local distance = (pos - inst.last_pos):Length()
+        if distance < 0.1 then
+            num_to_emit = 0
+        end
+
+        -- local forward = StarIliadBasic.GetFaceVector(parent)
+
+        local direction = (pos - inst.last_pos):GetNormalized()
+        local velocity = direction * 0.05
+
+        while num_to_emit > 0 do
+            emit_sparkle_fn(inst.VFXEffect, inst.area_emitter, velocity)
+
+            num_to_emit = num_to_emit - 1
+        end
+
+        num_to_emit = num_to_emit + 0.5
+
+        inst.last_pos = pos
+    end)
+
+    return inst
+end
+
+
 return Prefab("blythe_speed_burst_particle", blythe_fn, assets),
-    Prefab("stariliad_boss_spyder_speed_burst_particle", spyder_fn, assets)
+    Prefab("stariliad_boss_spyder_speed_burst_particle", spyder_fn, assets),
+    Prefab("stariliad_space_pirate_solider_charge_particle", pirate_fn, assets)
