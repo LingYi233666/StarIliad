@@ -113,6 +113,7 @@ PrefabFiles = {
     "stariliad_boss_spyder",
 
     "stariliad_space_pirate_solider",
+    "stariliad_space_pirate_probe",
     "stariliad_hulk_bomb",
     "stariliad_laser_ring",
     "stariliad_laser_explosion",

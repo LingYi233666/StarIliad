@@ -27,10 +27,10 @@ local StarIliadSpacePirateInvasion = Class(Class, function(self, inst)
 
     self.warning_duration = {
         [{ 0, 8 }] = 120,
-        [{ 8, 25 }] = 60,
-        [{ 25, 50 }] = 45,
-        [{ 50, 100 }] = 30,
-        [{ 100, math.huge }] = 30,
+        [{ 8, 25 }] = 110,
+        [{ 25, 50 }] = 100,
+        [{ 50, 100 }] = 100,
+        [{ 100, math.huge }] = 100,
     }
 
     self.pirate_lv2_score_cost = 3
@@ -108,6 +108,15 @@ function StarIliadSpacePirateInvasion:ReleaseWarning()
 
     for _, v in pairs(center_players) do
         print("Release warning for player:", v)
+
+        local pos = v:GetPosition()
+        local offset = FindWalkableOffset(pos, math.random() * TWOPI, math.random(25, 40), 8, nil, true, nil, true, true)
+        if offset then
+            local probe = SpawnAt("stariliad_space_pirate_probe", pos, nil, offset)
+            probe:SetTarget(v)
+        else
+            print("Release warning for player", v, " failed to spawn probe with offset")
+        end
     end
 end
 
@@ -286,6 +295,8 @@ function StarIliadSpacePirateInvasion:OnUpdate(dt)
                 self:SpawnPiratesForPlayer(v, pirate_defines)
             end
         end
+
+        TheWorld:PushEvent("stariliad_space_pirate_invasion_start")
 
         self.invasion_countdown = self:RollInvasionCountDown()
     end
