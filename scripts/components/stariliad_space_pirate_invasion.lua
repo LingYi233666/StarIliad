@@ -25,6 +25,14 @@ local StarIliadSpacePirateInvasion = Class(Class, function(self, inst)
         [{ 100, math.huge }] = { 7, 8 },
     }
 
+    self.warning_duration = {
+        [{ 0, 8 }] = 120,
+        [{ 8, 25 }] = 60,
+        [{ 25, 50 }] = 45,
+        [{ 50, 100 }] = 30,
+        [{ 100, math.huge }] = 30,
+    }
+
     self.pirate_lv2_score_cost = 3
     self.pirate_lv2_occur_percent = 0.5
 
@@ -33,6 +41,7 @@ local StarIliadSpacePirateInvasion = Class(Class, function(self, inst)
 
     -- Data
     self.invasion_countdown = nil
+    self.warning_threshold = nil
 
     self.inst:DoTaskInTime(1, function()
         if #AllPlayers > 0 then
@@ -51,7 +60,11 @@ local StarIliadSpacePirateInvasion = Class(Class, function(self, inst)
     end)
 end)
 
-function StarIliadSpacePirateInvasion:FinishCountDown()
+function StarIliadSpacePirateInvasion:FastForwardToWarning()
+    self.invasion_countdown = self.warning_threshold + 0.1
+end
+
+function StarIliadSpacePirateInvasion:FastForwardToInvasion()
     self.invasion_countdown = 0
 end
 
@@ -74,6 +87,28 @@ function StarIliadSpacePirateInvasion:RollInvasionCountDown()
     end
 
     print("RollInvasionCountDown failed: mean_survival_days <= 0")
+end
+
+function StarIliadSpacePirateInvasion:RollWarningThreshold()
+    local mean_survival_days = self:GetMeanSurvivalDays()
+    if mean_survival_days <= 0 then
+        print("RollWarningThreshold failed: mean_survival_days <= 0")
+        return
+    end
+
+    for day_range, warning_duration in pairs(self.warning_duration) do
+        if mean_survival_days >= day_range[1] and mean_survival_days <= day_range[2] then
+            return warning_duration
+        end
+    end
+end
+
+function StarIliadSpacePirateInvasion:ReleaseWarning()
+    local center_players = self:CollectCenterPlayers()
+
+    for _, v in pairs(center_players) do
+        print("Release warning for player:", v)
+    end
 end
 
 function StarIliadSpacePirateInvasion:RollPirateDefine()
@@ -150,6 +185,7 @@ end
 function StarIliadSpacePirateInvasion:OnSave()
     return {
         invasion_countdown = self.invasion_countdown,
+        warning_threshold = self.warning_threshold,
     }
 end
 
@@ -158,7 +194,50 @@ function StarIliadSpacePirateInvasion:OnLoad(data)
         if data.invasion_countdown ~= nil then
             self.invasion_countdown = data.invasion_countdown
         end
+        if data.warning_threshold ~= nil then
+            self.warning_threshold = data.warning_threshold
+        end
     end
+end
+
+function StarIliadSpacePirateInvasion:CollectCenterPlayers()
+    local center_players = {}
+
+    local players = {}
+    local players_pos = {}
+    for _, v in pairs(AllPlayers) do
+        if not IsEntityDeadOrGhost(v, true) then
+            table.insert(players, v)
+            table.insert(players_pos, v:GetPosition())
+        end
+    end
+
+    local clusters = StarIliadMath.DBSCAN(players_pos, 20, 1, true)
+    for _, cluster in pairs(clusters) do
+        local center = Vector3(0, 0, 0)
+        local players_in_cluster = {}
+        for _, v in pairs(cluster) do
+            center = center + players_pos[v]
+            table.insert(players_in_cluster, players[v])
+        end
+        center = center / #cluster
+
+        local closest_player = nil
+        local closest_distance_sq = math.huge
+        for k, player in pairs(players_in_cluster) do
+            local distance_sq = center:DistSq(player:GetPosition())
+            if distance_sq < closest_distance_sq then
+                closest_distance_sq = distance_sq
+                closest_player = player
+            end
+        end
+
+        if closest_player then
+            table.insert(center_players, closest_player)
+        end
+    end
+
+    return center_players
 end
 
 function StarIliadSpacePirateInvasion:OnUpdate(dt)
@@ -167,26 +246,44 @@ function StarIliadSpacePirateInvasion:OnUpdate(dt)
         return
     end
 
-    if self.invasion_countdown == nil then
+    if self.invasion_countdown == nil or self.warning_threshold == nil then
         self.invasion_countdown = self:RollInvasionCountDown()
+        self.warning_threshold = self:RollWarningThreshold()
         return
     end
+
+    local old_countdown = self.invasion_countdown
 
     if self.invasion_countdown > 0 then
         self.invasion_countdown = self.invasion_countdown - dt
     end
 
+    if old_countdown > self.warning_threshold and self.invasion_countdown <= self.warning_threshold then
+        self:ReleaseWarning()
+    end
+
     if self.invasion_countdown <= 0 then
         -- Spawn pirates
-        for _, v in pairs(AllPlayers) do
-            if not IsEntityDeadOrGhost(v, true) then
-                local pirate_defines = self:RollPirateDefine()
-                if pirate_defines ~= nil then
-                    print("Spawn pirate for", v)
-                    dumptable(pirate_defines)
-                    print("--------------------------------")
-                    self:SpawnPiratesForPlayer(v, pirate_defines)
-                end
+        -- for _, v in pairs(AllPlayers) do
+        --     if not IsEntityDeadOrGhost(v, true) then
+        --         local pirate_defines = self:RollPirateDefine()
+        --         if pirate_defines ~= nil then
+        --             print("Spawn pirate for", v)
+        --             dumptable(pirate_defines)
+        --             print("--------------------------------")
+        --             self:SpawnPiratesForPlayer(v, pirate_defines)
+        --         end
+        --     end
+        -- end
+
+        local center_players = self:CollectCenterPlayers()
+        for _, v in pairs(center_players) do
+            local pirate_defines = self:RollPirateDefine()
+            if pirate_defines ~= nil then
+                print("Spawn pirate for", v)
+                dumptable(pirate_defines)
+                print("--------------------------------")
+                self:SpawnPiratesForPlayer(v, pirate_defines)
             end
         end
 
@@ -195,13 +292,22 @@ function StarIliadSpacePirateInvasion:OnUpdate(dt)
 end
 
 -- print(TheWorld.components.stariliad_space_pirate_invasion:GetDebugString())
--- TheWorld.components.stariliad_space_pirate_invasion:FinishCountDown()
+-- TheWorld.components.stariliad_space_pirate_invasion:FastForwardToWarning()
+-- TheWorld.components.stariliad_space_pirate_invasion:FastForwardToInvasion()
 function StarIliadSpacePirateInvasion:GetDebugString()
-    if self.invasion_countdown == nil then
-        return "invasion_countdown: nil"
-    end
+    -- if self.invasion_countdown == nil then
+    --     return "invasion_countdown: nil"
+    -- end
 
-    return string.format("invasion_countdown: %d", self.invasion_countdown)
+    -- return string.format("invasion_countdown: %d", self.invasion_countdown)
+
+    local invasion_countdown_str = type(self.invasion_countdown) == "number" and
+        string.format("%d", self.invasion_countdown) or tostring(self.invasion_countdown)
+
+    local warning_threshold_str = type(self.warning_threshold) == "number" and
+        string.format("%d", self.warning_threshold) or tostring(self.warning_threshold)
+
+    return string.format("invasion_countdown: %s, warning_threshold: %s", invasion_countdown_str, warning_threshold_str)
 end
 
 return StarIliadSpacePirateInvasion

@@ -159,7 +159,7 @@ end
     返回: 一个 table，格式为 { [聚类ID] = {Vector3, Vector3, ...}, ... }
     注：未达到聚类标准的点（噪声）将不会包含在返回的聚类结果中
 --]]
-function StarIliadMath.DBSCAN(points, eps, min_pts)
+function StarIliadMath.DBSCAN(points, eps, min_pts, return_index)
     local n = #points
     local labels = {} -- 0 代表噪声, nil 代表未访问, >0 代表聚类ID
     local clusters = {}
@@ -188,7 +188,12 @@ function StarIliadMath.DBSCAN(points, eps, min_pts)
             else
                 cluster_id = cluster_id + 1
                 labels[i] = cluster_id
-                clusters[cluster_id] = { points[i] }
+
+                if return_index then
+                    clusters[cluster_id] = { i }
+                else
+                    clusters[cluster_id] = { points[i] }
+                end
 
                 -- 开始扩展聚类
                 local queue = {}
@@ -204,10 +209,18 @@ function StarIliadMath.DBSCAN(points, eps, min_pts)
 
                     if labels[target_idx] == 0 then -- 噪声点可以转换为边界点
                         labels[target_idx] = cluster_id
-                        table.insert(clusters[cluster_id], points[target_idx])
+                        if return_index then
+                            table.insert(clusters[cluster_id], target_idx)
+                        else
+                            table.insert(clusters[cluster_id], points[target_idx])
+                        end
                     elseif labels[target_idx] == nil then -- 未访问过的点
                         labels[target_idx] = cluster_id
-                        table.insert(clusters[cluster_id], points[target_idx])
+                        if return_index then
+                            table.insert(clusters[cluster_id], target_idx)
+                        else
+                            table.insert(clusters[cluster_id], points[target_idx])
+                        end
 
                         local target_neighbors = get_neighbors(target_idx)
                         if #target_neighbors >= min_pts then

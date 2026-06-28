@@ -118,6 +118,12 @@ local function CanPlaceBomb(inst)
         return false
     end
 
+    local structures = TheSim:FindEntities(x, y, z, 6, { "structure" }, { "INLIMBO" })
+
+    if #structures > 0 then
+        return false
+    end
+
     return not inst.components.health:IsDead()
         and inst.components.combat:InCooldown()
         and not inst.sg:HasStateTag("busy")
