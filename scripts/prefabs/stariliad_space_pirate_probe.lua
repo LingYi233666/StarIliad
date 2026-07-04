@@ -5,6 +5,8 @@ local assets =
 {
     Asset("ANIM", "anim/wx_scanner.zip"),
     Asset("ANIM", "anim/wx_scanner_ring_fx.zip"),
+    Asset("ANIM", "anim/stariliad_space_pirate_probe.zip"),
+
     Asset("MINIMAP_IMAGE", "wx78_scanner_item"),
 }
 
@@ -22,6 +24,14 @@ local function IsTargetInRange(inst)
         return inst:GetDistanceSqToInst(target) < TUNING.STARILIAD_SPACE_PIRATE_PROBE_SCAN_RANGE_SQ
     end
     return false
+end
+
+local function ShouldScan(inst)
+    local lastattackedtime = inst.components.combat:GetLastAttackedTime()
+    if lastattackedtime and GetTime() - lastattackedtime < 1 then
+        return false
+    end
+    return IsTargetInRange(inst)
 end
 
 local function SetShouldLeave(inst)
@@ -57,6 +67,16 @@ local function OnPhase(inst)
     end
 end
 
+local function UpdateScanSound(inst)
+    if inst.AnimState:IsCurrentAnimation("scan_loop") then
+        if not inst.SoundEmitter:PlayingSound("telemetry_lp") then
+            inst.SoundEmitter:PlaySound("WX_rework/scanner/telemetry_lp", "telemetry_lp")
+        end
+    else
+        inst.SoundEmitter:KillSound("telemetry_lp")
+    end
+end
+
 
 local function fn()
     local inst = CreateEntity()
@@ -81,9 +101,11 @@ local function fn()
     inst:AddTag("NOBLOCK")
     -- inst:AddTag("scarytoprey")
     inst:AddTag("flying")
+    inst:AddTag("mech")
+    inst:AddTag("stariliad_space_pirate")
 
     inst.AnimState:SetBank("scanner")
-    inst.AnimState:SetBuild("wx_scanner")
+    inst.AnimState:SetBuild("stariliad_space_pirate_probe")
     inst.AnimState:PlayAnimation("idle")
 
     inst.AnimState:Hide("top_light")
@@ -109,6 +131,7 @@ local function fn()
 
     inst.SetTarget = SetTarget
     inst.IsTargetInRange = IsTargetInRange
+    inst.ShouldScan = ShouldScan
     inst.SetShouldLeave = SetShouldLeave
 
     inst:AddComponent("entitytracker")
@@ -120,6 +143,12 @@ local function fn()
     inst.components.locomotor:SetTriggersCreep(false)
     inst.components.locomotor.pathcaps = { allowocean = true, ignorecreep = true, ignorewalls = true }
     inst.components.locomotor.walkspeed = 6.1
+
+    inst:AddComponent("health")
+    inst.components.health:SetMaxHealth(100)
+
+    inst:AddComponent("combat")
+    inst.components.combat:SetDefaultDamage(0)
 
     -- inst:AddComponent("updatelooper")
     -- inst.components.updatelooper:AddOnUpdateFn(function()
@@ -145,10 +174,62 @@ local function fn()
 
     OnPhase(inst)
 
+    if not inst:IsAsleep() then
+        OnEntityWake(inst)
+    end
+
+    inst:DoPeriodicTask(0, UpdateScanSound)
+
     return inst
 end
 
-return Prefab("stariliad_space_pirate_probe", fn, assets)
+local function burntground_fn()
+    local inst = CreateEntity()
+
+    inst.entity:AddTransform()
+    inst.entity:AddAnimState()
+    inst.entity:AddNetwork()
+
+    inst.AnimState:SetBuild("burntground")
+    inst.AnimState:SetBank("burntground")
+    inst.AnimState:PlayAnimation("idle")
+    inst.AnimState:SetOrientation(ANIM_ORIENTATION.OnGround)
+    inst.AnimState:SetLayer(LAYER_GROUND)
+    inst.AnimState:SetSortOrder(3)
+
+    inst.AnimState:SetMultColour(1, 1, 1, 0.6)
+
+    inst:AddTag("NOCLICK")
+    inst:AddTag("FX")
+
+    inst.entity:SetPristine()
+
+    if not TheWorld.ismastersim then
+        return inst
+    end
+
+    inst.persists = false
+
+    inst.Transform:SetRotation(math.random() * 360)
+
+    inst:DoTaskInTime(GetRandomMinMax(8, 12), function()
+        inst:DoPeriodicTask(0, function()
+            local r, g, b, a = inst.AnimState:GetMultColour()
+            a = a - FRAMES
+
+            if a < 0 then
+                inst:Remove()
+            else
+                inst.AnimState:SetMultColour(r, g, b, a)
+            end
+        end)
+    end)
+
+    return inst
+end
+
+return Prefab("stariliad_space_pirate_probe", fn, assets),
+    Prefab("stariliad_space_pirate_probe_burntground", burntground_fn, assets)
 
 -- c_spawn("stariliad_space_pirate_probe")
 -- c_spawn("stariliad_space_pirate_probe"):SetTarget(ThePlayer)

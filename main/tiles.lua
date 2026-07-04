@@ -94,3 +94,30 @@ MyAddTile("STARILIAD_MAGMA",
         noise_texture = "mini_magmafield_noise",
     }
 )
+
+MyAddTile("STARILIAD_ASH",
+    "LAND",
+    { ground_name = "Stariliad Ash" },
+    {
+        name = "cave",
+        noise_texture = "ground_ash",
+        runsound = "dontstarve/movement/run_dirt",
+        walksound = "dontstarve/movement/walk_dirt",
+        snowsound = "dontstarve/movement/run_ice",
+        mudsound = "dontstarve/movement/run_mud",
+        cannotbedug = true,
+    },
+    {
+        name = "map_edge",
+        noise_texture = "mini_ash",
+    }
+)
+
+
+-- { GROUND.ASH,		
+-- { name = "cave",		
+-- noise_texture = "levels/textures/ground_ash.tex",					
+-- runsound="run_dirt",		
+-- walksound="walk_dirt",		
+-- snowsound="run_ice",
+-- mudsound = "run_mud"		} },

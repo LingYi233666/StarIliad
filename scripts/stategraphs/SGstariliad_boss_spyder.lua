@@ -54,7 +54,7 @@ local function DoChargeAttack(inst, recent_tab)
     local search_range = inst:GetPhysicsRadius(0) + 3
 
     local x, y, z = inst.Transform:GetWorldPosition()
-    local ents = TheSim:FindEntities(x, y, z, search_range, nil, { "INLIMBO", "FX", "necron" })
+    local ents = TheSim:FindEntities(x, y, z, search_range, nil, { "INLIMBO", "FX", "necrons" })
 
     local success_hit = false
     local cur_time = GetTime()

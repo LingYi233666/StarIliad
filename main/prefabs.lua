@@ -382,6 +382,8 @@ AddPlayerPostInit(function(inst)
                 local music_duration = 3
                 if string.find(data.id, "stariliad_ice_cave") then
                     music_name = "stariliad_ice_cave"
+                elseif string.find(data.id, "stariliad_necrons_tomb") then
+                    music_name = "stariliad_necrons_tomb"
                 end
 
                 if music_name then

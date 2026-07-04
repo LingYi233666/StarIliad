@@ -29,7 +29,7 @@ local function RetargetFn(inst)
             return inst.components.combat:CanTarget(guy)
         end,
         { "_combat" },
-        { "necron", "INLIMBO" },
+        { "necrons", "INLIMBO" },
         { "character", "player", "monster" }
     )
 end
@@ -106,7 +106,7 @@ local function fn()
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
     inst:AddTag("largecreature")
-    inst:AddTag("necron") -- 太空死灵种族
+    inst:AddTag("necrons") -- 太空死灵种族
 
     inst.AnimState:SetBank("spider_queen")
     inst.AnimState:SetBuild("stariliad_boss_spyder")

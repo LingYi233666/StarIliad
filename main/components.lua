@@ -334,6 +334,10 @@ local STARILIAD_MUSIC = {
         "stariliad_music/music/tangled_gears2",
     },
 
+    stariliad_necrons_tomb = {
+        "stariliad_music/music/necrons_tomb",
+    },
+
     -- TheFocalPoint.SoundEmitter:PlaySound("stariliad_music/music/tangled_gears2", "test")
     -- TheFocalPoint.SoundEmitter:KillSound("test")
 }
