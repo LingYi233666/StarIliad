@@ -354,4 +354,68 @@ function StarIliadBasic.AddContainersParams(prefab, params)
     containers_params[prefab] = params
 end
 
+function StarIliadBasic.ForceGiveItem(inst, item)
+    if inst == nil or not inst:IsValid() then
+        return false
+    end
+
+    local inventory = inst.components.inventory
+    if inventory == nil then
+        return false
+    end
+
+    if type(item) == "string" then
+        item = SpawnPrefab(item)
+    end
+
+    if item == nil or not item:IsValid() or item.components.inventoryitem == nil then
+        return false
+    end
+
+    -- 已经在目标物品栏里
+    if item.components.inventoryitem.owner == inst then
+        return true
+    end
+
+    -- 背包满时：优先叠堆，否则踢掉一件普通物品腾格子
+    local canstack = false
+    if item.components.stackable ~= nil then
+        local stacks = inventory:FindItems(function(itemtest)
+            return itemtest.prefab == item.prefab
+                and itemtest.components.stackable ~= nil
+                and not itemtest.components.stackable:IsFull()
+        end)
+        canstack = stacks[1] ~= nil
+    end
+
+    if inventory:IsFull() and not canstack then
+        local dropitem = inventory:FindItem(function(itemtest)
+            return not itemtest:HasTag("nosteal")
+                and itemtest.components.curseditem == nil
+                and itemtest ~= inventory.activeitem
+                and itemtest.components.inventoryitem ~= nil
+                and itemtest.components.inventoryitem.owner == inst
+                and not itemtest.components.inventoryitem.islockedinslot
+        end)
+        if dropitem ~= nil then
+            inventory:DropItem(dropitem, true, true)
+        end
+    end
+
+    -- 从原主人/容器里拿出来，并切断“回原格子”记忆
+    if item.components.inventoryitem.owner ~= nil then
+        item.components.inventoryitem:RemoveFromOwner(true)
+    end
+    item.prevcontainer = nil
+    item.prevslot = nil
+
+    local pos = nil
+    if not item:HasTag("INLIMBO") then
+        pos = item:GetPosition()
+    end
+
+    -- GiveItem 成功会返回 slot 或 true
+    return inventory:GiveItem(item, nil, pos) and true or false
+end
+
 GLOBAL.StarIliadBasic = StarIliadBasic

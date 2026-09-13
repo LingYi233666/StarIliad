@@ -305,3 +305,10 @@ AddClientModRPCHandler("stariliad_rpc", "energy_tank_health_update", function()
         end
     end
 end)
+
+AddClientModRPCHandler("stariliad_rpc", "playsound", function(sound)
+    local soundemitter = TheFrontEnd and TheFrontEnd:GetSound()
+    if soundemitter then
+        soundemitter:PlaySound(sound)
+    end
+end)

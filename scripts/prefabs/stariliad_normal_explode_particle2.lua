@@ -100,7 +100,7 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
         local effect = inst.entity:AddVFXEffect()
         effect:InitEmitters(num_emitters)
 
-        print("num_emitters:", num_emitters)
+        -- print("num_emitters:", num_emitters)
 
         for name, index in pairs(name_index_tab) do
             if name == "ember" then
@@ -323,7 +323,7 @@ local function MakeNormalExplode(prefab, envelopes, num_particles, speeds, spawn
             local time_alive = inst:GetTimeAlive()
 
             if time_alive > FRAMES then
-                print("do emit !")
+                -- print("do emit !")
                 if name_index_tab.ember then
                     for i = 1, (num_particles.ember or 80) do
                         emit_ember_fn(effect, name_index_tab.ember, ember_sphere_emitter)
@@ -472,6 +472,95 @@ local dataset = {
                     { .2, IntColour(255, 120, 90, 255) },
                     { .6, IntColour(255, 90, 70, 175) },
                     { 1,  IntColour(0, 0, 0, 0) },
+                },
+                scale  = {
+                    { 0, { arrow_max_scale, arrow_max_scale } },
+                    { 1, { arrow_max_scale * 0.125, arrow_max_scale * 0.8 } },
+                },
+            },
+        },
+
+        num_particles = {
+            ember = 80,
+            around_smoke = 75,
+            arrow = 25,
+        },
+
+        -- Currently not used
+        -- speeds = {
+        --     ember = 0,
+        --     around_smoke = 0,
+        --     arrow = 0,
+        -- },
+
+        spawn_radius = {
+            ember = 0.15,
+            around_smoke = 0.2,
+            arrow = 0.1,
+        },
+    },
+
+    stariliad_normal_explode_blue_particle = {
+        envelopes = {
+            ember = {
+                colour = CreateBlueEmberColour(),
+                scale  = {
+                    { 0, { ember_max_scale, ember_max_scale } },
+                    { 1, { ember_max_scale * 0.2, ember_max_scale * 0.2 } },
+                },
+            },
+
+            around_smoke = {
+                colour = {
+                    { 0,  IntColour(255, 240, 255, 0) },
+                    { .2, IntColour(255, 253, 255, 240) },
+                    { .3, IntColour(200, 255, 255, 60) },
+                    { .6, IntColour(230, 245, 245, 50) },
+                    { .9, IntColour(255, 240, 245, 25) },
+                    { 1,  IntColour(255, 240, 244, 0) },
+                },
+                scale  = {
+                    { 0, { around_smoke_max_scale * .5, around_smoke_max_scale * .5 } },
+                    { 1, { around_smoke_max_scale, around_smoke_max_scale } },
+                },
+            },
+
+            middle_circle = {
+                colour = {
+                    { 0,    IntColour(145, 238, 248, 0) },
+                    { .075, IntColour(145, 240, 250, 255) },
+                    { .3,   IntColour(145, 244, 255, 60) },
+                    { .6,   IntColour(145, 244, 255, 50) },
+                    { .9,   IntColour(145, 244, 255, 25) },
+                    { 1,    IntColour(145, 244, 255, 0) },
+                },
+                scale  = {
+                    { 0, { middle_circle_max_scale, middle_circle_max_scale } },
+                    { 1, { middle_circle_max_scale * 1.1, middle_circle_max_scale * 1.1 } },
+                },
+            },
+
+            middle_smoke = {
+                colour = {
+                    { 0,  IntColour(255, 240, 255, 0) },
+                    { .2, IntColour(255, 253, 255, 240) },
+                    { .3, IntColour(200, 255, 255, 60) },
+                    { .6, IntColour(230, 245, 245, 50) },
+                    { .9, IntColour(255, 240, 245, 25) },
+                    { 1,  IntColour(255, 240, 244, 0) },
+                },
+                scale  = {
+                    { 0, { middle_smoke_max_scale, middle_smoke_max_scale } },
+                    { 1, { middle_smoke_max_scale * 1.1, middle_smoke_max_scale * 1.1 } },
+                },
+            },
+
+            arrow = {
+                colour = {
+                    { 0,  IntColour(255, 240, 240, 180) },
+                    { .2, IntColour(255, 255, 255, 255) },
+                    { .6, IntColour(255, 255, 255, 175) },
+                    { 1,  IntColour(255, 255, 255, 0) },
                 },
                 scale  = {
                     { 0, { arrow_max_scale, arrow_max_scale } },
@@ -705,5 +794,7 @@ for name, data in pairs(dataset) do
     table.insert(rets,
         MakeNormalExplode(name, data.envelopes, data.num_particles, data.speeds, data.spawn_radius, data.post_init))
 end
+
+-- ThePlayer:SpawnChild("stariliad_normal_explode_blue_particle")
 
 return unpack(rets)

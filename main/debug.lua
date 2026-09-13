@@ -131,6 +131,7 @@ end
 -- si_tile(WORLD_TILES.STARILIAD_ALIEN_RUINS_SLAB)
 -- si_tile(WORLD_TILES.STARILIAD_ICE_GROUND)
 -- si_tile(WORLD_TILES.STARILIAD_MAGMA)
+-- si_tile(WORLD_TILES.STARILIAD_ASH)
 function GLOBAL.si_tile(tile, x, y, z)
     if x == nil or y == nil or z == nil then
         x, y, z = ConsoleWorldPosition():Get()

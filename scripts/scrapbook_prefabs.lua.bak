@@ -1,0 +1,23 @@
+local prefabs_array = {
+    "blythe_blaster",
+    "blythe_backpack",
+    "blythe_blaster_repair_kit",
+    "blythe_blaster_upgrade_kit",
+    "blythe_unlock_skill_item_missile",
+    "blythe_unlock_skill_item_super_missile",
+    "stariliad_boss_guardian",
+    "stariliad_boss_gorgoroth",
+    "stariliad_guardian_scales",
+    "stariliad_hat_gelblob",
+    "stariliad_falling_star",
+    "stariliad_falling_star_cooked",
+    "stariliad_magic_crystal",
+}
+
+local prefabs_map = {}
+
+for _, v in pairs(prefabs_array) do
+    prefabs_map[v] = true
+end
+
+return prefabs_map

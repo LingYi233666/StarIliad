@@ -15,6 +15,9 @@ local assets =
     Asset("ANIM", "anim/stariliad_boss_guardian.zip"),
     Asset("ANIM", "anim/stariliad_boss_guardian_no_power.zip"),
     -- Asset("ANIM", "anim/stariliad_boss_guardian_head_fix.zip"),
+
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_boss_guardian.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_boss_guardian.xml"),
 }
 
 SetSharedLootTable("stariliad_boss_guardian",
@@ -433,6 +436,7 @@ local function fn()
     inst:AddTag("archive_centipede")
     inst:AddTag("epic")
     inst:AddTag("noepicmusic")
+    inst:AddTag("lunar_aligned")
 
     inst:AddComponent("talker")
     inst.components.talker.fontsize = 40

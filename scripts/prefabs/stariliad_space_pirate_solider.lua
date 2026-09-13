@@ -17,6 +17,13 @@ local assets =
     Asset("ANIM", "anim/stariliad_space_pirate_solider_lv3.zip"),
 
     Asset("ANIM", "anim/bearger_ring_fx.zip"),
+
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv1.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv1.xml"),
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv2.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv2.xml"),
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv3.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_space_pirate_solider_lv3.xml"),
 }
 
 SetSharedLootTable("stariliad_space_pirate_solider_lv1",
@@ -343,6 +350,10 @@ local function UpdateLeader(inst)
 end
 
 local function HealTask_Lv3(inst)
+    if inst.components.health:IsDead() then
+        return
+    end
+
     inst.components.health:DoDelta(10, true)
 end
 

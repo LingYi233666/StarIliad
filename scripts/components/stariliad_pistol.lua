@@ -105,6 +105,20 @@ function StarIliadPistol:LaunchProjectile(attacker, target, target_pos)
         end
     end
 
+    -- local blue_amulet_equipped = false
+    -- for k, v in pairs(EQUIPSLOTS) do
+    --     local item = attacker.components.inventory:GetEquippedItem(v)
+    --     if item and item.prefab == "blueamulet" then
+    --         blue_amulet_equipped = true
+    --         break
+    --     end
+    -- end
+
+    -- local proj_prefab = proj_data.prefab
+    -- if blue_amulet_equipped and (proj_data.prefab == "blythe_missile" or proj_data.prefab == "blythe_super_missile") then
+    --     proj_prefab = proj_prefab .. "_ice"
+    -- end
+
     local proj = SpawnAt(proj_data.prefab, attacker)
     if proj == nil then
         return

@@ -36,6 +36,9 @@ local assets = {
 	Asset("IMAGE", "bigportraits/ms_blythe_avgn.tex"),
 	Asset("ATLAS", "bigportraits/ms_blythe_avgn.xml"),
 
+	Asset("IMAGE", "images/ui/scrapbook_images/blythe.tex"),
+	Asset("ATLAS", "images/ui/scrapbook_images/blythe.xml"),
+
 	---对比老版本 主要是增加了names图片 人物检查图标 还有人物的手臂修复（增加了上臂）
 	--人物动画里面有个SWAP_ICON 里面的图片是在检查时候人物头像那里显示用的
 	--[[---注意事项

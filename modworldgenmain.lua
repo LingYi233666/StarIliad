@@ -15,60 +15,60 @@ local Tasks = require("map/tasks")
 -- end
 
 --adding new keys and locks
-local locks = 1
-for _, v in pairs(LOCKS) do
-	if v >= locks then
-		locks = v
-	end
-end
-locks = locks + 1
+-- local locks = 1
+-- for _, v in pairs(LOCKS) do
+-- 	if v >= locks then
+-- 		locks = v
+-- 	end
+-- end
+-- locks = locks + 1
 
-local keys = 1
-for _, v in pairs(KEYS) do
-	if v >= keys then
-		keys = v
-	end
-end
-keys = keys + 1
+-- local keys = 1
+-- for _, v in pairs(KEYS) do
+-- 	if v >= keys then
+-- 		keys = v
+-- 	end
+-- end
+-- keys = keys + 1
 
-local function AddLock(name)
-	LOCKS[name] = locks
-	locks = locks + 1
+-- local function AddLock(name)
+-- 	LOCKS[name] = locks
+-- 	locks = locks + 1
 
-	print(string.format("New LOCKS[%s] = %d", name, LOCKS[name]))
-end
+-- 	print(string.format("New LOCKS[%s] = %d", name, LOCKS[name]))
+-- end
 
-local function AddKey(name)
-	KEYS[name] = keys
-	keys = keys + 1
+-- local function AddKey(name)
+-- 	KEYS[name] = keys
+-- 	keys = keys + 1
 
-	print(string.format("New KEYS[%s] = %d", name, KEYS[name]))
-end
+-- 	print(string.format("New KEYS[%s] = %d", name, KEYS[name]))
+-- end
 
-local function RegisterKeyForLock(lock_name, key_name)
-	if type(key_name) == "table" then
-		for _, v in pairs(key_name) do
-			RegisterKeyForLock(lock_name, v)
-		end
-		return
-	end
+-- local function RegisterKeyForLock(lock_name, key_name)
+-- 	if type(key_name) == "table" then
+-- 		for _, v in pairs(key_name) do
+-- 			RegisterKeyForLock(lock_name, v)
+-- 		end
+-- 		return
+-- 	end
 
-	if LOCKS_KEYS[LOCKS[lock_name]] == nil then
-		LOCKS_KEYS[LOCKS[lock_name]] = {}
-	end
-	table.insert(LOCKS_KEYS[LOCKS[lock_name]], KEYS[key_name])
+-- 	if LOCKS_KEYS[LOCKS[lock_name]] == nil then
+-- 		LOCKS_KEYS[LOCKS[lock_name]] = {}
+-- 	end
+-- 	table.insert(LOCKS_KEYS[LOCKS[lock_name]], KEYS[key_name])
 
-	print(string.format("New pairs: LOCKS[%s] <-> KEYS[%s]", lock_name, key_name))
-end
+-- 	print(string.format("New pairs: LOCKS[%s] <-> KEYS[%s]", lock_name, key_name))
+-- end
 
--- Extra locks
-AddLock("STARILIAD_ICE_CAVE_ENTRANCE")
+-- -- Extra locks
+-- AddLock("STARILIAD_ICE_CAVE_ENTRANCE")
 
--- Extra keys
-AddKey("STARILIAD_ICE_CAVE_ENTRANCE")
+-- -- Extra keys
+-- AddKey("STARILIAD_ICE_CAVE_ENTRANCE")
 
--- Extra lock-key pairs
-RegisterKeyForLock("STARILIAD_ICE_CAVE_ENTRANCE", "STARILIAD_ICE_CAVE_ENTRANCE")
+-- -- Extra lock-key pairs
+-- RegisterKeyForLock("STARILIAD_ICE_CAVE_ENTRANCE", "STARILIAD_ICE_CAVE_ENTRANCE")
 
 local function MyAddStaticLayout(name, path, additional_props)
 	Layouts[name] = StaticLayout.Get(path, additional_props)
@@ -118,7 +118,11 @@ MyAddStaticLayout("stariliad_chozo_statue_dodge", "map/static_layouts/stariliad_
 MyAddStaticLayout("stariliad_chozo_statue_scan", "map/static_layouts/stariliad_chozo_statue_scan")
 
 MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/stariliad_chozo_statue_room_sample", {
-	areas = {
+	SafeFromDisconnect = true,
+	start_mask         = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+	fill_mask          = PLACE_MASK.IGNORE_IMPASSABLE_BARREN,
+
+	areas              = {
 		statue = function()
 			return { "stariliad_alien_statue_wave_beam" }
 		end,
@@ -126,7 +130,9 @@ MyAddStaticLayout("stariliad_chozo_statue_room_sample", "map/static_layouts/star
 			return { "cavelight" }
 		end,
 	},
-	disable_transform = true
+
+	disable_transform  = true,
+	-- force_rotation     = LAYOUT_ROTATION.SOUTH,
 })
 Layouts.stariliad_chozo_statue_room_sample.ground_types[9] = WORLD_TILES.ARCHIVE
 -- Layouts.stariliad_chozo_statue_room_sample.ground_types[9] = WORLD_TILES.SINKHOLE
@@ -282,7 +288,7 @@ end
 -- 	}
 -- })
 
-AddRoom("stariliad_ice_cave_magma_exit", {
+AddRoom("stariliad_ice_cave_magma_entrance", {
 	colour = { r = .1, g = .1, b = .1, a = .50 },
 	value = WORLD_TILES.STARILIAD_MAGMA,
 	required_prefabs = {
@@ -396,6 +402,72 @@ AddRoom("stariliad_ice_cave_boss_room", {
 	}
 })
 
+AddRoom("stariliad_chozo_statue_room_sample_room", {
+	colour = { r = 0.1, g = 0.1, b = 0.1, a = 1 },
+	value = WORLD_TILES.IMPASSABLE, -- 房间本身尽量不铺陆地
+	-- SafeFromDisconnect = true,
+	tags = { "ForceDisconnected", "RoadPoison", "not_mainland" },
+	contents = {
+		countstaticlayouts = { stariliad_chozo_statue_room_sample = 1 },
+	},
+})
+
+AddRoom("stariliad_necrons_tomb_entrance", {
+	colour = { r = .1, g = .1, b = .1, a = .50 },
+	value = WORLD_TILES.SINKHOLE,
+	required_prefabs = {
+		"cave_exit",
+	},
+	contents = {
+		countstaticlayouts = {
+			CaveExit = 1,
+		},
+		-- countprefabs =
+		-- {
+		-- 	cave_exit = 1,
+		-- },
+		distributepercent = 0.2,
+		distributeprefabs =
+		{
+			cavelight = 0.05,
+			cavelight_small = 0.05,
+			cavelight_tiny = 0.05,
+			flower_cave = 0.5,
+			flower_cave_double = 0.1,
+			flower_cave_triple = 0.05,
+			cave_fern = 0.5,
+			fireflies = 0.01,
+
+			red_mushroom = 0.1,
+			green_mushroom = 0.1,
+			blue_mushroom = 0.1,
+		},
+	},
+})
+
+AddRoom("stariliad_necrons_tomb_room", {
+	colour = { r = .1, g = .1, b = .1, a = .50 },
+	value = WORLD_TILES.STARILIAD_ASH,
+	contents = {
+		countprefabs =
+		{
+		},
+		distributepercent = 0.1,
+		distributeprefabs =
+		{
+			stariliad_necrons_obelisk = 0.03,
+			stariliad_necrons_metal_pillar = 0.03,
+			stariliad_necrons_stele = 0.03,
+			stariliad_necrons_crystal = 0.1,
+			stariliad_black_water_pond = 0.1,
+			stariliad_necrons_scarab_home_always = 0.01,
+			stariliad_necrons_scarab_home_nearby = 0.05,
+		},
+	},
+})
+
+--
+
 -- AddRoom("stariliad_icecano_room1", {
 -- 	colour = { r = .1, g = .1, b = .1, a = .50 },
 -- 	value = WORLD_TILES.IMPASSABLE,
@@ -488,7 +560,7 @@ AddTask("stariliad_ice_cave_start", {
 	keys_given = { KEYS.TIER1 },
 	region_id = "stariliad_ice_cave",
 	room_choices = {
-		stariliad_ice_cave_magma_exit = 1,
+		stariliad_ice_cave_magma_entrance = 1,
 		stariliad_ice_cave_magma_room = 2,
 	},
 	entrance_room = "Empty_Cove",
@@ -542,6 +614,30 @@ AddTask("stariliad_ice_cave_boss_area", {
 	entrance_room = "Empty_Cove",
 	background_room = "Empty_Cove",
 	room_bg = WORLD_TILES.STARILIAD_MAGMA,
+	colour = { r = .1, g = .1, b = .1, a = .50 },
+})
+
+AddTask("stariliad_chozo_statue_room_sample_task", {
+	locks = {},
+	keys_given = {},
+	region_id = "stariliad_chozo_statue_room_sample_task",
+	level_set_piece_blocker = true,
+	room_choices = { stariliad_chozo_statue_room_sample_room = 1 },
+	background_room = "Empty_Cove",
+	room_bg = WORLD_TILES.IMPASSABLE,
+	colour = { r = 0.2, g = 0.2, b = 0.2, a = 1 },
+})
+
+AddTask("stariliad_necrons_tomb_start", {
+	locks = {},
+	keys_given = { KEYS.TIER1 },
+	region_id = "stariliad_necrons_tomb",
+	room_choices = {
+		stariliad_necrons_tomb_entrance = 1,
+		stariliad_necrons_tomb_room = 2,
+	},
+	entrance_room = "Empty_Cove",
+	room_bg = WORLD_TILES.STARILIAD_ASH,
 	colour = { r = .1, g = .1, b = .1, a = .50 },
 })
 
@@ -640,6 +736,9 @@ AddTaskSetPreInit("default", function(taskset)
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
 
 	-- table.insert(taskset.tasks, "stariliad_icecano_task")
+
+	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_wave_beam")
+	-- table.insert(taskset.tasks, "stariliad_chozo_statue_room_sample_task")
 end)
 
 AddTaskSetPreInit("cave_default", function(taskset)
@@ -653,6 +752,7 @@ AddTaskSetPreInit("cave_default", function(taskset)
 
 	table.insert(taskset.required_prefabs, "stariliad_boss_gorgoroth")
 	table.insert(taskset.required_prefabs, "stariliad_alien_statue_dodge")
+	-- table.insert(taskset.required_prefabs, "stariliad_alien_statue_wave_beam")
 
 	-- table.insert(taskset.tasks, "StarIliad_Test_Island")
 	-- table.insert(taskset.tasks, "StarIliad_Test_Water_Area")
@@ -662,6 +762,8 @@ AddTaskSetPreInit("cave_default", function(taskset)
 	table.insert(taskset.tasks, "stariliad_ice_cave_green_land")
 	-- table.insert(taskset.tasks, "stariliad_ice_cave_boss_separate")
 	table.insert(taskset.tasks, "stariliad_ice_cave_boss_area")
+	-- table.insert(taskset.tasks, "stariliad_chozo_statue_room_sample_task")
+	table.insert(taskset.tasks, "stariliad_necrons_tomb_start")
 end)
 
 

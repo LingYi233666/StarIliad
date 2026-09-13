@@ -138,6 +138,30 @@ PrefabFiles = {
     "stariliad_curse_poison",
 
     "stariliad_energy_tank",
+
+    "stariliad_movement_dust",
+
+    "stariliad_hat_green_glass_helmet",
+
+    "stariliad_necrons_obelisk",
+    "stariliad_necrons_metal_pillar",
+    "stariliad_tomb_building_dust",
+    "stariliad_black_water_pond",
+
+    "stariliad_rock_trilobite",
+
+    "stariliad_necrons_scarab",
+    "stariliad_necrons_turret",
+    "stariliad_necrons_turret_laser",
+    "stariliad_necrons_stele",
+    "stariliad_necrons_crystal",
+    "stariliad_boss_necrons_flayed_one",
+
+    "stariliad_boss_toad_parasite",
+    "stariliad_parasite_worm_fx",
+    "stariliad_curse_toad_parasite_infect",
+    "stariliad_wriggler_tentacle",
+    "stariliad_shroom_skin_part",
 }
 
 -- See stariliad_main_assets.lua
@@ -205,6 +229,7 @@ local import_list = {
     "hud",
     "scripts", -- not a good name
     "upvalue_utils",
+    -- "scrapbook", -- Deprecated, we now have a Wiki
     "debug",
 }
 

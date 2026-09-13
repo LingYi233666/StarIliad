@@ -2,6 +2,9 @@ local assets =
 {
     Asset("ANIM", "anim/stariliad_volcano.zip"),
     Asset("ANIM", "anim/stariliad_icecano2.zip"),
+
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_icecano.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_icecano.xml"),
 }
 
 ----------------------------------------------------------------

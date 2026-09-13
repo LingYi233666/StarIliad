@@ -104,9 +104,9 @@ local function fn()
     inst:AddTag("monster")
     inst:AddTag("hostile")
     inst:AddTag("epic")
-    inst:AddTag("noepicmusic")
+    -- inst:AddTag("noepicmusic")
     inst:AddTag("largecreature")
-    inst:AddTag("necrons") -- 太空死灵种族
+    inst:AddTag("stariliad_necrons") -- 太空死灵种族
 
     inst.AnimState:SetBank("spider_queen")
     inst.AnimState:SetBuild("stariliad_boss_spyder")
@@ -115,7 +115,7 @@ local function fn()
     -- inst.AnimState:OverrideSymbol("legmid", "spider_queen_build", "legmid")
     -- inst.AnimState:SetSymbolMultColour("legmid", 0, 0, 0, 1)
 
-    StarIliadBasic.AddTriggeredEventMusic(inst, "stariliad_boss_spyder")
+    -- StarIliadBasic.AddTriggeredEventMusic(inst, "stariliad_boss_spyder")
 
     inst.entity:SetPristine()
 

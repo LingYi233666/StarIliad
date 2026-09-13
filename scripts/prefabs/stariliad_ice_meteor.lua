@@ -7,6 +7,9 @@ local assets =
 
     Asset("IMAGE", "images/map_icons/stariliad_ice_meteor.tex"), --小地图
     Asset("ATLAS", "images/map_icons/stariliad_ice_meteor.xml"),
+
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_ice_meteor.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_ice_meteor.xml"),
 }
 
 SetSharedLootTable("stariliad_ice_meteor",
@@ -350,7 +353,9 @@ local function remain_fn()
         return inst
     end
 
-    inst.RemainExplode = RemainExplode
+    inst.scrapbook_proxy = "stariliad_ice_meteor"
+
+    inst.RemainExplode   = RemainExplode
 
     inst:AddComponent("lootdropper")
     inst.components.lootdropper:SetChanceLootTable("stariliad_ice_meteor_remain")

@@ -140,7 +140,24 @@ AddPrefabPostInit("forest", function(inst)
     inst:AddComponent("stariliad_weather_ice_meteor")
 
     inst:AddComponent("stariliad_space_pirate_invasion")
+
+    inst:AddComponent("stariliad_boss_toad_parasite_spawner")
+
+    inst:AddComponent("stariliad_layout_post_placer")
+    -- inst.components.stariliad_layout_post_placer:AddDefine("stariliad_chozo_statue_room_sample", Vector3(1000, 0, 0))
+    -- inst.components.stariliad_layout_post_placer:AddDefine("stariliad_chozo_statue_room_sample", Vector3(0, 0, 0))
 end)
+
+AddPrefabPostInit("cave", function(inst)
+    if not TheWorld.ismastersim then
+        return
+    end
+
+    inst:AddComponent("stariliad_layout_post_placer")
+    -- inst.components.stariliad_layout_post_placer:AddDefine("stariliad_chozo_statue_room_sample", Vector3(1000, 0, 0))
+    -- inst.components.stariliad_layout_post_placer:AddDefine("stariliad_chozo_statue_room_sample", Vector3(0, 0, 0))
+end)
+
 
 AddPrefabPostInit("tallbirdnest", function(inst)
     if not TheWorld.ismastersim then
@@ -433,4 +450,6 @@ AddPlayerPostInit(function(inst)
 
         OnStariliadIceTile(inst, tile == WORLD_TILES.STARILIAD_ICE_GROUND)
     end)
+
+    inst.stariliad_movement_dust_necrons_tomb = inst:SpawnChild("stariliad_movement_dust_necrons_tomb")
 end)

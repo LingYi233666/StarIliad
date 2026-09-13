@@ -205,3 +205,30 @@ MyAddRecipe2("stariliad_energy_tank",
     },
     { "CHARACTER", "RESTORATION" }
 )
+
+MyAddRecipe2("stariliad_hat_green_glass_helmet",
+    {
+        Ingredient("shroom_skin", 1),
+        Ingredient("greengem", 1),
+        Ingredient("transistor", 2),
+    },
+    TECH.NONE,
+    {
+        builder_tag = "blythe",
+    },
+    { "CHARACTER", "ARMOUR", "CLOTHING", "WINTER", "RAIN" }
+)
+
+MyAddRecipe2("stariliad_shroom_skin_plan1",
+    {
+        Ingredient("stariliad_shroom_skin_part", 4, "images/inventoryimages/stariliad_shroom_skin_part_3.xml", nil,
+            "stariliad_shroom_skin_part_3.tex"),
+    },
+    TECH.NONE,
+    {
+        product = "shroom_skin",
+        image = "shroom_skin.tex",
+        description = "stariliad_shroom_skin_plan1",
+    },
+    { "REFINE", }
+)

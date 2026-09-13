@@ -321,6 +321,6 @@ function StarIliadWeatherLightningStorm:GetDebugString()
     return str
 end
 
-StarIliadWeatherLightningStorm.OnLongUpdate = StarIliadWeatherLightningStorm.OnUpdate
+StarIliadWeatherLightningStorm.LongUpdate = StarIliadWeatherLightningStorm.OnUpdate
 
 return StarIliadWeatherLightningStorm

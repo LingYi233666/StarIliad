@@ -8,6 +8,8 @@ local assets =
 
     Asset("ANIM", "anim/stariliad_gelblob_meteor.zip"),
 
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_boss_gorgoroth.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_boss_gorgoroth.xml"),
 }
 
 local brain = require "brains/stariliad_boss_gorgoroth_brain"

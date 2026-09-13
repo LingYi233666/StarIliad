@@ -25,15 +25,16 @@ local function CanInteract(inst, target, my_range)
 end
 
 local function OnLaunch(inst, attacker, target_pos)
-    inst.shock_wave = attacker.components.blythe_skiller and attacker.components.blythe_skiller:IsEnabled("shock_wave")
+    -- inst.shock_wave = attacker.components.blythe_skiller and attacker.components.blythe_skiller:IsEnabled("shock_wave")
 end
 
 local function OnHit(inst, attacker, target)
-    if inst.shock_wave and inst.explode_shock_wave_prefab then
-        SpawnAt(inst.explode_shock_wave_prefab, inst)
-    else
-        SpawnAt(inst.explode_prefab, inst)
-    end
+    -- if inst.shock_wave and inst.explode_shock_wave_prefab then
+    --     SpawnAt(inst.explode_shock_wave_prefab, inst)
+    -- else
+    --     SpawnAt(inst.explode_prefab, inst)
+    -- end
+    SpawnAt(inst.explode_prefab, inst)
 
     local x, y, z = inst.Transform:GetWorldPosition()
     local ents = TheSim:FindEntities(x, y, z, inst.explode_range + 2, nil, { "INLIMBO", "FX" })
@@ -47,9 +48,9 @@ local function OnHit(inst, attacker, target)
                 attacker.components.combat:DoAttack(v, inst, inst, nil, nil, math.huge)
                 v:AddDebuff("stariliad_debuff_shield_break", "stariliad_debuff_shield_break")
 
-                if inst.shock_wave then
-                    v:AddDebuff("stariliad_debuff_shock_wave", "stariliad_debuff_shock_wave")
-                end
+                -- if inst.shock_wave then
+                --     v:AddDebuff("stariliad_debuff_shock_wave", "stariliad_debuff_shock_wave")
+                -- end
             elseif v.components.workable and v.components.workable:CanBeWorked() and v.components.workable.action ~= ACTIONS.NET then
                 -- I think this is not compatible with many mods which give player toughworker tag
                 if inst.tough_work then
@@ -59,6 +60,10 @@ local function OnHit(inst, attacker, target)
                 v.components.workable:WorkedBy(attacker, inst.work_damage)
 
                 attacker:RemoveTag("toughworker")
+            end
+
+            if inst.coldness and v:IsValid() and v.components.freezable then
+                v.components.freezable:AddColdness(inst.coldness)
             end
         end
     end
@@ -94,22 +99,24 @@ local function OnUpdate(inst)
 
     if inst.entity:IsVisible() then
         if not inst.anim then
-            if inst.shock_wave and inst.anim_shock_wave_prefab then
-                inst.anim = inst:SpawnChild(inst.anim_shock_wave_prefab)
-            else
-                inst.anim = inst:SpawnChild(inst.anim_prefab)
-            end
+            -- if inst.shock_wave and inst.anim_shock_wave_prefab then
+            --     inst.anim = inst:SpawnChild(inst.anim_shock_wave_prefab)
+            -- else
+            --     inst.anim = inst:SpawnChild(inst.anim_prefab)
+            -- end
+            inst.anim = inst:SpawnChild(inst.anim_prefab)
 
             inst.anim.entity:AddFollower()
             inst.anim.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
         end
 
         if not inst.tail then
-            if inst.shock_wave and inst.tail_shock_wave_prefab then
-                inst.tail = inst:SpawnChild(inst.tail_shock_wave_prefab)
-            else
-                inst.tail = inst:SpawnChild(inst.tail_prefab)
-            end
+            -- if inst.shock_wave and inst.tail_shock_wave_prefab then
+            --     inst.tail = inst:SpawnChild(inst.tail_shock_wave_prefab)
+            -- else
+            --     inst.tail = inst:SpawnChild(inst.tail_prefab)
+            -- end
+            inst.tail = inst:SpawnChild(inst.tail_prefab)
 
             inst.tail.entity:AddFollower()
             inst.tail.Follower:FollowSymbol(inst.GUID, "swap_object", 0, -188, 0)
@@ -151,16 +158,14 @@ end
 
 local function MakeMissile(prefab,
                            anim_prefab,
-                           anim_shock_wave_prefab,
                            tail_prefab,
-                           tail_shock_wave_prefab,
                            explode_prefab,
-                           explode_shock_wave_prefab,
                            explode_range,
                            normal_damage,
                            damage,
                            work_damage,
-                           tough_work)
+                           tough_work,
+                           coldness)
     local function fn()
         local inst = CreateEntity()
 
@@ -186,9 +191,10 @@ local function MakeMissile(prefab,
         inst.anim_prefab = anim_prefab
         inst.tail_prefab = tail_prefab
         inst.explode_prefab = explode_prefab
-        inst.anim_shock_wave_prefab = anim_shock_wave_prefab
-        inst.tail_shock_wave_prefab = tail_shock_wave_prefab
-        inst.explode_shock_wave_prefab = explode_shock_wave_prefab
+        -- inst.anim_shock_wave_prefab = anim_shock_wave_prefab
+        -- inst.tail_shock_wave_prefab = tail_shock_wave_prefab
+        -- inst.explode_shock_wave_prefab = explode_shock_wave_prefab
+        inst.coldness = coldness
 
         inst.explode_range = explode_range
         inst.work_damage = work_damage
@@ -263,37 +269,51 @@ end
 return
     MakeMissile("blythe_missile",
         "blythe_missile_anim_normal",
-        nil,
         "blythe_missile_tail",
-        nil,
         "blythe_missile_explode_fx",
-        "blythe_missile_explode_blue_fx",
         TUNING.BLYTHE_MISSILE_EXPLODE_RANGE,
         0,
         TUNING.BLYTHE_MISSILE_DAMAGE,
         TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
+    MakeMissile("blythe_missile_ice",
+        "blythe_missile_anim_normal",
+        "blythe_missile_tail",
+        "blythe_missile_explode_blue_fx",
+        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE,
+        0,
+        TUNING.BLYTHE_MISSILE_DAMAGE,
+        TUNING.BLYTHE_MISSILE_WORK_DAMAGE,
+        false,
+        3),
     MakeMissile("blythe_super_missile",
         "blythe_missile_anim_super",
-        nil,
         "blythe_super_missile_tail",
-        nil,
         "blythe_super_missile_explode_fx",
-        nil,
         TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE,
         0,
         TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
         TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE,
         true),
-    MakeMissile("stariliad_hexa_ghost_missile",
-        "blythe_missile_anim_normal",
-        nil,
-        "blythe_missile_tail",
-        nil,
-        "blythe_missile_explode_fx",
-        nil,
-        TUNING.BLYTHE_MISSILE_EXPLODE_RANGE,
-        TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE,
+    MakeMissile("blythe_super_missile_ice",
+        "blythe_missile_anim_super",
+        "blythe_super_missile_tail",
+        "blythe_super_missile_explode_blue_fx",
+        TUNING.BLYTHE_SUPER_MISSILE_EXPLODE_RANGE,
         0,
-        TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
+        TUNING.BLYTHE_SUPER_MISSILE_DAMAGE,
+        TUNING.BLYTHE_SUPER_MISSILE_WORK_DAMAGE,
+        true,
+        6),
+    -- MakeMissile("stariliad_hexa_ghost_missile",
+    --     "blythe_missile_anim_normal",
+    --     nil,
+    --     "blythe_missile_tail",
+    --     nil,
+    --     "blythe_missile_explode_fx",
+    --     nil,
+    --     TUNING.BLYTHE_MISSILE_EXPLODE_RANGE,
+    --     TUNING.STARILIAD_HEXA_GHOST_MISSILE_DAMAGE,
+    --     0,
+    --     TUNING.BLYTHE_MISSILE_WORK_DAMAGE),
     MakeAnim("blythe_missile_anim_normal", "idle"),
     MakeAnim("blythe_missile_anim_super", "idle_super")

@@ -1,6 +1,9 @@
 local assets =
 {
     Asset("ANIM", "anim/metal_hulk_bomb.zip"),
+
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_hulk_bomb_placed.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_hulk_bomb_placed.xml"),
 }
 
 
@@ -58,7 +61,7 @@ local function placed_fn()
     inst:AddComponent("inspectable")
 
     inst:AddComponent("combat")
-    inst.components.combat:SetDefaultDamage(100)
+    inst.components.combat:SetDefaultDamage(TUNING.STARILIAD_SPACE_PIRATE_SOLIDER_LV1_MINE_DAMAGE)
 
     inst:SetStateGraph("SGstariliad_hulk_bomb_placed")
 

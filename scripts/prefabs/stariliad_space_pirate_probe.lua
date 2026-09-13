@@ -7,6 +7,9 @@ local assets =
     Asset("ANIM", "anim/wx_scanner_ring_fx.zip"),
     Asset("ANIM", "anim/stariliad_space_pirate_probe.zip"),
 
+    Asset("IMAGE", "images/ui/scrapbook_images/stariliad_space_pirate_probe.tex"),
+    Asset("ATLAS", "images/ui/scrapbook_images/stariliad_space_pirate_probe.xml"),
+
     Asset("MINIMAP_IMAGE", "wx78_scanner_item"),
 }
 

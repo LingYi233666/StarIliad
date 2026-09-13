@@ -302,9 +302,12 @@ function StarIliadSpacePirateInvasion:OnUpdate(dt)
     end
 end
 
+StarIliadSpacePirateInvasion.LongUpdate = StarIliadSpacePirateInvasion.OnUpdate
+
 -- print(TheWorld.components.stariliad_space_pirate_invasion:GetDebugString())
 -- TheWorld.components.stariliad_space_pirate_invasion:FastForwardToWarning()
 -- TheWorld.components.stariliad_space_pirate_invasion:FastForwardToInvasion()
+-- ThePlayer.components.talker:Say(TheWorld.components.stariliad_space_pirate_invasion:GetDebugString())
 function StarIliadSpacePirateInvasion:GetDebugString()
     -- if self.invasion_countdown == nil then
     --     return "invasion_countdown: nil"

@@ -11,9 +11,12 @@ local assets =
     Asset("ANIM", "anim/blythe_backpack.zip"),
     -- ThePlayer.AnimState:OverrideSymbol("swap_body", "blythe_backpack", "swap_body")
 
+    -- Scrapbook anim
+    Asset("ANIM", "anim/stariliad_scrapbook.zip"),
 
     -- Common height controller
     Asset("ANIM", "anim/stariliad_height_controller.zip"),
+    Asset("ANIM", "anim/stariliad_rotate_controller.zip"),
 
     -- pistol shoot anim
     Asset("ANIM", "anim/player_pistol.zip"),
